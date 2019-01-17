@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="loading">
+    <div id="loadingModel" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="loadingModelLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="loadingModelLabel">请稍后...</h4>
+                    <!--<a data-dismiss="modal" aria-label="Close" id="loadingModelClose"></a>-->
+                </div>
+                <div class="modal-body center-block" id="loadingModelInfo">
+                    <img src="/my/img/loading.gif"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

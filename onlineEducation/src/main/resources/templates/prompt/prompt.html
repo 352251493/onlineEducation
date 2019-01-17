@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8">
+        <title>智学新知 - 提示页</title>
+        <!-- Mobile specific metas -->
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <!-- Force IE9 to render in normal mode -->
+        <!--[if IE]><meta http-equiv="x-ua-compatible" content="IE=9" /><![endif]-->
+        <meta name="author" content="SuggeElson" />
+        <meta name="description" content=""
+        />
+        <meta name="keywords" content=""
+        />
+        <meta name="application-name" content="sprFlat admin template" />
+        <!-- Import google fonts - Heading first/ text second -->
+        <link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Open+Sans:400,700|Droid+Sans:400,700' />
+        <!--[if lt IE 9]>
+<link href="http://fonts.googleapis.com/css?family=Open+Sans:400" rel="stylesheet" type="text/css" />
+<link href="http://fonts.googleapis.com/css?family=Open+Sans:700" rel="stylesheet" type="text/css" />
+<link href="http://fonts.googleapis.com/css?family=Droid+Sans:400" rel="stylesheet" type="text/css" />
+<link href="http://fonts.googleapis.com/css?family=Droid+Sans:700" rel="stylesheet" type="text/css" />
+<![endif]-->
+        <!-- Css files -->
+        <!-- Favicon-->
+        <link rel="icon" href="/img/core-img/logo_ico.png">
+        <!-- jQueryUI -->
+        <link href="/prompt/assets/css/sprflat-theme/jquery.ui.all.css" rel="stylesheet" />
+        <!-- Bootstrap stylesheets (included template modifications) -->
+        <link href="/prompt/assets/css/bootstrap.css" rel="stylesheet" />
+        <!-- Plugins stylesheets (all plugin custom css) -->
+        <link href="/prompt/assets/css/plugins.css" rel="stylesheet" />
+        <!-- Main stylesheets (template main css file) -->
+        <link href="/prompt/assets/css/main.css" rel="stylesheet" />
+        <!-- Custom stylesheets ( Put your own changes here ) -->
+        <link href="/prompt/assets/css/custom.css" rel="stylesheet" />
+        <!-- Fav and touch icons -->
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/prompt/assets/img/ico/apple-touch-icon-144-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/prompt/assets/img/ico/apple-touch-icon-114-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/prompt/assets/img/ico/apple-touch-icon-72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" href="/prompt/assets/img/ico/apple-touch-icon-57-precomposed.png">
+        <link rel="icon" href="/prompt/assets/img/ico/favicon.ico" type="image/png">
+        <!-- Windows8 touch icon ( http://www.buildmypinnedsite.com/ )-->
+        <meta name="msapplication-TileColor" content="#3399cc" />
+    </head>
+    <body class="error-page">
+        <div class="container animated fadeInDown">
+            <h1 class="text-center" th:text="${promptTitle}">验证成功</h1>
+            <h1 class="text-center mb25" th:text="${promptMessage}">恭喜您，邮箱验证成功！</h1>
+            <p class="text-center s24">页面将在<span id="endTime">5</span>s后自动跳转至首页，如页面为发生跳转，您可以点击<a href='/'>首页</a>手动进行跳转</p>
+        </div>
+        <!-- Javascripts -->
+        <!-- Important javascript libs(put in all pages) -->
+        <script src="/prompt/assets/js/jquery-2.2.4.min.js"></script>
+        <!-- Bootstrap plugins -->
+        <script src="/prompt/assets/js/bootstrap.min.js"></script>
+
+		<script src="/prompt/my/js/prompt.js"></script>
+    </body>
+</html>

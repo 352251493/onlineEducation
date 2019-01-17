@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>智学新知 - 注册</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="all,follow">
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="/user_static/vendor/bootstrap/css/bootstrap.min.css">
+    <!-- Font Awesome CSS-->
+    <link rel="stylesheet" href="/user_static/vendor/font-awesome/css/font-awesome.min.css">
+    <!-- Fontastic Custom icon font-->
+    <link rel="stylesheet" href="/user_static/css/fontastic.css">
+    <!-- Google fonts - Poppins -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,700">
+    <!-- theme stylesheet-->
+    <link rel="stylesheet" href="/user_static/css/style.default.css" id="theme-stylesheet">
+    <!-- Custom stylesheet - for your changes-->
+    <link rel="stylesheet" href="/user_static/css/custom.css">
+    <!-- Favicon-->
+    <link rel="icon" href="/img/core-img/logo_ico.png">
+    <!-- Tweaks for older IEs--><!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+  </head>
+  <body>
+    <div class="page login-page">
+      <div class="container d-flex align-items-center">
+        <div class="form-holder has-shadow">
+          <div class="row">
+            <!-- Logo & Information Panel-->
+            <div class="col-lg-6" th:include="/html_templates/user/login_and_register_left_page.html :: left_page"></div>
+            <!-- Form Panel    -->
+            <div class="col-lg-6 bg-white">
+              <div class="form d-flex align-items-center">
+                <div class="content">
+                  <form class="form-validate" enctype="multipart/form-data" id="registerForm" action="" onsubmit="javascript : register(); return false;">
+                    <div class="form-group">
+                      <input id="email" type="email" name="email" required data-msg="请输入您的邮箱" class="input-material" maxlength="150">
+                      <label for="email" class="label-material">邮箱</label>
+                    </div>
+                    <div class="form-group">
+                      <input id="name" type="text" name="name" required data-msg="请输入您的姓名" class="input-material" maxlength="100">
+                      <label for="name" class="label-material">姓名</label>
+                    </div>
+                    <div class="form-group">
+                      <input id="password" type="password" name="password" required data-msg="请设置一个密码" class="input-material" maxlength="20">
+                      <label for="password" class="label-material">密码</label>
+                    </div>
+					<div class="form-group">
+                      <input id="repassword" type="password" name="repassword" required data-msg="请确认密码" class="input-material" maxlength="20">
+                      <label for="repassword" class="label-material">确认密码</label>
+                    </div>
+					<div class="form-group terms-conditions">
+						<input type="radio" name="sex" value="男" checked class="radio-template" id="sex-man"><label for="sex-man">男</label>&nbsp;&nbsp;
+						<input type="radio" name="sex" value="女" class="radio-template" id="sex-woman"><label for="sex-woman">女</label>
+					</div>
+					<div class="form-group terms-conditions">
+						<input type="radio" name="job" value="学生" class="radio-template" id="job-student" checked><label for="job-student">我是一名学生</label>&nbsp;&nbsp;
+						<input type="radio" name="job" value="教师" class="radio-template" id="job-teacher"><label for="job-teacher">我是一名教师</label>
+					</div>
+					<div class="form-group">
+						<label for="headImage" class="btn btn-primary">选择头像</label>
+						<input type="file" id="headImage" class="input-material" style="display:none" name="headImage" onchange="headImageChange()">
+						<img src="/user_static/img/default_head_image.png" class="img-circle"  height="50" width="50" id="preHeadImage" multiple accept="image/*">
+					</div>
+                    <div class="form-group terms-conditions">
+                      <label style="color:red;">*注：以上信息（除密码和头像外）一旦确认将无法进行更改，请慎重填写！</label>
+                    </div>
+                    <div class="form-group">
+                      <button type="submit" name="registerSubmit" class="btn btn-primary">注册</button>
+                    </div>
+                  </form><small>已有账号? </small><a href="/user/login" class="signup">点击登录</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="copyrights text-center" th:include="/html_templates/user/login_and_register_footer.html :: footer"></div>
+    </div>
+
+    <!-- 信息提示框 -->
+    <div th:include="/html_templates/alert_info.html :: alert"></div>
+    <!-- 等待框 -->
+    <div th:include="/html_templates/loading.html :: loading"></div>
+    <!-- JavaScript files-->
+    <script src="/user_static/vendor/jquery/jquery.min.js"></script>
+    <script src="/user_static/vendor/popper.js/umd/popper.min.js"> </script>
+    <script src="/user_static/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/user_static/vendor/jquery.cookie/jquery.cookie.js"> </script>
+    <script src="/user_static/vendor/chart.js/Chart.min.js"></script>
+    <script src="/user_static/vendor/jquery-validation/jquery.validate.min.js"></script>
+    <!-- Main File-->
+    <script src="/user_static/js/front.js"></script>
+
+    <script src="/my/js/utils.js"></script>
+	<script src="/user_static/my/js/register.js"></script>
+  </body>
+</html>
