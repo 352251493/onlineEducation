@@ -17,6 +17,7 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
@@ -314,5 +315,48 @@ public class UserServiceImpl implements UserService {
         result.accumulate("promptTitle", promptTitle);
         result.accumulate("promptMessage", promptMessage);
         return result;
+    }
+
+    /**
+     * 用户登录
+     *
+     * @param email    邮箱
+     * @param password 密码
+     * @param nextPage 登陆成功后转入页面
+     * @param request  用户请求信息
+     * @return 登录结果
+     * @author 郭欣光
+     */
+    @Override
+    public String login(String email, String password, String nextPage, HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "登录失败！";
+        if (StringUtils.isEmpty(email)) {
+            content = "请输入邮箱！";
+        } else if (email.length() > 150) {
+            content = "邮箱长度不能超过150字符！";
+        } else if (!StringUtils.isEmail(email)) {
+            content = "您输入的邮箱格式不正确！";
+        } else if (StringUtils.isEmpty(password)) {
+            content = "请输入密码！";
+        } else if (userDao.getUserCountByEmail(email) == 0) {
+            content = "该用户不存在！";
+        } else {
+            User user = userDao.getUserByEmail(email);
+            if ("0".equals(user.getIsVerification())) {
+                content = "账号：" + email + "未进行邮箱验证，请您点击邮箱内链接进行验证！";
+            } else if (Md5.md5(password).equals(user.getPassword())) {
+                HttpSession session = request.getSession();
+                session.setAttribute("user", user);
+                content = nextPage;
+                status = "true";
+            } else {
+                content = "密码错误！";
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
     }
 }

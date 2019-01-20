@@ -23,8 +23,18 @@ public class UserController {
     private UserService userService;
 
     @GetMapping(value = "/login")
-    public String getLoginPage() {
+    public String getLoginPage(@RequestParam(required = false) String next, Model model) {
+        if (next == null) {
+            next = "/";
+        }
+        model.addAttribute("nextPage", next);
         return "/user/login.html";
+    }
+
+    @PostMapping(value = "/login")
+    @ResponseBody
+    public String login(@RequestParam String email, @RequestParam String password, @RequestParam String nextPage, HttpServletRequest request) {
+        return userService.login(email, password, nextPage, request);
     }
 
     @GetMapping(value = "/register")

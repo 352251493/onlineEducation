@@ -42,4 +42,15 @@ public interface UserService {
      * @return 验证结果
      */
     JSONObject register(String email, String verificationRule);
+
+    /**
+     * 用户登录
+     * @param email 邮箱
+     * @param password 密码
+     * @param nextPage 登陆成功后转入页面
+     * @param request 用户请求信息
+     * @return 登录结果
+     * @author 郭欣光
+     */
+    String login(String email, String password, String nextPage, HttpServletRequest request);
 }

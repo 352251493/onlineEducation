@@ -36,7 +36,8 @@
             <div class="col-lg-6 bg-white">
               <div class="form d-flex align-items-center">
                 <div class="content">
-                  <form method="post" class="form-validate">
+                  <form method="post" class="form-validate" action="" onsubmit="javascript : login(); return false;">
+                    <input type="hidden" id="nextPage" name="nextPage" th:value="${nextPage}">
                     <div class="form-group">
                       <input id="email" type="email" name="email" required data-msg="请输入您的邮箱" class="input-material" maxlength="150">
                       <label for="email" class="label-material">邮箱</label>
@@ -44,7 +45,7 @@
                     <div class="form-group">
                       <input id="password" type="password" name="password" required data-msg="请输入您的密码" class="input-material" maxlength="20">
                       <label for="password" class="label-material">密码</label>
-                    </div><a id="login" href="" class="btn btn-primary">登录</a>
+                    </div><button type="submit"  class="btn btn-primary">登录</button>
                     <!-- This should be submit button but I replaced it with <a> for demo purposes-->
                   </form><a href="#" class="forgot-pass">忘记密码？</a><br><small>没有账号？ </small><a href="/user/register" class="signup">点击注册</a>
                 </div>
@@ -55,14 +56,21 @@
       </div>
       <div class="copyrights text-center" th:include="/html_templates/user/login_and_register_footer.html :: footer"></div>
     </div>
+    <!-- 信息提示框 -->
+    <div th:include="/html_templates/alert_info.html :: alert"></div>
+    <!-- 等待框 -->
+    <div th:include="/html_templates/loading.html :: loading"></div>
     <!-- JavaScript files-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/popper.js/umd/popper.min.js"> </script>
-    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-    <script src="vendor/jquery.cookie/jquery.cookie.js"> </script>
-    <script src="vendor/chart.js/Chart.min.js"></script>
-    <script src="vendor/jquery-validation/jquery.validate.min.js"></script>
+    <script src="/user_static/vendor/jquery/jquery.min.js"></script>
+    <script src="/user_static/vendor/popper.js/umd/popper.min.js"> </script>
+    <script src="/user_static/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/user_static/vendor/jquery.cookie/jquery.cookie.js"> </script>
+    <script src="/user_static/vendor/chart.js/Chart.min.js"></script>
+    <script src="/user_static/vendor/jquery-validation/jquery.validate.min.js"></script>
     <!-- Main File-->
-    <script src="js/front.js"></script>
+    <script src="/user_static/js/front.js"></script>
+    <script src="/my/js/utils.js"></script>
+    <script src="/user_static/my/js/login.js"></script>
+
   </body>
 </html>
