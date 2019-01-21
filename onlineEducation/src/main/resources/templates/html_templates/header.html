@@ -14,6 +14,7 @@
                         <div class="login-content">
                             <a href="javascript: window.open('/user/login?next=' + window.location.href);" target="_blank" th:if="${user} == null">注册 / 登录</a>
                             <a href="" th:if="${user} != null" th:text="'欢迎您，' + ${user.name}"></a>
+                            <a href="/user/message/all/1" th:if="${user} != null">消息(<span>0</span>)</a>
                             <!-- <a href="">欢迎您，guoxinguang123@qq.com</a> -->
                         </div>
                     </div>
@@ -85,7 +86,7 @@
                                     </div>
                                 </li>
                                 <li><a href="about-us.html">关于我们</a></li>
-                                <!-- <li><a href="#">个人中心</a>
+                                <li th:if="${user} != null"><a href="#">个人中心</a>
                                     <ul class="dropdown">
                                         <li><a href="index.html">Home</a></li>
                                         <li><a href="about-us.html">About Us</a></li>
@@ -94,7 +95,7 @@
                                         <li><a href="contact.html">Contact</a></li>
                                         <li><a href="elements.html">Elements</a></li>
                                     </ul>
-                                </li> -->
+                                </li>
                                 <!-- <li><a href="course.html">Course</a></li>
                                 <li><a href="contact.html">Contact</a></li> -->
                             </ul>

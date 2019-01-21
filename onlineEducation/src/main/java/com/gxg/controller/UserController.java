@@ -1,5 +1,6 @@
 package com.gxg.controller;
 
+import com.gxg.entities.User;
 import com.gxg.service.UserService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * 该类为用户相关的请求响应控制类
@@ -54,5 +56,19 @@ public class UserController {
         model.addAttribute("promptTitle", result.getString("promptTitle"));
         model.addAttribute("promptMessage", result.getString("promptMessage"));
         return "/prompt/prompt.html";
+    }
+
+    @GetMapping(value = "/message/{messageType}/{messagePage}")
+    public String message(@PathVariable String messageType, @PathVariable String messagePage, HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            return "redirect:/user/login?next=" + "/user/message";
+        } else {
+            User user = (User)session.getAttribute("user");
+            model.addAttribute("user", user);
+            model.addAttribute("mesageType", messagePage);
+            model.addAttribute("messagePage", messagePage);
+            return "/user/message.html";
+        }
     }
 }
