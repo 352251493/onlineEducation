@@ -62,32 +62,26 @@
               <div class="row">
                 <div class="col-lg-12">
                   <div class="card">
-                    <!-- <div class="card-close">
-                      <div class="dropdown">
-                        <button type="button" id="closeCard1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle"><i class="fa fa-ellipsis-v"></i></button>
-                        <div aria-labelledby="closeCard1" class="dropdown-menu dropdown-menu-right has-shadow"><a href="#" class="dropdown-item remove"> <i class="fa fa-times"></i>Close</a><a href="#" class="dropdown-item edit"> <i class="fa fa-gear"></i>Edit</a></div>
-                      </div>
-                    </div> -->
                     <div class="card-header d-flex align-items-center">
                       <h3 class="h4" th:if="${messageType} eq 'all'">全部消息</h3>
                         <h3 class="h4" th:if="${messageType} eq 'read'">已读消息</h3>
                         <h3 class="h4" th:if="${messageType} eq 'unread'">未读消息</h3>
                     </div>
                     <div class="card-body">
-						<!-- <span>这里空空如也~</span> -->
+						<span th:if="${messageList} == null">这里空空如也~</span>
 					  <!-- Projects Section-->
-					  <section class="projects no-padding-top">
+					  <section class="projects no-padding-top" th:if="${messageList} != null">
 						<div class="container-fluid">
-						  <div class="project">
+						  <div class="project" th:each="message : ${messageList}">
 							<div class="row bg-white has-shadow">
 							  <div class="left-col col-lg-6 d-flex align-items-center justify-content-between">
 								<div class="project-title d-flex align-items-center">
-								  <span class="badge bg-red">未读</span>&nbsp;&nbsp;&nbsp;&nbsp;
+								  <span class="badge bg-red" th:if="${message.is_read} eq '0'">未读</span><span class="badge bg-green" th:if="${message.is_read} eq '1'">已读</span>&nbsp;&nbsp;&nbsp;&nbsp;
 								  <div class="text">
-									<h3 class="h4">欢迎加入智学新知</h3>
+									<h3 class="h4" th:text="${message.title}"></h3>
 								  </div>
 								</div>
-								<div class="project-date"><span class="hidden-sm-down">2019-01-21 14:47:32</span></div>
+								<div class="project-date"><span class="hidden-sm-down" th:text="${#strings.substringBefore(message.createTime, '.')}"></span></div>
 							  </div>
 							  <div class="col-lg-6">
 								  <div class="pull-right">
@@ -97,70 +91,72 @@
 							  </div>
 							</div>
 						  </div>
-						  <div class="project">
-							<div class="row bg-white has-shadow">
-							  <div class="left-col col-lg-6 d-flex align-items-center justify-content-between">
-								<div class="project-title d-flex align-items-center">
-								  <span class="badge bg-green">已读</span>&nbsp;&nbsp;&nbsp;&nbsp;
-								  <div class="text">
-									<h3 class="h4">欢迎加入智学新知</h3>
-								  </div>
-								</div>
-								<div class="project-date"><span class="hidden-sm-down">2019-01-21 14:47:32</span></div>
-							  </div>
-							  <div class="col-lg-6">
-								  <div class="pull-right">
-									<button type="button" class="btn btn-primary">查看</button>
-									<button type="button" class="btn btn-danger">删除</button>
-								  </div>
-							  </div>
-							</div>
-						  </div>
-						  <div class="project">
-							<div class="row bg-white has-shadow">
-							  <div class="left-col col-lg-6 d-flex align-items-center justify-content-between">
-								<div class="project-title d-flex align-items-center">
-								  <span class="badge bg-red">未读</span>&nbsp;&nbsp;&nbsp;&nbsp;
-								  <div class="text">
-									<h3 class="h4">欢迎加入智学新知</h3>
-								  </div>
-								</div>
-								<div class="project-date"><span class="hidden-sm-down">2019-01-21 14:47:32</span></div>
-							  </div>
-							  <div class="col-lg-6">
-								  <div class="pull-right">
-									<button type="button" class="btn btn-primary">查看</button>
-									<button type="button" class="btn btn-danger">删除</button>
-								  </div>
-							  </div>
-							</div>
-						  </div>
-						  <div class="project">
-							<div class="row bg-white has-shadow">
-							  <div class="left-col col-lg-6 d-flex align-items-center justify-content-between">
-								<div class="project-title d-flex align-items-center">
-								  <span class="badge bg-green">已读</span>&nbsp;&nbsp;&nbsp;&nbsp;
-								  <div class="text">
-									<h3 class="h4">欢迎加入智学新知</h3>
-								  </div>
-								</div>
-								<div class="project-date"><span class="hidden-sm-down">2019-01-21 14:47:32</span></div>
-							  </div>
-							  <div class="col-lg-6">
-								  <div class="pull-right">
-									<button type="button" class="btn btn-primary">查看</button>
-									<button type="button" class="btn btn-danger">删除</button>
-								  </div>
-							  </div>
-							</div>
-						  </div>
+						  <!--<div class="project">-->
+							<!--<div class="row bg-white has-shadow">-->
+							  <!--<div class="left-col col-lg-6 d-flex align-items-center justify-content-between">-->
+								<!--<div class="project-title d-flex align-items-center">-->
+								  <!--<span class="badge bg-green">已读</span>&nbsp;&nbsp;&nbsp;&nbsp;-->
+								  <!--<div class="text">-->
+									<!--<h3 class="h4">欢迎加入智学新知</h3>-->
+								  <!--</div>-->
+								<!--</div>-->
+								<!--<div class="project-date"><span class="hidden-sm-down">2019-01-21 14:47:32</span></div>-->
+							  <!--</div>-->
+							  <!--<div class="col-lg-6">-->
+								  <!--<div class="pull-right">-->
+									<!--<button type="button" class="btn btn-primary">查看</button>-->
+									<!--<button type="button" class="btn btn-danger">删除</button>-->
+								  <!--</div>-->
+							  <!--</div>-->
+							<!--</div>-->
+						  <!--</div>-->
+						  <!--<div class="project">-->
+							<!--<div class="row bg-white has-shadow">-->
+							  <!--<div class="left-col col-lg-6 d-flex align-items-center justify-content-between">-->
+								<!--<div class="project-title d-flex align-items-center">-->
+								  <!--<span class="badge bg-red">未读</span>&nbsp;&nbsp;&nbsp;&nbsp;-->
+								  <!--<div class="text">-->
+									<!--<h3 class="h4">欢迎加入智学新知</h3>-->
+								  <!--</div>-->
+								<!--</div>-->
+								<!--<div class="project-date"><span class="hidden-sm-down">2019-01-21 14:47:32</span></div>-->
+							  <!--</div>-->
+							  <!--<div class="col-lg-6">-->
+								  <!--<div class="pull-right">-->
+									<!--<button type="button" class="btn btn-primary">查看</button>-->
+									<!--<button type="button" class="btn btn-danger">删除</button>-->
+								  <!--</div>-->
+							  <!--</div>-->
+							<!--</div>-->
+						  <!--</div>-->
+						  <!--<div class="project">-->
+							<!--<div class="row bg-white has-shadow">-->
+							  <!--<div class="left-col col-lg-6 d-flex align-items-center justify-content-between">-->
+								<!--<div class="project-title d-flex align-items-center">-->
+								  <!--<span class="badge bg-green">已读</span>&nbsp;&nbsp;&nbsp;&nbsp;-->
+								  <!--<div class="text">-->
+									<!--<h3 class="h4">欢迎加入智学新知</h3>-->
+								  <!--</div>-->
+								<!--</div>-->
+								<!--<div class="project-date"><span class="hidden-sm-down">2019-01-21 14:47:32</span></div>-->
+							  <!--</div>-->
+							  <!--<div class="col-lg-6">-->
+								  <!--<div class="pull-right">-->
+									<!--<button type="button" class="btn btn-primary">查看</button>-->
+									<!--<button type="button" class="btn btn-danger">删除</button>-->
+								  <!--</div>-->
+							  <!--</div>-->
+							<!--</div>-->
+						  <!--</div>-->
 						</div>
 					  </section>
 					  <div class="col-lg-12">
 						  <div class="btn-group pull-right" role="group">
-							  <button type="button" class="btn btn-default"><span aria-hidden="true">&laquo;</span>上一页</button>
-							  <button type="button" class="btn btn-default" disabled="disabled">1/1</button>
-							  <button type="button" class="btn btn-default">下一页<span aria-hidden="true">&raquo;</span></button>
+							  <button type="button" class="btn btn-default" disabled="disabled" th:if="${messagePrePage} == null"><span aria-hidden="true">&laquo;</span>上一页</button>
+							  <button type="button" class="btn btn-default" th:if="${messagePrePage} != null"><span aria-hidden="true">&laquo;</span>上一页</button>
+							  <button type="button" class="btn btn-default" disabled="disabled" th:text="${messagePage} + '/' + ${messagePageNumber}">1/1</button>
+							  <button type="button" class="btn btn-default" disabled="disabled" th:if="${messageNextPage} == null">下一页<span aria-hidden="true">&raquo;</span></button>
+							  <button type="button" class="btn btn-default" th:if="${messageNextPage} != null">下一页<span aria-hidden="true">&raquo;</span></button>
 						  </div>
 					  </div>
                     </div>

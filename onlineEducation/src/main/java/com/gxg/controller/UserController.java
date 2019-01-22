@@ -1,6 +1,8 @@
 package com.gxg.controller;
 
+import com.gxg.entities.Message;
 import com.gxg.entities.User;
+import com.gxg.service.MessageService;
 import com.gxg.service.UserService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  * 该类为用户相关的请求响应控制类
@@ -23,6 +26,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private MessageService messageService;
 
     @GetMapping(value = "/login")
     public String getLoginPage(@RequestParam(required = false) String next, Model model) {
@@ -62,13 +68,34 @@ public class UserController {
     public String message(@PathVariable String messageType, @PathVariable String messagePage, HttpServletRequest request, Model model) {
         HttpSession session = request.getSession();
         if (session.getAttribute("user") == null) {
-            return "redirect:/user/login?next=" + "/user/message";
+            return "redirect:/user/login?next=" + "/user/message/" + messageType + "/" + messagePage;
         } else {
             User user = (User)session.getAttribute("user");
-            model.addAttribute("user", user);
-            model.addAttribute("mesageType", messagePage);
-            model.addAttribute("messagePage", messagePage);
-            return "/user/message.html";
+            JSONObject messageListInfo = messageService.getMessageList(user, messageType, messagePage);
+            if ("false".equals(messageListInfo.getString("status"))) {
+                return "redirect:/user/message/all/1";
+            } else {
+                int messagePageInt = messageListInfo.getInt("messagePage");
+                int messagePageNumber = messageListInfo.getInt("messagePageNumber");
+                model.addAttribute("messagePage", messagePageInt);
+                model.addAttribute("messagePageNumber", messagePageNumber);
+                if (messagePageInt > 1) {
+                    int messagePrePage = messagePageInt - 1;
+                    model.addAttribute("messagePrePage", messagePrePage);
+                }
+                if (messagePageInt < messagePageNumber) {
+                    int messageNextPage = messagePageInt + 1;
+                    model.addAttribute("messageNextPage", messageNextPage);
+                }
+                if ("true".equals(messageListInfo.getString("hasMessage"))) {
+                    model.addAttribute("messageList", messageListInfo.getJSONArray("messageList"));
+                }
+                int unReadMessageCount = messageService.getUnreadMessageCount(user);
+                model.addAttribute("unReadMessageCount", unReadMessageCount);
+                model.addAttribute("user", user);
+                model.addAttribute("mesageType", messagePage);
+                return "/user/message.html";
+            }
         }
     }
 }

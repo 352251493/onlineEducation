@@ -53,4 +53,5 @@ public interface UserService {
      * @author 郭欣光
      */
     String login(String email, String password, String nextPage, HttpServletRequest request);
+
 }

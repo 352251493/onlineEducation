@@ -15,7 +15,7 @@
                 <!-- Navbar Menu -->
                 <ul class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center">
                     <!-- Notifications-->
-                    <li class="nav-item dropdown"> <a id="notifications"  href="/user/message/all/1" class="nav-link"><i class="fa fa-bell-o"></i><span class="badge bg-red badge-corner">12</span></a>
+                    <li class="nav-item dropdown"> <a id="notifications"  href="/user/message/all/1" class="nav-link"><i class="fa fa-bell-o"></i><span class="badge bg-red badge-corner" th:if="${unReadMessageCount} != null" th:text="${unReadMessageCount}">0</span><span class="badge bg-red badge-corner" th:if="${unReadMessageCount} == null">0</span></a>
                         <!-- <ul aria-labelledby="notifications" class="dropdown-menu">
                           <li><a rel="nofollow" href="#" class="dropdown-item">
                               <div class="notification">
