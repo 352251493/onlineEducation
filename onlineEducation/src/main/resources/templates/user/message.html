@@ -57,7 +57,7 @@
                   <li class="breadcrumb-item active">已读消息</li>
               </ul>
           </div>
-          <section class="tables">   
+          <section class="tables">
             <div class="container-fluid">
               <div class="row">
                 <div class="col-lg-12">
@@ -162,6 +162,7 @@
                     </div>
                   </div>
                 </div>
+              </div>
             </div>
           </section>
           <!-- Page Footer-->
@@ -169,6 +170,13 @@
         </div>
       </div>
     </div>
+
+    <!-- 信息提示框 -->
+    <div th:include="/html_templates/alert_info.html :: alert"></div>
+    <!-- 等待框 -->
+    <div th:include="/html_templates/loading.html :: loading"></div>
+    <!-- 注销确认框 -->
+    <div th:include="/html_templates/confirm_modal.html :: cancelUserConfirm"></div>
     <!-- JavaScript files-->
     <script src="/user_static/vendor/jquery/jquery.min.js"></script>
     <script src="/user_static/vendor/popper.js/umd/popper.min.js"> </script>
@@ -178,5 +186,8 @@
     <script src="/user_static/vendor/jquery-validation/jquery.validate.min.js"></script>
     <!-- Main File-->
     <script src="/user_static/js/front.js"></script>
+
+    <script src="/my/js/utils.js"></script>
+    <script src="/user_static/my/js/user.js"></script>
   </body>
 </html>

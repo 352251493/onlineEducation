@@ -109,4 +109,18 @@ public class MessageDaoImpl implements MessageDao {
         List<Message> messageList = jdbcTemplate.query(sql, new MessageRowMapper(), email, isRead, startLimit, endLimit);
         return messageList;
     }
+
+    /**
+     * 根据邮箱删除消息通知
+     *
+     * @param email 邮箱
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    @Override
+    public int deleteMessageByEmail(String email) {
+        String sql = "delete from message where email=?";
+        int changeCount = jdbcTemplate.update(sql, email);
+        return changeCount;
+    }
 }

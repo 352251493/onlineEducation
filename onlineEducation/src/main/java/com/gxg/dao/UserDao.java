@@ -63,4 +63,12 @@ public interface UserDao {
      * @author 郭欣光
      */
     int updateUser(User user);
+
+    /**
+     * 删除用户
+     * @param user 用户信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    int deleteUser(User user);
 }

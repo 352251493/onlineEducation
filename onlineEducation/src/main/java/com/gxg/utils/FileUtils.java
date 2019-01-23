@@ -123,4 +123,89 @@ public class FileUtils {
         result.accumulate("content", content);
         return result;
     }
+
+    /**
+     * 判断文件是否存在
+     * @param fileName 文件名称
+     * @return 结果
+     * @author 郭欣光
+     */
+    public static boolean fileExists(String fileName) {
+        File file = new File(fileName);
+        if (file.exists()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 将内容写入文件
+     * @param path 文件路径
+     * @param name 文件名
+     * @param content 文件内容
+     * @return 写入结果
+     * @author 郭欣光
+     */
+    public static JSONObject writeFile(String path, String name, String content) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String resultContent = "写入文件出错！";
+        try {
+            File fileDir = new File(path);
+            if(!fileDir.exists()) {
+                fileDir.mkdirs();
+            }
+            File file = new File(path + name);
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            byte by[] = content.getBytes();
+            fileOutputStream.write(by);
+            fileOutputStream.close();
+            status = "true";
+            resultContent = "写入文件成功！";
+        } catch (FileNotFoundException e) {
+            System.out.println(e);
+            resultContent = "写入文件出错：" + e.getMessage();
+        } catch (IOException e) {
+            System.out.println(e);
+            resultContent = "写入文件出错：" + e.getMessage();
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", resultContent);
+        return result;
+    }
+
+    /**
+     * 读取文件
+     * @param fileDir 文件路径
+     * @return 读取结果
+     * @author 郭欣光
+     */
+    public static JSONObject readFile(String fileDir) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "读取文件失败！";
+        File file = new File(fileDir);
+        if (file.exists()) {
+            try {
+                BufferedReader bufferedReader = new BufferedReader(new FileReader(fileDir));
+                String temp;
+                String fileContent = "";
+                while ((temp = bufferedReader.readLine()) != null) {
+                    fileContent += temp;
+                    fileContent += "\n";
+                }
+                bufferedReader.close();
+                status = "true";
+                content = fileContent;
+            } catch (Exception e) {
+                content = "读取文件过程中出错！";
+            }
+        } else {
+            content = "改文件不存在！";
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result;
+    }
 }

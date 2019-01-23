@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="cancelUserConfirm">
+    <div id="cancelUserConfirmModel" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="cancelUserConfirmModelLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="cancelUserConfirmModelLabel">确认注销？</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="cancelUserConfirmModelClose"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body" id="cancelUserConfirmModelInfo">
+                    您确定要注销账号吗？注销后您的信息将被删除，您将不能发布以及学习课程
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal">考虑一下</button>
+                    <button class="btn btn-primary" onclick="cancelUser()">狠心离开</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

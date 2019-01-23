@@ -54,4 +54,11 @@ public interface UserService {
      */
     String login(String email, String password, String nextPage, HttpServletRequest request);
 
+    /**
+     * 注销用户
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    String cancel(HttpServletRequest request);
 }

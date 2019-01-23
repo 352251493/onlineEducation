@@ -114,4 +114,18 @@ public class UserDaoImpl implements UserDao {
         int changeCount = jdbcTemplate.update(sql, user.getPassword(), user.getName(), user.getSex(), user.getRole(), user.getHeadImage(), user.getCreateTime(), user.getIsVerification(), user.getEmail());
         return changeCount;
     }
+
+    /**
+     * 删除用户
+     *
+     * @param user 用户信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    @Override
+    public int deleteUser(User user) {
+        String sql = "delete from user where email=?";
+        int changeCount = jdbcTemplate.update(sql, user.getEmail());
+        return changeCount;
+    }
 }

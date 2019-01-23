@@ -1,5 +1,6 @@
 package com.gxg.service.impl;
 
+import com.gxg.dao.MessageDao;
 import com.gxg.dao.UserDao;
 import com.gxg.entities.User;
 import com.gxg.service.MailService;
@@ -54,6 +55,9 @@ public class UserServiceImpl implements UserService {
 
     @Value("${sys.root.url}")
     private String sysRootUrl;
+
+    @Autowired
+    private MessageDao messageDao;
 
     /**
      * 用户注册信息处理
@@ -252,7 +256,7 @@ public class UserServiceImpl implements UserService {
             try {
                 if (userDao.deleteUserByEmail(user.getEmail()) == 0) {
                     System.out.println("ERROR:删除用户" + user.getEmail() + "失败！");
-                    content = "删除失败！";
+                    content = "操作数据库失败！";
                 } else {
                     isDeleteUser = true;
                     status = "true";
@@ -260,12 +264,25 @@ public class UserServiceImpl implements UserService {
                 }
             } catch (Exception e) {
                 System.out.println("ERROR:删除用户" + user.getEmail() + "失败，失败原因：" + e);
-                content = "删除失败，失败原因：" + e;
+                content = "操作数据库失败！";
             }
             if (isDeleteUser) {
-                String headImage = userResourceDir + user.getHeadImage();
-                JSONObject deleteHeadImageResult = FileUtils.deleteFile(headImage);
-                System.out.println("INFO:删除用户时删除头像结果：" + deleteHeadImageResult.toString());
+                //查询是否有未清除的消息进行清除
+                if (messageDao.getCountByEmail(user.getEmail()) != 0) {
+                    try {
+                        if (messageDao.deleteMessageByEmail(user.getEmail()) == 0) {
+                            System.out.println("ERROR:系统在删除用户" + user.getEmail() + "的消息通知时操作数据库失败，改变数据库行数0");
+                        }
+                    } catch (Exception e) {
+                        System.out.println("ERROR:系统在删除用户" + user.getEmail() + "的消息通知时操作数据库失败，失败原因：" + e);
+                    }
+                }
+                String userHeadImageUrl = userResourceDir + user.getHeadImage();
+                if (FileUtils.fileExists(userHeadImageUrl)) {
+                    // 删除用户头像文件
+                    JSONObject deleteHeadImageResult = FileUtils.deleteFile(userHeadImageUrl);
+                    System.out.println("INFO:系统在删除用户" + user.getEmail() + "头像" + userHeadImageUrl + "结果：" + deleteHeadImageResult.toString());
+                }
             }
         }
         result.accumulate("status", status);
@@ -358,5 +375,57 @@ public class UserServiceImpl implements UserService {
         result.accumulate("status", status);
         result.accumulate("content", content);
         return result.toString();
+    }
+
+    /**
+     * 注销用户
+     *
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public String cancel(HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "注销失败！";
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            content = "系统未检测到登录用户，请您刷新页面后重新尝试！";
+        } else {
+            User user = (User)session.getAttribute("user");
+            JSONObject deleteUserResult = deleteUser(user);
+            if ("true".equals(deleteUserResult.getString("status"))) {
+                status = "true";
+                content = "删除成功！";
+                session.setAttribute("user", null);
+                //发送邮件进行通知
+                String emailMessage = createCancelEmailMessage(user);
+                Map<String, Object> model = new HashMap<String, Object>();
+                model.put("time", new Date());
+                model.put("emailMessage", emailMessage);
+                model.put("toUserName", user.getName());
+                model.put("fromUserName", sysName);
+                try {
+                    Template t = configuration.getTemplate("email_html_temp.ftl");
+                    String emailContent = FreeMarkerTemplateUtils.processTemplateIntoString(t, model);
+                    JSONObject sendEmailResult = mailService.sendHtmlMail(user.getEmail(), "感谢您一路的陪伴", emailContent);
+                    System.out.println("INFO:系统在注销用户时为用户" + user.getEmail() + "发送邮件结果：" + sendEmailResult.toString());
+                } catch (Exception e) {
+                    System.out.println("ERROR:系统在注销用户时为用户" + user.getEmail() + "发送邮件失败，失败原因：" + e);
+                }
+            } else {
+                content = deleteUserResult.getString("content");
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
+    }
+
+    private String createCancelEmailMessage(User user) {
+        String message = "<p>感谢您自从" + user.getCreateTime().toString().split("\\.")[0] + "以来对" + sysName + "的陪伴，感谢您对我们的信任，我们会努力发展完善自己，期待与您再次见面。</p>";
+        message += "<p>祝您身体健康，阖家欢乐！</p>";
+        return message;
     }
 }

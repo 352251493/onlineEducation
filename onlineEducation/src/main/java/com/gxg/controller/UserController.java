@@ -98,4 +98,10 @@ public class UserController {
             }
         }
     }
+
+    @PostMapping(value = "/cancel")
+    @ResponseBody
+    public String cancel(HttpServletRequest request) {
+        return userService.cancel(request);
+    }
 }

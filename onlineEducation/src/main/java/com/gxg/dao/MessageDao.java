@@ -64,4 +64,12 @@ public interface MessageDao {
      * @author 郭欣光
      */
     List<Message> getMessageByEmailAndIsReadAndLimit(String email,String isRead, int startLimit, int endLimit);
+
+    /**
+     * 根据邮箱删除消息通知
+     * @param email 邮箱
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    int deleteMessageByEmail(String email);
 }
