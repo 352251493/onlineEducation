@@ -123,4 +123,74 @@ public class MessageDaoImpl implements MessageDao {
         int changeCount = jdbcTemplate.update(sql, email);
         return changeCount;
     }
+
+    /**
+     * 根据ID获取消息数量
+     *
+     * @param id 消息ID
+     * @return 消息数量
+     * @author 郭欣光
+     */
+    @Override
+    public int getCountById(String id) {
+        String sql = "select count(1) from message where id=?";
+        int rowCount = jdbcTemplate.queryForObject(sql, Integer.class, id);
+        return rowCount;
+    }
+
+    /**
+     * 创建消息通知
+     *
+     * @param message 消息通知信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    @Override
+    public int createMessage(Message message) {
+        String sql = "insert into message(id, email, title, content, create_time, is_send, is_read) values(?, ?, ?, ?, ?, ?, ?)";
+        int changeCount = jdbcTemplate.update(sql, message.getId(), message.getEmail(), message.getTitle(), message.getContent(), message.getCreateTime(), message.getIsSend(), message.getIsRead());
+        return changeCount;
+    }
+
+    /**
+     * 根据是否发送查询消息数量
+     *
+     * @param isSend 是否发送
+     * @return 消息数量
+     * @author 郭欣光
+     */
+    @Override
+    public int getCountByIsSend(String isSend) {
+        String sql = "select count(1) from message where is_send=?";
+        int rowCount = jdbcTemplate.queryForObject(sql, Integer.class, isSend);
+        return rowCount;
+    }
+
+    /**
+     * 根据是否发送查询消息
+     *
+     * @param isSend 是否发送
+     * @return 消息列表
+     * @author 郭欣光
+     */
+    @Override
+    public List<Message> getMessageByIsSend(String isSend) {
+        String sql = "select * from message where is_send=?";
+        List<Message> messageList = jdbcTemplate.query(sql, new MessageRowMapper(), isSend);
+        return messageList;
+    }
+
+    /**
+     * 更新消息通知信息
+     *
+     * @param message 消息通知信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    @Override
+    public int updateMessage(Message message) {
+        String sql = "update message set email=?, title=?, content=?, create_time=?, is_send=?, is_read=? where id=?";
+        int changeCount = jdbcTemplate.update(sql, message.getEmail(), message.getTitle(), message.getContent(), message.getCreateTime(), message.getIsSend(), message.getIsRead(), message.getId());
+        return changeCount;
+    }
 }

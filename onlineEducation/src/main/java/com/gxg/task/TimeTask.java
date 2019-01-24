@@ -13,4 +13,9 @@ public interface TimeTask {
      */
     void clearUnauthenticatedUsers();
 
+    /**
+     * 定时发送未发送的消息通知
+     * @author 郭欣光
+     */
+    void sendEmailMessage();
 }

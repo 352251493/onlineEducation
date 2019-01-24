@@ -1,7 +1,10 @@
 package com.gxg.task.impl;
 
+import com.gxg.dao.MessageDao;
 import com.gxg.dao.UserDao;
+import com.gxg.entities.Message;
 import com.gxg.entities.User;
+import com.gxg.service.MessageService;
 import com.gxg.service.UserService;
 import com.gxg.task.TimeTask;
 import org.json.JSONObject;
@@ -29,6 +32,12 @@ public class TimeTaskImpl implements TimeTask {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private MessageDao messageDao;
+
+    @Autowired
+    private MessageService messageService;
 
     /**
      * 定时清除未验证用户
@@ -67,5 +76,31 @@ public class TimeTaskImpl implements TimeTask {
             System.out.println("ERROR:定时任务：定时清除未验证用户出错，错误原因：" + e);
         }
         System.out.println("INFO:定时任务：定时清除未验证用户执行完毕！");
+    }
+
+    /**
+     * 定时发送未发送的消息通知
+     *
+     * @author 郭欣光
+     */
+    @Override
+    @Scheduled(fixedRate = 1000)
+    public void sendEmailMessage() {
+        System.out.println("INFO:定时任务：定时发送未发送的消息通知开始执行...");
+        try {
+            if (messageDao.getCountByIsSend("0") == 0) {
+                System.out.println("INFO:定时任务：定时发送未发送的消息通知：没有查询到未发送的消息通知！");
+            } else {
+                List<Message> messageList = messageDao.getMessageByIsSend("0");
+                for (Message message : messageList) {
+                    System.out.println("INFO:定时任务：定时发送未发送的消息通知：检测到未发送消息通知：" + message.toString());
+                    JSONObject sendMessageResult = messageService.sendMessage(message);
+                    System.out.println("INFO:定时任务：定时发送未发送的消息通知，消息" + message + "发送结果：" + sendMessageResult.toString());
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("ERROR:定时任务：定时发送未发送的消息通知失败，失败原因：" + e);
+        }
+        System.out.println("INFO:定时任务：定时发送未发送的消息通知执行完毕！");
     }
 }

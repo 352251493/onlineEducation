@@ -4,6 +4,7 @@ import com.gxg.dao.MessageDao;
 import com.gxg.dao.UserDao;
 import com.gxg.entities.User;
 import com.gxg.service.MailService;
+import com.gxg.service.MessageService;
 import com.gxg.service.UserService;
 import com.gxg.utils.FileUtils;
 import com.gxg.utils.Md5;
@@ -58,6 +59,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private MessageDao messageDao;
+
+    @Autowired
+    private MessageService messageService;
 
     /**
      * 用户注册信息处理
@@ -317,6 +321,10 @@ public class UserServiceImpl implements UserService {
                         } else {
                             promptTitle = "验证成功";
                             promptMessage = "恭喜您，邮箱" + email + "验证成功！欢迎加入" + sysName + "！";
+                            String messageTitle = "欢迎加入" + sysName;
+                            String messageContent = createVerificationSuccessEmailMessage();
+                            JSONObject createMessageResult = messageService.createMessage(user.getEmail(), messageTitle, messageContent);
+                            System.out.println("INFO:用户" + user.getEmail() + "注册验证时创建消息通知结果：" + createMessageResult.toString());
                         }
                     } catch (Exception e) {
                         System.out.println("ERROR:用户注册验证邮箱时操作数据库错误，错误信息：" + e);
@@ -332,6 +340,12 @@ public class UserServiceImpl implements UserService {
         result.accumulate("promptTitle", promptTitle);
         result.accumulate("promptMessage", promptMessage);
         return result;
+    }
+
+    private String createVerificationSuccessEmailMessage() {
+        String message = "<p>欢迎加入" + sysName + "，感谢您对我们的信赖与支持，茫茫人海我们相遇，感谢您的选择，我们将竭诚为您服务。</p>";
+        message += "<p>祝您在" + sysName + "学习进步！</p>";
+        return message;
     }
 
     /**

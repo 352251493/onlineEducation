@@ -30,4 +30,22 @@ public interface MessageService {
      * @author 郭欣光
      */
     JSONObject getMessageList(User user, String messageType, String messagePage);
+
+    /**
+     * 创建消息通知
+     * @param email 邮箱
+     * @param title 标题
+     * @param messageContent 内容
+     * @return 结果
+     * @author 郭欣光
+     */
+    JSONObject createMessage(String email, String title, String messageContent);
+
+    /**
+     * 发送消息
+     * @param message 消息信息
+     * @return 发送结果
+     * @author 郭欣光
+     */
+    JSONObject sendMessage(Message message);
 }

@@ -88,7 +88,7 @@ public class UserController {
                     model.addAttribute("messageNextPage", messageNextPage);
                 }
                 if ("true".equals(messageListInfo.getString("hasMessage"))) {
-                    model.addAttribute("messageList", messageListInfo.getJSONArray("messageList"));
+                    model.addAttribute("messageList", messageListInfo.get("messageList"));
                 }
                 int unReadMessageCount = messageService.getUnreadMessageCount(user);
                 model.addAttribute("unReadMessageCount", unReadMessageCount);

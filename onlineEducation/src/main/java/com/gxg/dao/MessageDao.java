@@ -72,4 +72,44 @@ public interface MessageDao {
      * @author 郭欣光
      */
     int deleteMessageByEmail(String email);
+
+    /**
+     * 根据ID获取消息数量
+     * @param id 消息ID
+     * @return 消息数量
+     * @author 郭欣光
+     */
+    int getCountById(String id);
+
+    /**
+     * 创建消息通知
+     * @param message 消息通知信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    int createMessage(Message message);
+
+    /**
+     * 根据是否发送查询消息数量
+     * @param isSend 是否发送
+     * @return 消息数量
+     * @author 郭欣光
+     */
+    int getCountByIsSend(String isSend);
+
+    /**
+     * 根据是否发送查询消息
+     * @param isSend 是否发送
+     * @return 消息列表
+     * @author 郭欣光
+     */
+    List<Message> getMessageByIsSend(String isSend);
+
+    /**
+     * 更新消息通知信息
+     * @param message 消息通知信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    int updateMessage(Message message);
 }

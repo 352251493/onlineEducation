@@ -76,7 +76,7 @@
 							<div class="row bg-white has-shadow">
 							  <div class="left-col col-lg-6 d-flex align-items-center justify-content-between">
 								<div class="project-title d-flex align-items-center">
-								  <span class="badge bg-red" th:if="${message.is_read} eq '0'">未读</span><span class="badge bg-green" th:if="${message.is_read} eq '1'">已读</span>&nbsp;&nbsp;&nbsp;&nbsp;
+								  <span class="badge bg-red" th:if="${message.isRead} eq '0'">未读</span><span class="badge bg-green" th:if="${message.isRead} eq '1'">已读</span>&nbsp;&nbsp;&nbsp;&nbsp;
 								  <div class="text">
 									<h3 class="h4" th:text="${message.title}"></h3>
 								  </div>
