@@ -85,7 +85,7 @@
 							  </div>
 							  <div class="col-lg-6">
 								  <div class="pull-right">
-									<button type="button" class="btn btn-primary">查看</button>
+									<button type="button" class="btn btn-primary" th:onclick="openMessageDetail([[${message.id}]]);">查看</button>
 									<button type="button" class="btn btn-danger">删除</button>
 								  </div>
 							  </div>
@@ -189,5 +189,10 @@
 
     <script src="/my/js/utils.js"></script>
     <script src="/user_static/my/js/user.js"></script>
+    <script>
+        function openMessageDetail(messageId) {
+            window.location.href = "/user/message/detail/" + messageId;
+        }
+    </script>
   </body>
 </html>

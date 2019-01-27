@@ -193,4 +193,18 @@ public class MessageDaoImpl implements MessageDao {
         int changeCount = jdbcTemplate.update(sql, message.getEmail(), message.getTitle(), message.getContent(), message.getCreateTime(), message.getIsSend(), message.getIsRead(), message.getId());
         return changeCount;
     }
+
+    /**
+     * 根据ID获得消息通知
+     *
+     * @param id ID
+     * @return 消息通知信息
+     * @author 郭欣光
+     */
+    @Override
+    public Message getMessageById(String id) {
+        String sql = "select * from message where id=?";
+        Message message = jdbcTemplate.queryForObject(sql, new MessageRowMapper(), id);
+        return message;
+    }
 }

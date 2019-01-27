@@ -112,4 +112,12 @@ public interface MessageDao {
      * @author 郭欣光
      */
     int updateMessage(Message message);
+
+    /**
+     * 根据ID获得消息通知
+     * @param id ID
+     * @return 消息通知信息
+     * @author 郭欣光
+     */
+    Message getMessageById(String id);
 }

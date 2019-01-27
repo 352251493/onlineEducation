@@ -48,4 +48,12 @@ public interface MessageService {
      * @author 郭欣光
      */
     JSONObject sendMessage(Message message);
+
+    /**
+     * 获取消息信息
+     * @param messageId 消息通知ID
+     * @return 消息通知信息
+     * @author 郭欣光
+     */
+    Message messageDetail(String messageId);
 }

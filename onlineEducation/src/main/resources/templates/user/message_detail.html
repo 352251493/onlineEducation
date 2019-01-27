@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>智学新知 - 消息通知</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="all,follow">
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="/user_static/vendor/bootstrap/css/bootstrap.min.css">
+    <!-- Font Awesome CSS-->
+    <link rel="stylesheet" href="/user_static/vendor/font-awesome/css/font-awesome.min.css">
+    <!-- Fontastic Custom icon font-->
+    <link rel="stylesheet" href="/user_static/css/fontastic.css">
+    <!-- Google fonts - Poppins -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,700">
+    <!-- theme stylesheet-->
+    <link rel="stylesheet" href="/user_static/css/style.default.css" id="theme-stylesheet">
+    <!-- Custom stylesheet - for your changes-->
+    <link rel="stylesheet" href="/user_static/css/custom.css">
+      <!-- Favicon-->
+      <link rel="icon" href="/img/core-img/logo_ico.png">
+    <!-- Tweaks for older IEs--><!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+  </head>
+  <body>
+    <div class="page">
+      <!-- Main Navbar-->
+      <header class="header" th:include="/html_templates/user/header.html :: header"></header>
+      <div class="page-content d-flex align-items-stretch"> 
+        <!-- Side Navbar -->
+        <nav class="side-navbar" th:include="/html_templates/user/menu.html :: menu"></nav>
+        <div class="content-inner">
+          <!-- Page Header-->
+          <header class="page-header">
+            <div class="container-fluid">
+              <h2 class="no-margin-bottom">消息通知</h2>
+            </div>
+          </header>
+          <!-- Breadcrumb-->
+          <div class="breadcrumb-holder container-fluid">
+              <ul class="breadcrumb">
+                  <li class="breadcrumb-item active"><a href='javascript:history.go(-1)'>返回</a></li>
+              </ul>
+          </div>
+          <section class="tables">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="card">
+                    <div class="card-header d-flex align-items-center">
+                      <h3 class="h4" th:text="${message.title}">--</h3>
+                    </div>
+                    <div class="card-body">
+					  <div class="col-lg-12">
+                        <div  th:utext="${message.content}">
+                        </div>
+                        <br/>
+                        <div th:text="${#strings.substringBefore(message.createTime, '.')}"></div>
+					  </div>
+                      <div class="col-lg-12">
+                        <div class="pull-right">
+                          <button type="button" class="btn btn-danger">删除</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <!-- Page Footer-->
+          <footer class="main-footer" th:include="/html_templates/user/footer.html :: footer"></footer>
+        </div>
+      </div>
+    </div>
+
+    <!-- 信息提示框 -->
+    <div th:include="/html_templates/alert_info.html :: alert"></div>
+    <!-- 等待框 -->
+    <div th:include="/html_templates/loading.html :: loading"></div>
+    <!-- 注销确认框 -->
+    <div th:include="/html_templates/confirm_modal.html :: cancelUserConfirm"></div>
+    <!-- JavaScript files-->
+    <script src="/user_static/vendor/jquery/jquery.min.js"></script>
+    <script src="/user_static/vendor/popper.js/umd/popper.min.js"> </script>
+    <script src="/user_static/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/user_static/vendor/jquery.cookie/jquery.cookie.js"> </script>
+    <script src="/user_static/vendor/chart.js/Chart.min.js"></script>
+    <script src="/user_static/vendor/jquery-validation/jquery.validate.min.js"></script>
+    <!-- Main File-->
+    <script src="/user_static/js/front.js"></script>
+
+    <script src="/my/js/utils.js"></script>
+    <script src="/user_static/my/js/user.js"></script>
+  </body>
+</html>

@@ -90,9 +90,7 @@ public class UserController {
                 if ("true".equals(messageListInfo.getString("hasMessage"))) {
                     model.addAttribute("messageList", messageListInfo.get("messageList"));
                 }
-                int unReadMessageCount = messageService.getUnreadMessageCount(user);
-                model.addAttribute("unReadMessageCount", unReadMessageCount);
-                model.addAttribute("user", user);
+                model = messageCommonModel(model, user);
                 model.addAttribute("mesageType", messagePage);
                 return "/user/message.html";
             }
@@ -103,5 +101,32 @@ public class UserController {
     @ResponseBody
     public String cancel(HttpServletRequest request) {
         return userService.cancel(request);
+    }
+
+    @GetMapping(value = "/message/detail/{messageId}")
+    public String messageDetail(@PathVariable String messageId, HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            return "redirect:/user/login?next=" + "/user/message/detail/" + messageId;
+        } else {
+            User user = (User)session.getAttribute("user");
+            Message message = messageService.messageDetail(messageId);
+            if (message == null || message.getEmail() == null || !message.getEmail().equals(user.getEmail())) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "糟糕，该页面好像不存在！");
+                return "/prompt/prompt.html";
+            } else {
+                model = messageCommonModel(model, user);
+                model.addAttribute("message", message);
+                return "/user/message_detail.html";
+            }
+        }
+    }
+
+    private Model messageCommonModel(Model model, User user) {
+        model.addAttribute("user", user);
+        int unReadMessageCount = messageService.getUnreadMessageCount(user);
+        model.addAttribute("unReadMessageCount", unReadMessageCount);
+        return model;
     }
 }

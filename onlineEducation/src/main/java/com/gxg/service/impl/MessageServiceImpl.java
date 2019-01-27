@@ -236,4 +236,31 @@ public class MessageServiceImpl implements MessageService {
         result.accumulate("content", content);
         return result;
     }
+
+    /**
+     * 获取消息信息
+     *
+     * @param messageId 消息通知ID
+     * @return 消息通知信息
+     * @author 郭欣光
+     */
+    @Override
+    public Message messageDetail(String messageId) {
+        if (messageDao.getCountById(messageId) == 0) {
+            return null;
+        } else {
+            Message message = messageDao.getMessageById(messageId);
+            if ("0".equals(message.getIsRead())) {
+                message.setIsRead("1");
+                try {
+                    if (messageDao.updateMessage(message) == 0) {
+                        System.out.println("ERROR:将消息" + message + "设置为已读时出错！");
+                    }
+                } catch (Exception e) {
+                    System.out.println("ERROR:将消息" + message + "设置为已读时出错，错误原因：" + e);
+                }
+            }
+            return message;
+        }
+    }
 }
