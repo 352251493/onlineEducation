@@ -86,7 +86,7 @@
 							  <div class="col-lg-6">
 								  <div class="pull-right">
 									<button type="button" class="btn btn-primary" th:onclick="openMessageDetail([[${message.id}]]);">查看</button>
-									<button type="button" class="btn btn-danger">删除</button>
+									<button type="button" class="btn btn-danger" th:onclick="openDeleteMessageConfirmModel([[${message.id}]]);">删除</button>
 								  </div>
 							  </div>
 							</div>
@@ -177,6 +177,8 @@
     <div th:include="/html_templates/loading.html :: loading"></div>
     <!-- 注销确认框 -->
     <div th:include="/html_templates/confirm_modal.html :: cancelUserConfirm"></div>
+    <!-- 删除消息确认框 -->
+    <div th:include="/html_templates/confirm_modal.html :: deleteMessageConfirm"></div>
     <!-- JavaScript files-->
     <script src="/user_static/vendor/jquery/jquery.min.js"></script>
     <script src="/user_static/vendor/popper.js/umd/popper.min.js"> </script>
@@ -194,5 +196,6 @@
             window.location.href = "/user/message/detail/" + messageId;
         }
     </script>
+    <script src="/user_static/my/js/message.js"></script>
   </body>
 </html>

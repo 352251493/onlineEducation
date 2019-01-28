@@ -120,4 +120,12 @@ public interface MessageDao {
      * @author 郭欣光
      */
     Message getMessageById(String id);
+
+    /**
+     * 删除消息通知
+     * @param message 消息通知信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    int deleteMessage(Message message);
 }

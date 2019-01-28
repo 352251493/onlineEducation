@@ -20,5 +20,25 @@
         </div>
     </div>
 </div>
+
+<div th:fragment="deleteMessageConfirm">
+    <div id="deleteMessageConfirmModel" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="deleteMessageConfirmModelLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="deleteMessageConfirmModelLabel">确认删除？</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="deleteMessageConfirmModelClose"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body" id="deleteMessageConfirmModelInfo">
+                    您确定要删除该消息通知吗？一经删除无法恢复
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal">取消</button>
+                    <button class="btn btn-primary" onclick="deleteMessage()">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

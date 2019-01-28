@@ -437,9 +437,179 @@ public class UserServiceImpl implements UserService {
         return result.toString();
     }
 
+    /**
+     * 退出登录
+     *
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public String logout(HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "退出失败！";
+        HttpSession session = request.getSession();
+        session.setAttribute("user", null);
+        content = "退出成功！";
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
+    }
+
     private String createCancelEmailMessage(User user) {
         String message = "<p>感谢您自从" + user.getCreateTime().toString().split("\\.")[0] + "以来对" + sysName + "的陪伴，感谢您对我们的信任，我们会努力发展完善自己，期待与您再次见面。</p>";
         message += "<p>祝您身体健康，阖家欢乐！</p>";
+        return message;
+    }
+
+    /**
+     * 用户发起重置密码请求，向用户发送重置密码邮箱确认
+     *
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public String sendResetPasswordEmail(HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "系统出错！";
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            content = "系统未检测到登录用户，请刷新后尝试！";
+        } else {
+            User user = (User)session.getAttribute("user");
+            String emailMessage = createUserResetPasswordEmailMessage(user);
+            Map<String, Object> model = new HashMap<String, Object>();
+            model.put("time", new Date());
+            model.put("emailMessage", emailMessage);
+            model.put("toUserName", user.getName());
+            model.put("fromUserName", sysName);
+            try {
+                Template t = configuration.getTemplate("email_html_temp.ftl");
+                String emailContent = FreeMarkerTemplateUtils.processTemplateIntoString(t, model);
+                JSONObject sendEmailResult = mailService.sendHtmlMail(user.getEmail(), "重置密码邮箱验证", emailContent);
+                if ("true".equals(sendEmailResult.getString("status"))) {
+                    status = "true";
+                    content = "为了您的信息安全，已将验证信息发送至您的邮箱，请前往邮箱进行确认！";
+                } else {
+                    System.out.println("ERROR:用户请求修改密码时发送邮件失败！");
+                    content = "系统向邮箱中发送验证信息失败，请您稍后再次尝试！";
+                }
+            } catch (Exception e) {
+                System.out.println("ERROR:用户请求修改密码时发送邮件失败，失败原因：" + e);
+                content = "系统向邮箱中发送验证信息失败，请您稍后再次尝试！";
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
+    }
+
+    private String createUserResetPasswordEmailMessage(User user) {
+        String message;
+        message = "<p>您的" + sysName + "账号：" + user.getEmail() + " 正在申请重置密码，为了您的账号安全，请您点击以下链接进行确认。<a href='" + sysRootUrl + "user/password/reset/" + user.getEmail() + "/" + resetPasswordRule(user) + "/'>" + sysRootUrl + "user/password/reset/" + user.getEmail() + "/" + resetPasswordRule(user) + "/ </a></p>";
+        message += "<p style='color:red'>该链接打死都不能告诉别人哦~</p>";
+        message += "祝您身体健康，阖家欢乐！";
+        return message;
+    }
+
+    private String resetPasswordRule(User user) {
+        String rule = Md5.md5(user.getEmail()) + Md5.md5(user.toString()) + Md5.md5(user.getPassword());
+        rule = Md5.md5(rule);
+        return rule;
+    }
+
+    /**
+     * 重回密码邮箱验证
+     *
+     * @param email   邮箱
+     * @param rule    验证规则
+     * @param request 用户请求信息
+     * @return 验证结果
+     * @author 郭欣光
+     */
+    @Override
+    public JSONObject resetPasswordVerification(String email, String rule, HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "重置密码验证失败，请查看您的邮箱确认您的链接是否正确";
+        if (userDao.getUserCountByEmail(email) == 0) {
+            content = "重置密码验证失败，该用户不存在，请查看您的邮箱确认您的链接是否正确";
+        } else {
+            User user = userDao.getUserByEmail(email);
+            if (resetPasswordRule(user).equals(rule)) {
+                HttpSession session = request.getSession();
+                session.setAttribute("user", user);
+                status = "true";
+                content = "验证成功！";
+            } else {
+                content = "重置密码验证失败，请查看您的邮箱确认您的链接是否正确";
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result;
+    }
+
+    /**
+     * 用户重置密码
+     *
+     * @param password   密码
+     * @param repassword 确认面膜
+     * @param request    用户请求信息
+     * @return 重置结果
+     * @author 郭欣光
+     */
+    @Override
+    public String resetPassword(String password, String repassword, HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "重置密码失败！";
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            content = "系统未检测到用户信息，请刷新页面后重试！";
+        } else {
+            User user = (User)session.getAttribute("user");
+            if (StringUtils.isEmpty(password)) {
+                content = "请输入密码！";
+            } else if (!password.equals(repassword)) {
+                content = "两次密码不一致！";
+            } else {
+                user.setPassword(Md5.md5(password));
+                try {
+                    if (userDao.updateUser(user) == 0) {
+                        System.out.println("ERROR:用户：" + user.getEmail() + "重置密码时操作数据库失败！");
+                        content = "操作数据库失败！";
+                    } else {
+                        session.setAttribute("user", null);
+                        status = "true";
+                        content = "重置密码成功！";
+                    }
+                } catch (Exception e) {
+                    System.out.println("ERROR:用户" + user.getEmail() + "重置密码时操作数据库失败，失败原因：" + e);
+                    content = "操作数据库失败！";
+                }
+            }
+            if ("true".equals(status)) {
+                String messageTitle = "重置密码提醒";
+                String messageContent = createResetPasswordSuccessMessage(user);
+                JSONObject createMessageResult = messageService.createMessage(user.getEmail(), messageTitle, messageContent);
+                System.out.println("INFO:用户" + user.getEmail() + "重置密码时创建消息通知结果：" + createMessageResult.toString());
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
+    }
+
+    private String createResetPasswordSuccessMessage(User user) {
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        String timeString = time.toString().split("\\.")[0];
+        String message;
+        message = "<p>您的" + sysName + "账号：" + user.getEmail() + " 在" + timeString + "进行了密码重置。</p>";
+        message += "祝您身体健康，阖家欢乐！";
         return message;
     }
 }

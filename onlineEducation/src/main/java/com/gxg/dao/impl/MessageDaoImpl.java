@@ -88,7 +88,7 @@ public class MessageDaoImpl implements MessageDao {
      */
     @Override
     public List<Message> getMessageByEmailAndLimit(String email, int startLimit, int endLimit) {
-        String sql = "select * from message where email=? limit ?, ?";
+        String sql = "select * from message where email=? order by create_time desc limit ?, ?";
         List<Message> messageList = jdbcTemplate.query(sql, new MessageRowMapper(), email, startLimit, endLimit);
         return messageList;
     }
@@ -105,7 +105,7 @@ public class MessageDaoImpl implements MessageDao {
      */
     @Override
     public List<Message> getMessageByEmailAndIsReadAndLimit(String email, String isRead, int startLimit, int endLimit) {
-        String sql = "select * from message where email=? and is_read=? limit ?, ?";
+        String sql = "select * from message where email=? and is_read=? order by create_time desc limit ?, ?";
         List<Message> messageList = jdbcTemplate.query(sql, new MessageRowMapper(), email, isRead, startLimit, endLimit);
         return messageList;
     }
@@ -206,5 +206,19 @@ public class MessageDaoImpl implements MessageDao {
         String sql = "select * from message where id=?";
         Message message = jdbcTemplate.queryForObject(sql, new MessageRowMapper(), id);
         return message;
+    }
+
+    /**
+     * 删除消息通知
+     *
+     * @param message 消息通知信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    @Override
+    public int deleteMessage(Message message) {
+        String sql = "delete from message where id=?";
+        int changeCount = jdbcTemplate.update(sql, message.getId());
+        return changeCount;
     }
 }

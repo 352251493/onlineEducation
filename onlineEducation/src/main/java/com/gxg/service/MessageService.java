@@ -4,6 +4,7 @@ import com.gxg.entities.Message;
 import com.gxg.entities.User;
 import org.json.JSONObject;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -56,4 +57,13 @@ public interface MessageService {
      * @author 郭欣光
      */
     Message messageDetail(String messageId);
+
+    /**
+     * 删除消息通知
+     * @param messageId 消息通知ID
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    String deleteMessage(String messageId, HttpServletRequest request);
 }

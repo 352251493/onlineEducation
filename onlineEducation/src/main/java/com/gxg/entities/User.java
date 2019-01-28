@@ -88,4 +88,18 @@ public class User {
     public void setIsVerification(String isVerification) {
         this.isVerification = isVerification;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", sex='" + sex + '\'' +
+                ", role='" + role + '\'' +
+                ", headImage='" + headImage + '\'' +
+                ", createTime=" + createTime +
+                ", isVerification='" + isVerification + '\'' +
+                '}';
+    }
 }

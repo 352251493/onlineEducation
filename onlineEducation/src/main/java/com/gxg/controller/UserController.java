@@ -31,9 +31,13 @@ public class UserController {
     private MessageService messageService;
 
     @GetMapping(value = "/login")
-    public String getLoginPage(@RequestParam(required = false) String next, Model model) {
+    public String getLoginPage(@RequestParam(required = false) String next, Model model, HttpServletRequest request) {
         if (next == null) {
             next = "/";
+        }
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") != null) {
+            return "redirect:" + next;
         }
         model.addAttribute("nextPage", next);
         return "/user/login.html";
@@ -121,6 +125,42 @@ public class UserController {
                 return "/user/message_detail.html";
             }
         }
+    }
+
+    @PostMapping(value = "/message/delete")
+    @ResponseBody
+    public String messageDelete(@RequestParam String messageId, HttpServletRequest request) {
+        return messageService.deleteMessage(messageId, request);
+    }
+
+    @PostMapping(value = "/logout")
+    @ResponseBody
+    public String logout(HttpServletRequest request) {
+        return userService.logout(request);
+    }
+
+    @PostMapping(value = "/password/reset")
+    @ResponseBody
+    public String resetPassword(HttpServletRequest request) {
+        return userService.sendResetPasswordEmail(request);
+    }
+
+    @GetMapping(value = "/password/reset/{email}/{rule}")
+    public String resetPasswordPage(@PathVariable String email, @PathVariable String rule, HttpServletRequest request, Model model) {
+        JSONObject resetPasswordVerificationResult = userService.resetPasswordVerification(email, rule, request);
+        if (resetPasswordVerificationResult.getString("status").equals("true")) {
+            return "/user/reset_password.html";
+        } else {
+            model.addAttribute("promptTitle", "出...出错啦");
+            model.addAttribute("promptMessage", resetPasswordVerificationResult.getString("content"));
+            return "/prompt/prompt.html";
+        }
+    }
+
+    @PostMapping(value = "/password/reset/submit")
+    @ResponseBody
+    public String resetPassword(@RequestParam String password, @RequestParam String repassword, HttpServletRequest request) {
+        return userService.resetPassword(password, repassword, request);
     }
 
     private Model messageCommonModel(Model model, User user) {

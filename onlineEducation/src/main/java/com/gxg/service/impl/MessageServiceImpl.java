@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -262,5 +264,50 @@ public class MessageServiceImpl implements MessageService {
             }
             return message;
         }
+    }
+
+    /**
+     * 删除消息通知
+     *
+     * @param messageId 消息通知ID
+     * @param request   用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public String deleteMessage(String messageId, HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "删除失败！";
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            content = "系统检测到用户未登录，刷新页面后重试！";
+        } else {
+            User user = (User)session.getAttribute("user");
+            if (messageDao.getCountById(messageId) == 0) {
+                content = "该消息通知不存在！";
+            } else {
+                Message message = messageDao.getMessageById(messageId);
+                if (message.getEmail() == null || !message.getEmail().equals(user.getEmail())) {
+                    content = "不能删除其他用户的消息通知！";
+                } else {
+                    try {
+                        if (messageDao.deleteMessage(message) == 0) {
+                            System.out.println("ERROR:删除消息通知" + message.toString() + "时操作数据库出错");
+                            content = "操作数据库出错！";
+                        } else {
+                            status = "true";
+                            content = "删除成功！";
+                        }
+                    } catch (Exception e) {
+                        System.out.println("ERROR:删除消息通知" + message.toString() + "时操作数据库出错，错误原因：" + e);
+                        content = "操作数据库出错！";
+                    }
+                }
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
     }
 }

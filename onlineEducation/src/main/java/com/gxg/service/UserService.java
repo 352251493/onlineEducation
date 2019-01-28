@@ -61,4 +61,40 @@ public interface UserService {
      * @author 郭欣光
      */
     String cancel(HttpServletRequest request);
+
+    /**
+     * 退出登录
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    String logout(HttpServletRequest request);
+
+    /**
+     * 用户发起重置密码请求，向用户发送重置密码邮箱确认
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    String sendResetPasswordEmail(HttpServletRequest request);
+
+    /**
+     * 重回密码邮箱验证
+     * @param email 邮箱
+     * @param rule 验证规则
+     * @param request 用户请求信息
+     * @return 验证结果
+     * @author 郭欣光
+     */
+    JSONObject resetPasswordVerification(String email, String rule, HttpServletRequest request);
+
+    /**
+     * 用户重置密码
+     * @param password 密码
+     * @param repassword 确认面膜
+     * @param request 用户请求信息
+     * @return 重置结果
+     * @author 郭欣光
+     */
+    String resetPassword(String password, String repassword, HttpServletRequest request);
 }
