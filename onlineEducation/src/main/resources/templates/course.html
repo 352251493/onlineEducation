@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <!-- Title -->
+    <title>智学新知 - 让教育更智能，让学习更有趣</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="/img/core-img/logo_ico.png">
+
+    <!-- Core Stylesheet -->
+    <link rel="stylesheet" href="/style.css">
+
+	<link rel="stylesheet" href="/my/css/course.css">
+
+</head>
+
+<body>
+    <!-- ##### Preloader ##### -->
+    <div id="preloader">
+        <i class="circle-preloader"></i>
+    </div>
+
+    <!-- ##### Header Area Start ##### -->
+    <header class="header-area" th:include="/html_templates/header.html :: header"></header>
+    <!-- ##### Header Area End ##### -->
+
+    <!-- ##### Breadcumb Area Start ##### -->
+    <div class="breadcumb-area bg-img" style="background-image: url(/img/bg-img/breadcumb.jpg);">
+        <div class="bradcumbContent">
+            <h2>在线课程</h2>
+        </div>
+    </div>
+    <!-- ##### Breadcumb Area End ##### -->
+
+    <!-- ##### Top Popular Courses Area Start ##### -->
+    <div class="top-popular-courses-area mt-50 section-padding-100-70">
+        <div class="container">
+			<div class="row">
+				<div class="col-12">
+					<div class="pull-right">
+						<div class="input-group">
+						  <input type="text" class="form-control" placeholder="输入课程名称或教师名">
+						  <span class="input-group-btn">
+							<button class="btn btn-default" type="button">查找</button>
+						  </span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<br/>
+			<br/>
+            <div class="row">
+                <div class="col-12 col-lg-12" th:if="${courseList} == null">
+                    <h4 class="text-center">这里空空如也~</h4>
+                </div>
+                <!-- Single Top Popular Course -->
+                <div class="col-12 col-lg-6" th:if="${courseList} != null" th:each="course : ${courseList}">
+                    <div class="single-top-popular-course d-flex align-items-center flex-wrap mb-30 wow fadeInUp" data-wow-delay="400ms">
+                        <div class="popular-course-content">
+                            <h5 th:text="${course.name}">--</h5>
+                            <span><span th:text="${course.userName}">--</span>   |  最近修改：<span th:text="${#strings.substringBefore(course.modifyTime, '.')}">--</span></span>
+                            <div class="course-ratings">
+								学习人数：<span th:text="${course.studyNumber}">--</span>人
+                            </div>
+                            <p th:text="${#strings.abbreviate(course.introduction,50)}">---</p>
+                            <a href="#" class="btn academy-btn btn-sm">立即学习</a>
+                        </div>
+                        <div class="popular-course-thumb bg-img"><img class="gxg-course-style" th:src="'/course_resource/' + ${course.image}" width="100%"></div>
+                    </div>
+                </div>
+
+                <!-- Single Top Popular Course -->
+                <!--<div class="col-12 col-lg-6">-->
+                    <!--<div class="single-top-popular-course d-flex align-items-center flex-wrap mb-30 wow fadeInUp" data-wow-delay="500ms">-->
+                        <!--<div class="popular-course-content">-->
+                            <!--<h5>Advanced HTML5</h5>-->
+                            <!--<span>By Simon Smith   |  March 18, 2018</span>-->
+                            <!--<div class="course-ratings">-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star-o" aria-hidden="true"></i>-->
+                            <!--</div>-->
+                            <!--<p>Cras vitae turpis lacinia, lacinia lacus non, fermentum nisi. Donec et sollicitudin est, in euismod.</p>-->
+                            <!--<a href="#" class="btn academy-btn btn-sm">See More</a>-->
+                        <!--</div>-->
+                        <!--<div class="popular-course-thumb bg-img"><img class="gxg-course-style" src="/img/bg-img/pc-2.jpg" width="100%"></div>-->
+                    <!--</div>-->
+                <!--</div>-->
+
+                <!-- Single Top Popular Course -->
+                <!--<div class="col-12 col-lg-6">-->
+                    <!--<div class="single-top-popular-course d-flex align-items-center flex-wrap mb-30 wow fadeInUp" data-wow-delay="600ms">-->
+                        <!--<div class="popular-course-content">-->
+                            <!--<h5>Marketing 101</h5>-->
+                            <!--<span>By Simon Smith   |  March 18, 2018</span>-->
+                            <!--<div class="course-ratings">-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star-o" aria-hidden="true"></i>-->
+                            <!--</div>-->
+                            <!--<p>Cras vitae turpis lacinia, lacinia lacus non, fermentum nisi. Donec et sollicitudin est, in euismod.</p>-->
+                            <!--<a href="#" class="btn academy-btn btn-sm">See More</a>-->
+                        <!--</div>-->
+                        <!--<div class="popular-course-thumb bg-img"><img class="gxg-course-style" src="/img/bg-img/pc-3.jpg" width="100%"></div>-->
+                    <!--</div>-->
+                <!--</div>-->
+
+                <!-- Single Top Popular Course -->
+                <!--<div class="col-12 col-lg-6">-->
+                    <!--<div class="single-top-popular-course d-flex align-items-center flex-wrap mb-30 wow fadeInUp" data-wow-delay="700ms">-->
+                        <!--<div class="popular-course-content">-->
+                            <!--<h5>Business for begginers</h5>-->
+                            <!--<span>By Simon Smith   |  March 18, 2018</span>-->
+                            <!--<div class="course-ratings">-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star-o" aria-hidden="true"></i>-->
+                            <!--</div>-->
+                            <!--<p>Cras vitae turpis lacinia, lacinia lacus non, fermentum nisi. Donec et sollicitudin est, in euismod.</p>-->
+                            <!--<a href="#" class="btn academy-btn btn-sm">See More</a>-->
+                        <!--</div>-->
+                        <!--<div class="popular-course-thumb bg-img"><img class="gxg-course-style" src="/img/bg-img/pc-4.jpg" width="100%"></div>-->
+                    <!--</div>-->
+                <!--</div>-->
+
+                <!-- Single Top Popular Course -->
+                <!--<div class="col-12 col-lg-6">-->
+                    <!--<div class="single-top-popular-course d-flex align-items-center flex-wrap mb-30 wow fadeInUp" data-wow-delay="800ms">-->
+                        <!--<div class="popular-course-content">-->
+                            <!--<h5>Marketing 101</h5>-->
+                            <!--<span>By Simon Smith   |  March 18, 2018</span>-->
+                            <!--<div class="course-ratings">-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star-o" aria-hidden="true"></i>-->
+                            <!--</div>-->
+                            <!--<p>Cras vitae turpis lacinia, lacinia lacus non, fermentum nisi. Donec et sollicitudin est, in euismod.</p>-->
+                            <!--<a href="#" class="btn academy-btn btn-sm">See More</a>-->
+                        <!--</div>-->
+                        <!--<div class="popular-course-thumb bg-img"><img class="gxg-course-style" src="/img/bg-img/pc-5.jpg" width="100%"></div>-->
+                    <!--</div>-->
+                <!--</div>-->
+
+                <!-- Single Top Popular Course -->
+                <!--<div class="col-12 col-lg-6">-->
+                    <!--<div class="single-top-popular-course d-flex align-items-center flex-wrap mb-30 wow fadeInUp" data-wow-delay="900ms">-->
+                        <!--<div class="popular-course-content">-->
+                            <!--<h5>Business for begginers</h5>-->
+                            <!--<span>By Simon Smith   |  March 18, 2018</span>-->
+                            <!--<div class="course-ratings">-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star-o" aria-hidden="true"></i>-->
+                            <!--</div>-->
+                            <!--<p>Cras vitae turpis lacinia, lacinia lacus non, fermentum nisi. Donec et sollicitudin est, in euismod.</p>-->
+                            <!--<a href="#" class="btn academy-btn btn-sm">See More</a>-->
+                        <!--</div>-->
+                        <!--<div class="popular-course-thumb bg-img" ><img class="gxg-course-style" src="/img/bg-img/pc-6.jpg" width="100%"></div>-->
+                    <!--</div>-->
+                <!--</div>-->
+
+				<!-- Single Top Popular Course -->
+                <!--<div class="col-12 col-lg-6">-->
+                    <!--<div class="single-top-popular-course d-flex align-items-center flex-wrap mb-30 wow fadeInUp" data-wow-delay="900ms">-->
+                        <!--<div class="popular-course-content">-->
+                            <!--<h5>Business for begginers</h5>-->
+                            <!--<span>By Simon Smith   |  March 18, 2018</span>-->
+                            <!--<div class="course-ratings">-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star-o" aria-hidden="true"></i>-->
+                            <!--</div>-->
+                            <!--<p>Cras vitae turpis lacinia, lacinia lacus non, fermentum nisi. Donec et sollicitudin est, in euismod.</p>-->
+                            <!--<a href="#" class="btn academy-btn btn-sm">See More</a>-->
+                        <!--</div>-->
+                        <!--<div class="popular-course-thumb bg-img" ><img class="gxg-course-style" src="/img/bg-img/pc-6.jpg" width="100%"></div>-->
+                    <!--</div>-->
+                <!--</div>-->
+
+				<!-- Single Top Popular Course -->
+                <!--<div class="col-12 col-lg-6">-->
+                    <!--<div class="single-top-popular-course d-flex align-items-center flex-wrap mb-30 wow fadeInUp" data-wow-delay="900ms">-->
+                        <!--<div class="popular-course-content">-->
+                            <!--<h5>Business for begginers</h5>-->
+                            <!--<span>By Simon Smith   |  March 18, 2018</span>-->
+                            <!--<div class="course-ratings">-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star-o" aria-hidden="true"></i>-->
+                            <!--</div>-->
+                            <!--<p>Cras vitae turpis lacinia, lacinia lacus non, fermentum nisi. Donec et sollicitudin est, in euismod.</p>-->
+                            <!--<a href="#" class="btn academy-btn btn-sm">See More</a>-->
+                        <!--</div>-->
+                        <!--<div class="popular-course-thumb bg-img" ><img class="gxg-course-style" src="/img/bg-img/pc-6.jpg" width="100%"></div>-->
+                    <!--</div>-->
+                <!--</div>-->
+
+				<!-- Single Top Popular Course -->
+                <!--<div class="col-12 col-lg-6">-->
+                    <!--<div class="single-top-popular-course d-flex align-items-center flex-wrap mb-30 wow fadeInUp" data-wow-delay="900ms">-->
+                        <!--<div class="popular-course-content">-->
+                            <!--<h5>Business for begginers</h5>-->
+                            <!--<span>By Simon Smith   |  March 18, 2018</span>-->
+                            <!--<div class="course-ratings">-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star-o" aria-hidden="true"></i>-->
+                            <!--</div>-->
+                            <!--<p>Cras vitae turpis lacinia, lacinia lacus non, fermentum nisi. Donec et sollicitudin est, in euismod.</p>-->
+                            <!--<a href="#" class="btn academy-btn btn-sm">See More</a>-->
+                        <!--</div>-->
+                        <!--<div class="popular-course-thumb bg-img" ><img class="gxg-course-style" src="/img/bg-img/pc-6.jpg" width="100%"></div>-->
+                    <!--</div>-->
+                <!--</div>-->
+
+				<!-- Single Top Popular Course -->
+                <!--<div class="col-12 col-lg-6">-->
+                    <!--<div class="single-top-popular-course d-flex align-items-center flex-wrap mb-30 wow fadeInUp" data-wow-delay="900ms">-->
+                        <!--<div class="popular-course-content">-->
+                            <!--<h5>Business for begginers</h5>-->
+                            <!--<span>By Simon Smith   |  March 18, 2018</span>-->
+                            <!--<div class="course-ratings">-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star" aria-hidden="true"></i>-->
+                                <!--<i class="fa fa-star-o" aria-hidden="true"></i>-->
+                            <!--</div>-->
+                            <!--<p>Cras vitae turpis lacinia, lacinia lacus non, fermentum nisi. Donec et sollicitudin est, in euismod.</p>-->
+                            <!--<a href="#" class="btn academy-btn btn-sm">See More</a>-->
+                        <!--</div>-->
+                        <!--<div class="popular-course-thumb bg-img" ><img class="gxg-course-style" src="/img/bg-img/pc-6.jpg" width="100%"></div>-->
+                    <!--</div>-->
+                <!--</div>-->
+
+				<div class="col-lg-12">
+				  <div class="btn-group pull-right" role="group">
+					  <button type="button" class="btn btn-default" disabled="disabled" th:if="${coursePrePage} == null"><span aria-hidden="true">&laquo;</span>上一页</button>
+                      <button type="button" class="btn btn-default" th:if="${coursePrePage} != null"><span aria-hidden="true">&laquo;</span>上一页</button>
+                      <button type="button" class="btn btn-default" disabled="disabled" th:text="${coursePage} + '/' + ${coursePageNumber}">1/1</button>
+					  <button type="button" class="btn btn-default" disabled="disabled" th:if="${courseNextPage} == null">下一页<span aria-hidden="true">&raquo;</span></button>
+                      <button type="button" class="btn btn-default" th:if="${courseNextPage} != null">下一页<span aria-hidden="true">&raquo;</span></button>
+                  </div>
+			  </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ##### Footer Area Start ##### -->
+    <footer class="footer-area" th:include="/html_templates/footer.html :: footer"></footer>
+    <!-- ##### Footer Area Start ##### -->
+
+    <!-- ##### All Javascript Script ##### -->
+    <!-- jQuery-2.2.4 js -->
+    <script src="/js/jquery/jquery-2.2.4.min.js"></script>
+    <!-- Popper js -->
+    <script src="/js/bootstrap/popper.min.js"></script>
+    <!-- Bootstrap js -->
+    <script src="/js/bootstrap/bootstrap.min.js"></script>
+    <!-- All Plugins js -->
+    <script src="/js/plugins/plugins.js"></script>
+    <!-- Active js -->
+    <script src="/js/active.js"></script>
+</body>
+
+</html>

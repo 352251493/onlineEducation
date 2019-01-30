@@ -16,8 +16,12 @@ public class FileUrlMappingConfig extends WebMvcConfigurerAdapter {
     @Value("${user.resource.dir}")
     private String userResourceDir;
 
+    @Value("${course.resource.dir}")
+    private String courseResourceDir;
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/user_resource/**").addResourceLocations("file:" + userResourceDir);
+        registry.addResourceHandler("/course_resource/**").addResourceLocations("file:" + courseResourceDir);
     }
 }
