@@ -61,4 +61,69 @@ public class CourseController {
             return "/course.html";
         }
     }
+
+    @GetMapping(value = "/popular/{page}")
+    public String getCourseByStudyNumber(@PathVariable String page, HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") != null) {
+            User user = (User)session.getAttribute("user");
+            int unReadMessageCount = messageService.getUnreadMessageCount(user);
+            model.addAttribute("unReadMessageCount", unReadMessageCount);
+            model.addAttribute("user", user);
+        }
+        JSONObject courseListInfo = courseService.getCourseListOrderByStudyNumber(page);
+        if ("false".equals(courseListInfo.getString("status"))) {
+            return "redirect:/course/popular/1";
+        } else {
+            int coursePageInt = courseListInfo.getInt("coursePage");
+            int coursePageNumber = courseListInfo.getInt("coursePageNumber");
+            model.addAttribute("coursePage", coursePageInt);
+            model.addAttribute("coursePageNumber", coursePageNumber);
+            if (coursePageInt > 1) {
+                int coursePrePage = coursePageInt - 1;
+                model.addAttribute("coursePrePage", coursePrePage);
+            }
+            if (coursePageInt < coursePageNumber) {
+                int courseNextPage = coursePageInt + 1;
+                model.addAttribute("courseNextPage", courseNextPage);
+            }
+            if ("true".equals(courseListInfo.getString("hasCourse"))) {
+                model.addAttribute("courseList", courseListInfo.get("courseList"));
+            }
+            return "/course.html";
+        }
+    }
+
+    @GetMapping(value = "/search/{searchContent}/{page}")
+    public String searchCourse(@PathVariable String searchContent, @PathVariable String page, HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") != null) {
+            User user = (User)session.getAttribute("user");
+            int unReadMessageCount = messageService.getUnreadMessageCount(user);
+            model.addAttribute("unReadMessageCount", unReadMessageCount);
+            model.addAttribute("user", user);
+        }
+        JSONObject courseListInfo = courseService.searchCourse(searchContent, page);
+        if ("false".equals(courseListInfo.getString("status"))) {
+            return "redirect:/course/search/" + searchContent + "/1";
+        } else {
+            model.addAttribute("searchContent", searchContent);
+            int coursePageInt = courseListInfo.getInt("coursePage");
+            int coursePageNumber = courseListInfo.getInt("coursePageNumber");
+            model.addAttribute("coursePage", coursePageInt);
+            model.addAttribute("coursePageNumber", coursePageNumber);
+            if (coursePageInt > 1) {
+                int coursePrePage = coursePageInt - 1;
+                model.addAttribute("coursePrePage", coursePrePage);
+            }
+            if (coursePageInt < coursePageNumber) {
+                int courseNextPage = coursePageInt + 1;
+                model.addAttribute("courseNextPage", courseNextPage);
+            }
+            if ("true".equals(courseListInfo.getString("hasCourse"))) {
+                model.addAttribute("courseList", courseListInfo.get("courseList"));
+            }
+            return "/course.html";
+        }
+    }
 }

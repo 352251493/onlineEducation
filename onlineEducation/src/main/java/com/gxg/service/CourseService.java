@@ -17,4 +17,21 @@ public interface CourseService {
      * @author 郭欣光
      */
     JSONObject getCourseListOrderByModifyTime(String coursePage);
+
+    /**
+     * 根据指定页数按照学习人数顺序获取课程列表
+     * @param coursePage 当前页数
+     * @return 课程列表相关信息
+     * @author 郭欣光
+     */
+    JSONObject getCourseListOrderByStudyNumber(String coursePage);
+
+    /**
+     * 根据搜索内容和指定页数获取课程列表
+     * @param searchContent 搜索内容
+     * @param coursePage 当前页数
+     * @return 课程列表相关信息
+     * @author 郭欣光
+     */
+    JSONObject searchCourse(String searchContent, String coursePage);
 }

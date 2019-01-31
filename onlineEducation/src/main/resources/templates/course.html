@@ -46,9 +46,10 @@
 				<div class="col-12">
 					<div class="pull-right">
 						<div class="input-group">
-						  <input type="text" class="form-control" placeholder="输入课程名称或教师名">
+						  <input type="text" class="form-control" placeholder="输入课程名称或教师名" th:if="${searchContent} == null" id="searchContent">
+                            <input type="text" class="form-control" placeholder="输入课程名称或教师名" th:if="${searchContent} != null" th:value="${searchContent}" id="searchContent">
 						  <span class="input-group-btn">
-							<button class="btn btn-default" type="button">查找</button>
+							<button class="btn btn-default" type="button" onclick="searchCourse();">查找</button>
 						  </span>
 						</div>
 					</div>
@@ -273,6 +274,9 @@
     <footer class="footer-area" th:include="/html_templates/footer.html :: footer"></footer>
     <!-- ##### Footer Area Start ##### -->
 
+
+    <!-- 信息提示框 -->
+    <div th:include="/html_templates/alert_info.html :: alert"></div>
     <!-- ##### All Javascript Script ##### -->
     <!-- jQuery-2.2.4 js -->
     <script src="/js/jquery/jquery-2.2.4.min.js"></script>
@@ -284,6 +288,19 @@
     <script src="/js/plugins/plugins.js"></script>
     <!-- Active js -->
     <script src="/js/active.js"></script>
+
+    <script src="/my/js/utils.js"></script>
+
+    <script>
+        function searchCourse() {
+            var searchContent = $("#searchContent").val();
+            if (stringIsEmpty(searchContent)) {
+                openAlertModel("请输入您要查找的内容！");
+            } else {
+                window.location.href = "/course/search/" + searchContent + "/1";
+            }
+        }
+    </script>
 </body>
 
 </html>
