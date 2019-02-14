@@ -51,6 +51,7 @@
                                     <ul class="dropdown">
                                         <li><a href="/course/time/1">按时间排序</a></li>
                                         <li><a href="/course/popular/1">按学习人数排序</a></li>
+                                        <li th:if="${user} != null and ${user.role} eq '教师'"><a href="/course/create">新建课程</a></li>
                                         <!--<li><a href="course.html">Course</a></li>-->
                                         <!--<li><a href="blog.html">Blog</a></li>-->
                                         <!--<li><a href="contact.html">Contact</a></li>-->

@@ -95,7 +95,7 @@ public class UserController {
                     model.addAttribute("messageList", messageListInfo.get("messageList"));
                 }
                 model = messageCommonModel(model, user);
-                model.addAttribute("mesageType", messagePage);
+                model.addAttribute("messageType", messageType);
                 return "/user/message.html";
             }
         }

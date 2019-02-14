@@ -153,10 +153,10 @@
 					  <div class="col-lg-12">
 						  <div class="btn-group pull-right" role="group">
 							  <button type="button" class="btn btn-default" disabled="disabled" th:if="${messagePrePage} == null"><span aria-hidden="true">&laquo;</span>上一页</button>
-							  <button type="button" class="btn btn-default" th:if="${messagePrePage} != null"><span aria-hidden="true">&laquo;</span>上一页</button>
-							  <button type="button" class="btn btn-default" disabled="disabled" th:text="${messagePage} + '/' + ${messagePageNumber}">1/1</button>
+							  <button type="button" class="btn btn-default" th:if="${messagePrePage} != null" th:onclick="openMessageList([[${messageType}]], [[${messagePrePage}]]);"><span aria-hidden="true">&laquo;</span>上一页</button>
+                              <button type="button" class="btn btn-default" disabled="disabled" th:text="${messagePage} + '/' + ${messagePageNumber}">1/1</button>
 							  <button type="button" class="btn btn-default" disabled="disabled" th:if="${messageNextPage} == null">下一页<span aria-hidden="true">&raquo;</span></button>
-							  <button type="button" class="btn btn-default" th:if="${messageNextPage} != null">下一页<span aria-hidden="true">&raquo;</span></button>
+							  <button type="button" class="btn btn-default" th:if="${messageNextPage} != null" th:onclick="openMessageList([[${messageType}]], [[${messageNextPage}]]);">下一页<span aria-hidden="true">&raquo;</span></button>
 						  </div>
 					  </div>
                     </div>
@@ -194,6 +194,9 @@
     <script>
         function openMessageDetail(messageId) {
             window.location.href = "/user/message/detail/" + messageId;
+        }
+        function openMessageList(messageType, messagePage) {
+            window.location.href = "/user/message/" + messageType + "/" + messagePage;
         }
     </script>
     <script src="/user_static/my/js/message.js"></script>

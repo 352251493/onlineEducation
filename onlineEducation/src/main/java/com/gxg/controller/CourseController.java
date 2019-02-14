@@ -58,6 +58,7 @@ public class CourseController {
             if ("true".equals(courseListInfo.getString("hasCourse"))) {
                 model.addAttribute("courseList", courseListInfo.get("courseList"));
             }
+            model.addAttribute("courseListType", "time");
             return "/course.html";
         }
     }
@@ -90,6 +91,7 @@ public class CourseController {
             if ("true".equals(courseListInfo.getString("hasCourse"))) {
                 model.addAttribute("courseList", courseListInfo.get("courseList"));
             }
+            model.addAttribute("courseListType", "popular");
             return "/course.html";
         }
     }
@@ -123,7 +125,27 @@ public class CourseController {
             if ("true".equals(courseListInfo.getString("hasCourse"))) {
                 model.addAttribute("courseList", courseListInfo.get("courseList"));
             }
+            model.addAttribute("courseListType", "search");
             return "/course.html";
+        }
+    }
+
+    @GetMapping(value = "/create")
+    public String createCoursePage(HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            return "redirect:/user/login?next=" + "/course/create";
+        } else {
+            User user = (User)session.getAttribute("user");
+            if (!"教师".equals(user.getRole())) {
+                model.addAttribute("promptTitle", "权限不足");
+                model.addAttribute("promptMessage", "对不起，目前仅有教师才可以创建课程！");
+                return "/prompt/prompt.html";
+            }
+            int unReadMessageCount = messageService.getUnreadMessageCount(user);
+            model.addAttribute("unReadMessageCount", unReadMessageCount);
+            model.addAttribute("user", user);
+            return "/create_course.html";
         }
     }
 }

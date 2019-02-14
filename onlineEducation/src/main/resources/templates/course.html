@@ -260,10 +260,12 @@
 				<div class="col-lg-12">
 				  <div class="btn-group pull-right" role="group">
 					  <button type="button" class="btn btn-default" disabled="disabled" th:if="${coursePrePage} == null"><span aria-hidden="true">&laquo;</span>上一页</button>
-                      <button type="button" class="btn btn-default" th:if="${coursePrePage} != null"><span aria-hidden="true">&laquo;</span>上一页</button>
+                      <button type="button" class="btn btn-default" th:if="${coursePrePage} != null and ${courseListType} eq 'search'" th:onclick="openSearchCourseList([[${searchContent}]], [[${coursePrePage}]]);"><span aria-hidden="true">&laquo;</span>上一页</button>
+                      <button type="button" class="btn btn-default" th:if="${coursePrePage} != null and ${courseListType} ne 'search'" th:onclick="openCourseList([[${courseListType}]], [[${coursePrePage}]]);"><span aria-hidden="true">&laquo;</span>上一页</button>
                       <button type="button" class="btn btn-default" disabled="disabled" th:text="${coursePage} + '/' + ${coursePageNumber}">1/1</button>
 					  <button type="button" class="btn btn-default" disabled="disabled" th:if="${courseNextPage} == null">下一页<span aria-hidden="true">&raquo;</span></button>
-                      <button type="button" class="btn btn-default" th:if="${courseNextPage} != null">下一页<span aria-hidden="true">&raquo;</span></button>
+                      <button type="button" class="btn btn-default" th:if="${courseNextPage} != null and ${courseListType} eq 'search'" th:onclick="openSearchCourseList([[${searchContent}]], [[${courseNextPage}]]);">下一页<span aria-hidden="true">&raquo;</span></button>
+                      <button type="button" class="btn btn-default" th:if="${courseNextPage} != null and ${courseListType} ne 'search'" th:onclick="openCourseList([[${courseListType}]], [[${courseNextPage}]]);">下一页<span aria-hidden="true">&raquo;</span></button>
                   </div>
 			  </div>
             </div>
@@ -299,6 +301,14 @@
             } else {
                 window.location.href = "/course/search/" + searchContent + "/1";
             }
+        }
+
+        function openCourseList(courseListType, coursePage) {
+            window.location.href = "/course/" + courseListType + "/" + coursePage;
+        }
+
+        function openSearchCourseList(searchContent, coursePage) {
+            window.location.href = "/course/search/" + searchContent + "/" + coursePage;
         }
     </script>
 </body>

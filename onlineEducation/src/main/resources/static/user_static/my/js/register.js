@@ -6,7 +6,7 @@ function headImageChange() {
 	var headImage = document.getElementById("headImage");
 	var ext=headImage.value.substring(headImage.value.lastIndexOf(".")+1).toLowerCase();
 	// gif在IE浏览器暂时无法显示
-	if(ext!='png'&&ext!='jpg'&&ext!='jpeg'){
+	if(ext!='png'&& ext!='jpg'&& ext!='jpeg'){
 		openAlertModel("图片的格式必须为png或者jpg或者jpeg格式！");
 		return;
 	}
