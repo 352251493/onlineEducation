@@ -7,9 +7,8 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -147,5 +146,11 @@ public class CourseController {
             model.addAttribute("user", user);
             return "/create_course.html";
         }
+    }
+
+    @PostMapping(value = "/create")
+    @ResponseBody
+    public String createCourse(@RequestParam String courseName, @RequestParam String courseIntroduction, @RequestParam MultipartFile courseImage, @RequestParam String isPrivate, HttpServletRequest request) {
+        return courseService.createCourse(courseName, courseIntroduction, courseImage, isPrivate, request);
     }
 }

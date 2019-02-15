@@ -66,9 +66,9 @@
                     <div class="single-top-popular-course d-flex align-items-center flex-wrap mb-30 wow fadeInUp" data-wow-delay="400ms">
                         <div class="popular-course-content">
                             <h5 th:text="${course.name}">--</h5>
-                            <span><span th:text="${course.userName}">--</span>   |  最近修改：<span th:text="${#strings.substringBefore(course.modifyTime, '.')}">--</span></span>
-                            <div class="course-ratings">
-								学习人数：<span th:text="${course.studyNumber}">--</span>人
+                            <span th:text="${course.userName} + '   |  最近修改：' + ${#strings.substringBefore(course.modifyTime, '.')}">--</span>
+                            <div class="course-ratings" th:text="'学习人数：' + ${course.studyNumber} + '人'">
+								--
                             </div>
                             <p th:text="${#strings.abbreviate(course.introduction,50)}">---</p>
                             <a href="#" class="btn academy-btn btn-sm">立即学习</a>

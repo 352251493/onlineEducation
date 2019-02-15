@@ -23,6 +23,7 @@ public class CourseRowMapper implements RowMapper<Course> {
         course.setCreateTime(resultSet.getTimestamp("create_time"));
         course.setModifyTime(resultSet.getTimestamp("modify_time"));
         course.setUserEmail(resultSet.getString("user_email"));
+        course.setIsPrivate(resultSet.getString("is_private"));
         return course;
     }
 }

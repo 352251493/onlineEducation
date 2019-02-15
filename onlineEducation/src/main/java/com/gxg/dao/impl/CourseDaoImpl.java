@@ -94,4 +94,111 @@ public class CourseDaoImpl implements CourseDao {
         List<Course> courseList = jdbcTemplate.query(sql, new CourseRowMapper(), content, content, limitStart, limitStartEnd);
         return courseList;
     }
+
+    /**
+     * 根据是否私有获取课程个数
+     * @param isPrivate 是否私有
+     * @return 课程个数
+     * @author 郭欣光
+     */
+    @Override
+    public int getCourseCountByIsPrivate(String isPrivate) {
+        String sql = "select count(1) from course where is_private=?";
+        int rowCount = jdbcTemplate.queryForObject(sql, Integer.class, isPrivate);
+        return rowCount;
+    }
+
+    /**
+     * 根据是否私有获取指定范围按照修改时间排序的课程
+     *
+     * @param limitStart 第一个limit
+     * @param limitEnd   第二个limit
+     * @param isPrivate  是否私有
+     * @return 课程列表
+     * @author 郭欣光
+     */
+    @Override
+    public List<Course> getCourseByLimitAndIsPrivateOrderByModifyTime(int limitStart, int limitEnd, String isPrivate) {
+        String sql = "select * from course where is_private=? order by modify_time desc limit ?, ?";
+        List<Course> courseList = jdbcTemplate.query(sql, new CourseRowMapper(), isPrivate, limitStart, limitEnd);
+        return courseList;
+    }
+
+    /**
+     * 根据是否私有获取指定范围按照学习人数排序的课程
+     *
+     * @param limitStart 第一个limit
+     * @param limitEnd   第二个limit
+     * @param isPrivate  是否私有
+     * @return 课程列表
+     * @author 郭欣光
+     */
+    @Override
+    public List<Course> getCourseByLimitAndIsPrivateOrderByStudyNumber(int limitStart, int limitEnd, String isPrivate) {
+        String sql = "select * from course where is_private=? order by study_number desc limit ?, ?";
+        List<Course> courseList = jdbcTemplate.query(sql, new CourseRowMapper(), isPrivate, limitStart, limitEnd);
+        return courseList;
+    }
+
+    /**
+     * 根据是否私有获取与课程名称或教师名模糊查询的课程个数
+     *
+     * @param content   要查找的内容
+     * @param isPrivate 是否私有
+     * @return 课程个数
+     * @author 郭欣光
+     */
+    @Override
+    public int getCountByLikeNameOrLikeUserNameAndIsPrivate(String content, String isPrivate) {
+        content = "%" + content + "%";
+        String sql = "select count(1) from (select distinct * from course where course.name like ? or course.user_email in (select user.email from user where user.name like ?)) a where a.is_private=?";
+        int rowCount = jdbcTemplate.queryForObject(sql, Integer.class, content, content, isPrivate);
+        return rowCount;
+    }
+
+    /**
+     * 获取与指定是否私有、课程名称或教师名模糊查询匹配及指定范围按照修改时间排序的课程列表
+     *
+     * @param content       要查找的内容
+     * @param limitStart    第一个limit
+     * @param limitStartEnd 第二个limit
+     * @param isPrivate     是否私有
+     * @return 课程列表
+     * @author 郭欣光
+     */
+    @Override
+    public List<Course> getCourseByLikeNameOrLikeUserNameAndLimitAndIsPrivateOrderByTime(String content, int limitStart, int limitStartEnd, String isPrivate) {
+        content = "%" + content + "%";
+        String sql = "select distinct * from course where course.is_private=? and (course.name like ? or course.user_email in (select user.email from user where user.name like ?)) order by course.modify_time desc limit ?, ?";
+        List<Course> courseList = jdbcTemplate.query(sql, new CourseRowMapper(), isPrivate, content, content, limitStart, limitStartEnd);
+        return courseList;
+    }
+
+    /**
+     * 根据ID获取课程数量
+     *
+     * @param id ID
+     * @return 课程数量
+     * @author 郭欣光
+     */
+    @Override
+    public int getCountById(String id) {
+        String sql = "select count(1) from course where id=?";
+        int rowCount = jdbcTemplate.queryForObject(sql, Integer.class, id);
+        return rowCount;
+    }
+
+    /**
+     * 添加课程信息
+     *
+     * @param course 课程信息
+     * @return 操作数据库行数
+     * @author 郭欣光
+     */
+    @Override
+    public int createCourse(Course course) {
+        String sql = "insert into course(id, name, introduction, image, study_number, create_time, modify_time, user_email, is_private) values(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        int changeCount = jdbcTemplate.update(sql, course.getId(), course.getName(), course.getIntroduction(), course.getImage(), course.getStudyNumber(), course.getCreateTime(), course.getModifyTime(), course.getUserEmail(), course.getIsPrivate());
+        return changeCount;
+    }
 }

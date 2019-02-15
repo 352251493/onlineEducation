@@ -1,6 +1,9 @@
 package com.gxg.service;
 
 import org.json.JSONObject;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 课程相关业务处理
@@ -34,4 +37,16 @@ public interface CourseService {
      * @author 郭欣光
      */
     JSONObject searchCourse(String searchContent, String coursePage);
+
+    /**
+     * 创建课程业务逻辑处理
+     * @param courseName 课程名称
+     * @param courseIntroduction 课程简介
+     * @param courseImage 课程封面图片
+     * @param isPrivate 是否私有
+     * @param request 用户请求相关信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    String createCourse(String courseName, String courseIntroduction, MultipartFile courseImage, String isPrivate, HttpServletRequest request);
 }

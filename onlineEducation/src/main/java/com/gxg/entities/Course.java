@@ -27,6 +27,8 @@ public class Course {
 
     private String userName;
 
+    private String isPrivate;
+
     public String getId() {
         return id;
     }
@@ -99,6 +101,14 @@ public class Course {
         this.userName = userName;
     }
 
+    public String getIsPrivate() {
+        return isPrivate;
+    }
+
+    public void setIsPrivate(String isPrivate) {
+        this.isPrivate = isPrivate;
+    }
+
     @Override
     public String toString() {
         return "Course{" +
@@ -111,6 +121,7 @@ public class Course {
                 ", modifyTime=" + modifyTime +
                 ", userEmail='" + userEmail + '\'' +
                 ", userName='" + userName + '\'' +
+                ", isPrivate='" + isPrivate + '\'' +
                 '}';
     }
 }
