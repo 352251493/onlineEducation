@@ -117,4 +117,30 @@ public interface CourseDao {
      * @author 郭欣光
      */
     int createCourse(Course course);
+
+    /**
+     * 获取指定用户的课程个数
+     * @param userEmail 用户邮箱
+     * @return 课程个数
+     * @author 郭欣光
+     */
+    int getCourseCountByUserEmail(String userEmail);
+
+    /**
+     * 获取指定用户指定范围的课程
+     * @param userEmail 用户邮箱
+     * @param limitStart 第一个limit
+     * @param limitEnd 第二个limit
+     * @return 课程列表
+     * @author 郭欣光
+     */
+    List<Course> getCourseByUserEmailAndLimit(String userEmail, int limitStart, int limitEnd);
+
+    /**
+     * 根据ID获取课程信息
+     * @param id ID
+     * @return 课程信息
+     * @author 郭欣光
+     */
+    Course getCourseById(String id);
 }

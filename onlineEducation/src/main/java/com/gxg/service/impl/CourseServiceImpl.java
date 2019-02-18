@@ -310,4 +310,44 @@ public class CourseServiceImpl implements CourseService {
         message += "<p>想要让自己的课程更加精彩，快去添加内容吧！</p>";
         return message;
     }
+
+    /**
+     * 获取指定用户的前N个课程
+     *
+     * @param user      用户信息
+     * @param topNumber 个数
+     * @return 课程列表
+     * @author 郭欣光
+     */
+    @Override
+    public List<Course> getUserCourseByTopNumber(User user, int topNumber) {
+        if (courseDao.getCourseCountByUserEmail(user.getEmail()) != 0) {
+            List<Course> courseList = courseDao.getCourseByUserEmailAndLimit(user.getEmail(), 0, topNumber);
+            for (Course course : courseList) {
+                course.setUserName(user.getName());
+            }
+            return courseList;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 根据ID获取课程信息
+     *
+     * @param courseId 课程ID
+     * @return 课程信息
+     * @author 郭欣光
+     */
+    @Override
+    public Course getCourseById(String courseId) {
+        if (courseDao.getCountById(courseId) == 0) {
+            return null;
+        } else {
+            Course course = courseDao.getCourseById(courseId);
+            User user = userDao.getUserByEmail(course.getUserEmail());
+            course.setUserName(user.getName());
+            return course;
+        }
+    }
 }

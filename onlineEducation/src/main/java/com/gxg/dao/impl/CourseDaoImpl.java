@@ -201,4 +201,48 @@ public class CourseDaoImpl implements CourseDao {
         int changeCount = jdbcTemplate.update(sql, course.getId(), course.getName(), course.getIntroduction(), course.getImage(), course.getStudyNumber(), course.getCreateTime(), course.getModifyTime(), course.getUserEmail(), course.getIsPrivate());
         return changeCount;
     }
+
+    /**
+     * 获取指定用户的课程个数
+     *
+     * @param userEmail 用户邮箱
+     * @return 课程个数
+     * @author 郭欣光
+     */
+    @Override
+    public int getCourseCountByUserEmail(String userEmail) {
+        String sql = "select count(1) from course where user_email=?";
+        int rowCount = jdbcTemplate.queryForObject(sql, Integer.class, userEmail);
+        return rowCount;
+    }
+
+    /**
+     * 获取指定用户指定范围的课程
+     *
+     * @param userEmail  用户邮箱
+     * @param limitStart 第一个limit
+     * @param limitEnd   第二个limit
+     * @return 课程列表
+     * @author 郭欣光
+     */
+    @Override
+    public List<Course> getCourseByUserEmailAndLimit(String userEmail, int limitStart, int limitEnd) {
+        String sql = "select * from course where user_email=? limit ?, ?";
+        List<Course> courseList = jdbcTemplate.query(sql, new CourseRowMapper(), userEmail, limitStart, limitEnd);
+        return courseList;
+    }
+
+    /**
+     * 根据ID获取课程信息
+     *
+     * @param id ID
+     * @return 课程信息
+     * @author 郭欣光
+     */
+    @Override
+    public Course getCourseById(String id) {
+        String sql = "select * from course where id=?";
+        Course course = jdbcTemplate.queryForObject(sql, new CourseRowMapper(), id);
+        return course;
+    }
 }

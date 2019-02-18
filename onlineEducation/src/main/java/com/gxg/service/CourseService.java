@@ -1,9 +1,12 @@
 package com.gxg.service;
 
+import com.gxg.entities.Course;
+import com.gxg.entities.User;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * 课程相关业务处理
@@ -49,4 +52,21 @@ public interface CourseService {
      * @author 郭欣光
      */
     String createCourse(String courseName, String courseIntroduction, MultipartFile courseImage, String isPrivate, HttpServletRequest request);
+
+    /**
+     * 获取指定用户的前N个课程
+     * @param user 用户信息
+     * @param topNumber 个数
+     * @return 课程列表
+     * @author 郭欣光
+     */
+    List<Course> getUserCourseByTopNumber(User user, int topNumber);
+
+    /**
+     * 根据ID获取课程信息
+     * @param courseId 课程ID
+     * @return 课程信息
+     * @author 郭欣光
+     */
+    Course getCourseById(String courseId);
 }

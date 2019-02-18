@@ -1,5 +1,6 @@
 package com.gxg.controller;
 
+import com.gxg.entities.Course;
 import com.gxg.entities.User;
 import com.gxg.service.CourseService;
 import com.gxg.service.MessageService;
@@ -12,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  * 课程相关请求响应控制
@@ -144,6 +146,11 @@ public class CourseController {
             int unReadMessageCount = messageService.getUnreadMessageCount(user);
             model.addAttribute("unReadMessageCount", unReadMessageCount);
             model.addAttribute("user", user);
+            List<Course> courseList = courseService.getUserCourseByTopNumber(user, 5);
+            model.addAttribute("myCourseList", courseList);
+            if (courseList != null && courseList.size() >= 5) {
+                model.addAttribute("hasMoreCourse", "yes");
+            }
             return "/create_course.html";
         }
     }
@@ -152,5 +159,41 @@ public class CourseController {
     @ResponseBody
     public String createCourse(@RequestParam String courseName, @RequestParam String courseIntroduction, @RequestParam MultipartFile courseImage, @RequestParam String isPrivate, HttpServletRequest request) {
         return courseService.createCourse(courseName, courseIntroduction, courseImage, isPrivate, request);
+    }
+
+    @GetMapping(value = "/my/detail/{courseId}/{page}")
+    public String myCoursePage(@PathVariable String courseId, @PathVariable String page, Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            return "redirect:/user/login?next=" + "/course/my/detail/" + courseId + "/" + page;
+        } else {
+            User user = (User)session.getAttribute("user");
+            if (!"教师".equals(user.getRole())) {
+                model.addAttribute("promptTitle", "权限不足");
+                model.addAttribute("promptMessage", "对不起，目前仅有教师才可以查看自己创建的课程详情！");
+                return "/prompt/prompt.html";
+            }
+            Course course = courseService.getCourseById(courseId);
+            if (course == null) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            if (!user.getEmail().equals(course.getUserEmail())) {
+                model.addAttribute("promptTitle", "权限不足");
+                model.addAttribute("promptMessage", "对不起，该页面仅允许查看查看自己创建的课程详情！");
+                return "/prompt/prompt.html";
+            }
+            model.addAttribute("course", course);
+            int unReadMessageCount = messageService.getUnreadMessageCount(user);
+            model.addAttribute("unReadMessageCount", unReadMessageCount);
+            model.addAttribute("user", user);
+            List<Course> courseList = courseService.getUserCourseByTopNumber(user, 5);
+            model.addAttribute("myCourseList", courseList);
+            if (courseList != null && courseList.size() >= 5) {
+                model.addAttribute("hasMoreCourse", "yes");
+            }
+            return "/my_course_detail.html";
+        }
     }
 }
