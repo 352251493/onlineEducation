@@ -69,4 +69,25 @@ public interface CourseService {
      * @author 郭欣光
      */
     Course getCourseById(String courseId);
+
+    /**
+     * 修改课程资料
+     * @param courseId 课程ID
+     * @param courseName 课程名称
+     * @param courseIntroduction 课程简介
+     * @param request 用户请求信息
+     * @return 修改结果
+     * @author 郭欣光
+     */
+    String editCourse(String courseId, String courseName, String courseIntroduction, HttpServletRequest request);
+
+    /**
+     * 修改课程封面图片
+     * @param courseId 课程ID
+     * @param courseImage 封面图片
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    String editCourseImage(String courseId, MultipartFile courseImage, HttpServletRequest request);
 }

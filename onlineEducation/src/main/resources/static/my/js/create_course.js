@@ -97,6 +97,10 @@ function createCourse() {
 
 function createCourseSuccess(data) {
     var result = JSON.parse(data);
-    closeLoadingModel();
-    openAlertModel(result.content);
+    if (result.status == "true") {
+        window.location.href = "/course/my/detail/" + result.content + "/1";
+    } else {
+        closeLoadingModel();
+        openAlertModel(result.content);
+    }
 }

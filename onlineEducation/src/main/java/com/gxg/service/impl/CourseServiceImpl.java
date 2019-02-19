@@ -273,7 +273,8 @@ public class CourseServiceImpl implements CourseService {
                                 content = "操作数据库失败！";
                             } else {
                                 insertSuccess = true;
-                                content = "创建成功！";
+                                status = "true";
+                                content = id;
                             }
                         } catch (Exception e) {
                             System.out.println("ERROR:创建课程" + course.toString() + "操作数据库出错，错误原因：" + e);
@@ -349,5 +350,191 @@ public class CourseServiceImpl implements CourseService {
             course.setUserName(user.getName());
             return course;
         }
+    }
+
+    /**
+     * 修改课程资料
+     *
+     * @param courseId           课程ID
+     * @param courseName         课程名称
+     * @param courseIntroduction 课程简介
+     * @param request            用户请求信息
+     * @return 修改结果
+     * @author 郭欣光
+     */
+    @Override
+    public String editCourse(String courseId, String courseName, String courseIntroduction, HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "修改失败！";
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            content = "系统未检测到登录信息，请刷新页面后重试！";
+        } else if (StringUtils.isEmpty(courseName)) {
+            content = "课程名称不能为空！";
+        } else if (courseName.length() > 100) {
+            content = "课程名称长度不能超过100字符！";
+        } else if (StringUtils.isEmpty(courseIntroduction)) {
+            content = "课程简介不能为空！";
+        } else if (courseIntroduction.length() > 500) {
+            content = "课程简介长度不能超过500字符！";
+        } else if (courseDao.getCountById(courseId) == 0) {
+            content = "该课程不存在！";
+        } else {
+            User user = (User)session.getAttribute("user");
+            Course course = courseDao.getCourseById(courseId);
+            if (course.getUserEmail().equals(user.getEmail())) {
+                course.setName(courseName);
+                course.setIntroduction(courseIntroduction);
+                Timestamp time = new Timestamp(System.currentTimeMillis());
+                course.setModifyTime(time);
+                try {
+                    if (courseDao.editCourse(course) == 0) {
+                        System.out.println("ERROR:修改课程" + course.toString() + "时操作数据库失败！");
+                        content = "操作数据库失败！";
+                    } else {
+                        status = "true";
+                        content = "修改成功！";
+                    }
+                } catch (Exception e) {
+                    System.out.println("ERROR:修改课程" + course.toString() + "时操作数据库失败，失败原因：" + e);
+                    content = "操作数据库失败！";
+                }
+            } else {
+                content = "只可以修改自己创建的课程！";
+            }
+            if ("true".equals(status)) {
+                String messageTitle = "您已成功修改课程：" + courseName;
+                String messageContent = editCourseSuccessEmailMessage(course);
+                JSONObject createMessageResult = messageService.createMessage(user.getEmail(), messageTitle, messageContent);
+                System.out.println("INFO:课程" + course.toString() + " 修改成功时创建消息通知结果：" + createMessageResult.toString());
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
+    }
+
+    private String editCourseSuccessEmailMessage(Course course) {
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        String timeString = time.toString().split("\\.")[0];
+        String message = "<p>您于" + timeString + "修改课程:" + course.getName() + "&nbsp;&nbsp;资料成功，您可前往&nbsp;我的课程-我创建的&nbsp;进行查看</p>";
+        message += "<p style='color: red;'>如果不是您本人操作，可能账号密码存在泄漏，请及时修改密码</p>";
+        return message;
+    }
+
+    /**
+     * 修改课程封面图片
+     *
+     * @param courseId    课程ID
+     * @param courseImage 封面图片
+     * @param request     用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public String editCourseImage(String courseId, MultipartFile courseImage, HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "修改失败！";
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            content = "系统未检测到登录信息，请刷新页面后重试！";
+        } else if (courseImage == null) {
+            content = "为该课程选一个好看的封面吧~";
+        } else {
+            boolean isImage = true;
+            try {
+                if (!FileUtils.isImage(courseImage)) {
+                    isImage = false;
+                    content = "课程封面必须是图片类型哦~";
+                }
+            } catch (Exception e) {
+                isImage = false;
+                System.out.println("ERROR:用户在修改课程封面判断封面图片是否为图片类型时出错，错误原因：" + e);
+                content = "系统在判断封面图片是否为图片类型时出错";
+            }
+            if (isImage) {
+                if (courseDao.getCountById(courseId) == 0) {
+                    content = "该课程不存在！";
+                } else {
+                    User user = (User)session.getAttribute("user");
+                    Course course = courseDao.getCourseById(courseId);
+                    if (course.getUserEmail().equals(user.getEmail())) {
+                        String courseImageName = courseImage.getOriginalFilename();
+                        String courseImageType = courseImageName.substring(courseImageName.lastIndexOf(".") + 1);//上传图片的后缀类型
+                        if (!FileUtils.isImageByType(courseImageType)) {
+                            content = "课程封面必须是图片类型哦~";
+                        } else if (FileUtils.getFileSize(courseImage) > courseImageMaxSize) {
+                            content = "图片太大啦，不要超过" + courseImageMaxSizeString + "哦~";
+                        } else {
+                            String oldCourseImage = course.getImage();
+                            String oldCourseImageType = oldCourseImage.substring(oldCourseImage.lastIndexOf(".") + 1);
+                            String idMd5 = Md5.md5(courseId);
+                            String courseImageDir = courseResourceDir + idMd5 + "/";
+                            String imageName = idMd5 + "." + courseImageType;
+                            JSONObject uploadCourseImageResult = FileUtils.uploadFile(courseImage, imageName, courseImageDir);
+                            if ("true".equals(uploadCourseImageResult.getString("status"))) {
+                                Timestamp time = new Timestamp(System.currentTimeMillis());
+                                course.setModifyTime(time);
+                                if (courseImageType.equals(oldCourseImageType)) {
+                                    status = "true";
+                                    content = "修改成功！";
+                                    try {
+                                        if (courseDao.editCourse(course) == 0) {
+                                            System.out.println("ERROR:修改课程" + course.toString() + "封面操作数据库失败，由于图片类型前后相同，故修改封面生效！");
+                                        }
+                                    } catch (Exception e) {
+                                        System.out.println("ERROR:修改课程" + course.toString() + "封面操作数据库失败，失败原因：" + e + "，由于图片类型前后相同，故修改封面生效！");
+                                    }
+                                } else {
+                                    course.setImage(idMd5 + "/" + imageName);
+                                    boolean insertSuccess = false;
+                                    try {
+                                        if (courseDao.editCourse(course) == 0) {
+                                            System.out.println("ERROR:修改课程" + course.toString() + "封面操作数据库失败");
+                                            content = "修改课程封面操作数据库失败！";
+                                        } else {
+                                            status = "true";
+                                            content = "修改成功！";
+                                            insertSuccess = true;
+                                        }
+                                    } catch (Exception e) {
+                                        System.out.println("ERROR:修改课程" + course.toString() + "封面操作数据库失败，失败原因：" + e);
+                                        content = "修改课程封面操作数据库失败！";
+                                    }
+                                    if (!insertSuccess) {
+                                        JSONObject deleteCourseImageResult = FileUtils.deleteFile(courseImageDir + imageName);
+                                        System.out.println("INFO:修改课程" + course.toString() + "封面操作数据库失败后删除课程封面图片结果：" + deleteCourseImageResult.toString());
+                                    }
+                                }
+                                if ("true".equals(status)) {
+                                    String messageTitle = "您已成功修改课程：" + course.getName();
+                                    String messageContent = createEditCourseImageSuccessEmailMessage(course);
+                                    JSONObject createMessageResult = messageService.createMessage(user.getEmail(), messageTitle, messageContent);
+                                    System.out.println("INFO:课程" + course.toString() + "修改封面成功时创建消息通知结果：" + createMessageResult.toString());
+                                }
+                            } else {
+                                System.out.println("ERROR:创建课程时上传封面图片失败，失败原因：" + uploadCourseImageResult.getString("content"));
+                                content = "上传封面图片失败，失败原因" + uploadCourseImageResult.getString("content");
+                            }
+                        }
+                    } else {
+                        content = "只可以修改自己创建的课程！";
+                    }
+                }
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
+    }
+
+    private String createEditCourseImageSuccessEmailMessage(Course course) {
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        String timeString = time.toString().split("\\.")[0];
+        String message = "<p>您于" + timeString + "修改课程:" + course.getName() + "&nbsp;&nbsp;封面成功，您可前往&nbsp;我的课程-我创建的&nbsp;进行查看</p>";
+        message += "<p style='color: red;'>如果不是您本人操作，可能账号密码存在泄漏，请及时修改密码</p>";
+        return message;
     }
 }

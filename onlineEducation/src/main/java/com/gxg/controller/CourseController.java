@@ -3,6 +3,7 @@ package com.gxg.controller;
 import com.gxg.entities.Course;
 import com.gxg.entities.User;
 import com.gxg.service.CourseService;
+import com.gxg.service.LessonService;
 import com.gxg.service.MessageService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,9 @@ public class CourseController {
 
     @Autowired
     private MessageService messageService;
+
+    @Autowired
+    private LessonService lessonService;
 
     @GetMapping(value = "/time/{page}")
     public String getCountByTime(@PathVariable String page, HttpServletRequest request, Model model) {
@@ -184,16 +188,48 @@ public class CourseController {
                 model.addAttribute("promptMessage", "对不起，该页面仅允许查看查看自己创建的课程详情！");
                 return "/prompt/prompt.html";
             }
-            model.addAttribute("course", course);
-            int unReadMessageCount = messageService.getUnreadMessageCount(user);
-            model.addAttribute("unReadMessageCount", unReadMessageCount);
-            model.addAttribute("user", user);
-            List<Course> courseList = courseService.getUserCourseByTopNumber(user, 5);
-            model.addAttribute("myCourseList", courseList);
-            if (courseList != null && courseList.size() >= 5) {
-                model.addAttribute("hasMoreCourse", "yes");
+            JSONObject lessonListInfo = lessonService.getLessonListByCourseId(courseId, page);
+            if ("false".equals(lessonListInfo.getString("status"))) {
+                return "redirect:/course/my/detail/" + courseId + "/1";
+            } else {
+                int lessonPageInt = lessonListInfo.getInt("lessonPage");
+                int lessonPageNumber = lessonListInfo.getInt("lessonPageNumber");
+                model.addAttribute("lessonPage", lessonPageInt);
+                model.addAttribute("lessonPageNumber", lessonPageNumber);
+                if (lessonPageInt > 1) {
+                    int lessonPrePage = lessonPageInt - 1;
+                    model.addAttribute("lessonPrePage", lessonPrePage);
+                }
+                if (lessonPageInt < lessonPageNumber) {
+                    int lessonNextPage = lessonPageInt + 1;
+                    model.addAttribute("lessonNextPage", lessonNextPage);
+                }
+                if ("true".equals(lessonListInfo.getString("hasLesson"))) {
+                    model.addAttribute("lessonList", lessonListInfo.get("lessonList"));
+                }
+                model.addAttribute("course", course);
+                int unReadMessageCount = messageService.getUnreadMessageCount(user);
+                model.addAttribute("unReadMessageCount", unReadMessageCount);
+                model.addAttribute("user", user);
+                List<Course> courseList = courseService.getUserCourseByTopNumber(user, 5);
+                model.addAttribute("myCourseList", courseList);
+                if (courseList != null && courseList.size() >= 5) {
+                    model.addAttribute("hasMoreCourse", "yes");
+                }
             }
             return "/my_course_detail.html";
         }
+    }
+
+    @PostMapping(value = "/edit")
+    @ResponseBody
+    public String editCourse(@RequestParam String courseId, @RequestParam String courseName, @RequestParam String courseIntroduction, HttpServletRequest request) {
+        return courseService.editCourse(courseId, courseName, courseIntroduction, request);
+    }
+
+    @PostMapping(value = "/edit/image")
+    @ResponseBody
+    public String editCourseImage(@RequestParam String courseId, @RequestParam MultipartFile courseImage, HttpServletRequest request) {
+        return courseService.editCourseImage(courseId, courseImage, request);
     }
 }

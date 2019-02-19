@@ -227,7 +227,7 @@ public class CourseDaoImpl implements CourseDao {
      */
     @Override
     public List<Course> getCourseByUserEmailAndLimit(String userEmail, int limitStart, int limitEnd) {
-        String sql = "select * from course where user_email=? limit ?, ?";
+        String sql = "select * from course where user_email=? order by modify_time desc limit ?, ?";
         List<Course> courseList = jdbcTemplate.query(sql, new CourseRowMapper(), userEmail, limitStart, limitEnd);
         return courseList;
     }
@@ -244,5 +244,19 @@ public class CourseDaoImpl implements CourseDao {
         String sql = "select * from course where id=?";
         Course course = jdbcTemplate.queryForObject(sql, new CourseRowMapper(), id);
         return course;
+    }
+
+    /**
+     * 修改课程信息
+     *
+     * @param course 课程信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    @Override
+    public int editCourse(Course course) {
+        String sql = "update course set name=?, introduction=?, image=?, study_number=?, create_time=?, modify_time=?, user_email=?, is_private=? where id=?";
+        int changeCount = jdbcTemplate.update(sql, course.getName(), course.getIntroduction(), course.getImage(), course.getStudyNumber(), course.getCreateTime(), course.getModifyTime(), course.getUserEmail(), course.getIsPrivate(), course.getId());
+        return changeCount;
     }
 }
