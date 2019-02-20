@@ -71,7 +71,7 @@
 								--
                             </div>
                             <p th:text="${#strings.abbreviate(course.introduction,50)}">---</p>
-                            <a href="#" class="btn academy-btn btn-sm">立即学习</a>
+                            <a th:href="'/course/public/detail/' + ${course.id} + '/1'" class="btn academy-btn btn-sm">立即学习</a>
                         </div>
                         <div class="popular-course-thumb bg-img"><img class="gxg-course-style" th:src="'/course_resource/' + ${course.image}" width="100%"></div>
                     </div>

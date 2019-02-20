@@ -113,3 +113,7 @@ function editCourseImageSuccess(data) {
         openAlertModel(result.content);
     }
 }
+
+function openMyCourseDetailPage(courseId, lessonPage) {
+    window.location.href = "/course/my/detail/" + courseId + "/" + lessonPage;
+}

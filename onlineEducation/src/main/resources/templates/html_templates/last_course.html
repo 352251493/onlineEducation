@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="lastCourse">
+    <h5>最近课程</h5>
+    <div class="single-latest-blog-post d-flex mb-30" th:if="${courseListOrderByModifyTime} == null">
+        这里空空如也~
+    </div>
+    <div class="single-latest-blog-post d-flex mb-30" th:if="${courseListOrderByModifyTime} != null" th:each="courseOrderByModifyTime : ${courseListOrderByModifyTime}">
+        <div class="latest-blog-post-thumb">
+            <img th:src="'/course_resource/' + ${courseOrderByModifyTime.image}" alt="">
+        </div>
+        <div class="latest-blog-post-content">
+            <a th:href="'/course/my/detail/' + ${courseOrderByModifyTime.id} + '/1'" class="post-title">
+                <h6 th:text="${courseOrderByModifyTime.name}"></h6>
+            </a>
+            <a href="" class="post-date" th:text="${#strings.substringBefore(courseOrderByModifyTime.modifyTime, '.')}"></a>
+        </div>
+    </div>
+    <ul th:if="${hasMoreCourseOrderByModifyTime} != null">
+        <li><a href="/course/time/1">查看更多</a></li>
+    </ul>
+</div>
+</body>
+</html>

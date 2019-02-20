@@ -537,4 +537,97 @@ public class CourseServiceImpl implements CourseService {
         message += "<p style='color: red;'>如果不是您本人操作，可能账号密码存在泄漏，请及时修改密码</p>";
         return message;
     }
+
+    /**
+     * 获取指定课程私有类型按照修改时间排序后的前N个课程
+     *
+     * @param isPrivate 课程私有类型
+     * @param topNumber N
+     * @return 课程列表
+     * @author 郭欣光
+     */
+    @Override
+    public List<Course> getCourseListByIsPrivateAndTopNumberOrderByModifyTime(String isPrivate, int topNumber) {
+        if (courseDao.getCourseCountByIsPrivate(isPrivate) == 0) {
+            return null;
+        } else {
+            List<Course> courseList = courseDao.getCourseByLimitAndIsPrivateOrderByModifyTime(0, topNumber, isPrivate);
+            for (Course course : courseList) {
+                if (userDao.getUserCountByEmail(course.getUserEmail()) != 0) {
+                    User user = userDao.getUserByEmail(course.getUserEmail());
+                    course.setUserName(user.getName());
+                }
+            }
+            return courseList;
+        }
+    }
+
+    /**
+     * 获取指定课程私有类型按照学习人数排序后的前N个课程
+     *
+     * @param isPrivate 课程私有类型
+     * @param topNumber N
+     * @return 课程列表
+     * @author 郭欣光
+     */
+    @Override
+    public List<Course> getCourseListByIsPrivateAndTopNumberOrderByStudyNumber(String isPrivate, int topNumber) {
+        if (courseDao.getCourseCountByIsPrivate(isPrivate) == 0) {
+            return null;
+        } else {
+            List<Course> courseList = courseDao.getCourseByLimitAndIsPrivateOrderByStudyNumber(0, topNumber, isPrivate);
+            for (Course course : courseList) {
+                if (userDao.getUserCountByEmail(course.getUserEmail()) != 0) {
+                    User user = userDao.getUserByEmail(course.getUserEmail());
+                    course.setUserName(user.getName());
+                }
+            }
+            return courseList;
+        }
+    }
+
+    /**
+     * 获取用户课程信息
+     *
+     * @param user       用户信息
+     * @param coursePage 课程页数
+     * @return 课程先关信息
+     * @author 郭欣光
+     */
+    @Override
+    public JSONObject getCourseByUser(User user, String coursePage) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        int coursePageNumber = 1;
+        int coursePageInt = 0;
+        String hasCourse = "false";
+        try {
+            coursePageInt = Integer.parseInt(coursePage);
+        } catch (Exception e) {
+            coursePageInt = 0;
+        }
+        List<Course> courseList = null;
+        if (coursePageInt > 0) {
+            int courseCount = courseDao.getCourseCountByUserEmail(user.getEmail());
+            if (courseCount != 0) {
+                coursePageNumber = ((courseCount % courseCountEachPage) == 0) ? (courseCount / courseCountEachPage) : (courseCount / courseCountEachPage + 1);
+                if (coursePageInt <= coursePageNumber) {
+                    status = "true";
+                    hasCourse = "true";
+                    courseList = courseDao.getCourseByUserEmailAndLimit(user.getEmail(), coursePageInt - 1, courseCountEachPage);
+                    for (Course course : courseList) {
+                        course.setUserName(user.getName());
+                    }
+                }
+            } else if (coursePageInt == 1) {
+                status = "true";
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("coursePageNumber", coursePageNumber);
+        result.accumulate("coursePage", coursePageInt);
+        result.accumulate("courseList", courseList);
+        result.accumulate("hasCourse", hasCourse);
+        return result;
+    }
 }

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>智学新知 - 让教育更智能，让学习更有趣</title>
+      <title>智学新知 - 让教育更智能，让学习更有趣</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="robots" content="all,follow">
@@ -36,35 +36,40 @@
           <!-- Page Header-->
           <header class="page-header">
             <div class="container-fluid">
-              <h2 class="no-margin-bottom">消息通知</h2>
+              <h2 class="no-margin-bottom">我的课程</h2>
             </div>
           </header>
           <!-- Breadcrumb-->
-          <div class="breadcrumb-holder container-fluid">
-              <ul class="breadcrumb">
-                  <li class="breadcrumb-item active"><a href='javascript:history.go(-1)'>返回</a></li>
-              </ul>
-          </div>
           <section class="tables">
             <div class="container-fluid">
               <div class="row">
                 <div class="col-lg-12">
                   <div class="card">
                     <div class="card-header d-flex align-items-center">
-                      <h3 class="h4" th:text="${message.title}">--</h3>
+                      <h3 class="h4">我创建的</h3>
                     </div>
                     <div class="card-body">
+						<span th:if="${courseList} == null">这里空空如也~</span>
+                        <div class="row" th:if="${courseList} != null">
+                            <div class="col-md-4" th:each="course : ${courseList}">
+                                <img th:src="'/course_resource/' + ${course.image}" width="100%">
+                                <hr/>
+                                <h4 th:text="${course.name}"></h4>
+                                <p style="color: green;font-size:8px;">创建时间：<span th:text="${course.createTime}"></span> | 最近修改时间：<span th:text="${course.modifyTime}"></span></p>
+                                <p style="font-size:8px;" th:text="${#strings.abbreviate(course.introduction,50)}"></p>
+                                <button type="button" class="btn btn-primary" th:onclick="openCourseDetail([[${course.id}]]);">课程详情</button>
+                                <hr/>
+                            </div>
+                        </div>
 					  <div class="col-lg-12">
-                        <div  th:utext="${message.content}">
-                        </div>
-                        <br/>
-                        <div th:text="${#strings.substringBefore(message.createTime, '.')}"></div>
+						  <div class="btn-group pull-right" role="group">
+							  <button type="button" class="btn btn-default" disabled="disabled" th:if="${coursePrePage} == null"><span aria-hidden="true">&laquo;</span>上一页</button>
+							  <button type="button" class="btn btn-default" th:if="${coursePrePage} != null" th:onclick="openCourseList([[${coursePrePage}]]);"><span aria-hidden="true">&laquo;</span>上一页</button>
+                              <button type="button" class="btn btn-default" disabled="disabled" th:text="${coursePage} + '/' + ${coursePageNumber}">1/1</button>
+							  <button type="button" class="btn btn-default" disabled="disabled" th:if="${courseNextPage} == null">下一页<span aria-hidden="true">&raquo;</span></button>
+							  <button type="button" class="btn btn-default" th:if="${courseNextPage} != null" th:onclick="openCourseList([[${courseNextPage}]]);">下一页<span aria-hidden="true">&raquo;</span></button>
+						  </div>
 					  </div>
-                      <div class="col-lg-12">
-                        <div class="pull-right">
-                          <button type="button" class="btn btn-danger" th:onclick="openDeleteMessageConfirmModel([[${message.id}]])">删除</button>
-                        </div>
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -83,8 +88,6 @@
     <div th:include="/html_templates/loading.html :: loading"></div>
     <!-- 注销确认框 -->
     <div th:include="/html_templates/confirm_modal.html :: cancelUserConfirm"></div>
-    <!-- 删除消息确认框 -->
-    <div th:include="/html_templates/confirm_modal.html :: deleteMessageConfirm"></div>
     <!-- JavaScript files-->
     <script src="/user_static/vendor/jquery/jquery.min.js"></script>
     <script src="/user_static/vendor/popper.js/umd/popper.min.js"> </script>
@@ -97,6 +100,15 @@
 
     <script src="/my/js/utils.js"></script>
     <script src="/user_static/my/js/user.js"></script>
-    <script src="/user_static/my/js/message.js"></script>
+
+      <script>
+          function openCourseList(coursePage) {
+              window.location.href = "/user/course/create/" + coursePage;
+          }
+
+          function openCourseDetail(courseId) {
+              window.location.href = "/course/my/detail/" + courseId + "/1";
+          }
+      </script>
   </body>
 </html>

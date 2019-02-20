@@ -12,15 +12,30 @@
     </div>
     <!-- Sidebar Navidation Menus--><!-- <span class="heading">Main</span> -->
     <ul class="list-unstyled">
-        <li><a href="index.html"> <i class="icon-home"></i>个人中心 </a></li>
-        <li class="active"><a href="/user/message/all/1"> <i class="fa fa-bell-o"></i>消息通知 &nbsp;<span class="badge bg-red badge-corner" th:if="${unReadMessageCount} == null">0</span><span class="badge bg-red badge-corner" th:if="${unReadMessageCount} != null" th:text="${unReadMessageCount}">0</span> </a></li>
+        <li th:if="${pageName} eq '个人中心'" class="active"><a href="index.html"> <i class="icon-home"></i>个人中心 </a></li>
+        <li th:if="${pageName} ne '个人中心'"><a href="index.html"> <i class="icon-home"></i>个人中心 </a></li>
+        <li class="active" th:if="${pageName} eq '消息通知'"><a href="/user/message/all/1"> <i class="fa fa-bell-o"></i>消息通知 &nbsp;<span class="badge bg-red badge-corner" th:if="${unReadMessageCount} == null">0</span><span class="badge bg-red badge-corner" th:if="${unReadMessageCount} != null" th:text="${unReadMessageCount}">0</span> </a></li>
+        <li th:if="${pageName} ne '消息通知'"><a href="/user/message/all/1"> <i class="fa fa-bell-o"></i>消息通知 &nbsp;<span class="badge bg-red badge-corner" th:if="${unReadMessageCount} == null">0</span><span class="badge bg-red badge-corner" th:if="${unReadMessageCount} != null" th:text="${unReadMessageCount}">0</span> </a></li>
         <li><a href="charts.html"> <i class="fa fa-bar-chart"></i>Charts </a></li>
         <li><a href="forms.html"> <i class="icon-padnote"></i>Forms </a></li>
-        <li><a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse"> <i class="icon-interface-windows"></i>我的课程 </a>
-            <ul id="exampledropdownDropdown" class="collapse list-unstyled ">
-                <li><a href="">公共课程</a></li>
-                <li><a href="">私有课程</a></li>
-                <li th:if="${user} != null and ${user.role} eq '教师'"><a href="">我创建的</a></li>
+        <li ><a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse" th:if="${pageName} ne '公共课程' and ${pageName} ne '私有课程' and ${pageName} ne '我创建的'"> <i class="icon-interface-windows"></i>我的课程 </a>
+            <a href="#exampledropdownDropdown" aria-expanded="true" data-toggle="collapse" th:if="${pageName} eq '公共课程' or ${pageName} eq '私有课程' or ${pageName} eq '我创建的'"> <i class="icon-interface-windows"></i>我的课程 </a>
+            <ul id="exampledropdownDropdown" class="collapse list-unstyled show" th:if="${pageName} eq '公共课程' or ${pageName} eq '私有课程' or ${pageName} eq '我创建的'">
+                <li th:if="${pageName} eq '公共课程'" class="active"><a href="">公共课程</a></li>
+                <li th:if="${pageName} ne '公共课程'"><a href="">公共课程</a></li>
+                <li th:if="${pageName} eq '私有课程'" class="active"><a href="">私有课程</a></li>
+                <li th:if="${pageName} ne '私有课程'"><a href="">私有课程</a></li>
+                <li th:if="${user} != null and ${user.role} eq '教师' and ${pageName} eq '我创建的'" class="active"><a href="/user/course/create/1">我创建的</a></li>
+                <li th:if="${user} != null and ${user.role} eq '教师' and ${pageName} ne '我创建的'"><a href="/user/course/create/1">我创建的</a></li>
+                <li th:if="${user} != null and ${user.role} eq '教师'"><a href="/course/create">创建课程</a></li>
+            </ul>
+            <ul id="exampledropdownDropdown" class="collapse list-unstyled " th:if="${pageName} ne '公共课程' and ${pageName} ne '私有课程' and ${pageName} ne '我创建的'">
+                <li th:if="${pageName} eq '公共课程'" class="active"><a href="">公共课程</a></li>
+                <li th:if="${pageName} ne '公共课程'"><a href="">公共课程</a></li>
+                <li th:if="${pageName} eq '私有课程'" class="active"><a href="">私有课程</a></li>
+                <li th:if="${pageName} ne '私有课程'"><a href="">私有课程</a></li>
+                <li th:if="${user} != null and ${user.role} eq '教师' and ${pageName} eq '我创建的'" class="active"><a href="/user/course/create/1">我创建的</a></li>
+                <li th:if="${user} != null and ${user.role} eq '教师' and ${pageName} ne '我创建的'"><a href="/user/course/create/1">我创建的</a></li>
                 <li th:if="${user} != null and ${user.role} eq '教师'"><a href="/course/create">创建课程</a></li>
             </ul>
         </li>

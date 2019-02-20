@@ -90,4 +90,31 @@ public interface CourseService {
      * @author 郭欣光
      */
     String editCourseImage(String courseId, MultipartFile courseImage, HttpServletRequest request);
+
+    /**
+     * 获取指定课程私有类型按照修改时间排序后的前N个课程
+     * @param isPrivate 课程私有类型
+     * @param topNumber N
+     * @return 课程列表
+     * @author 郭欣光
+     */
+    List<Course> getCourseListByIsPrivateAndTopNumberOrderByModifyTime(String isPrivate, int topNumber);
+
+    /**
+     * 获取指定课程私有类型按照学习人数排序后的前N个课程
+     * @param isPrivate 课程私有类型
+     * @param topNumber N
+     * @return 课程列表
+     * @author 郭欣光
+     */
+    List<Course> getCourseListByIsPrivateAndTopNumberOrderByStudyNumber(String isPrivate, int topNumber);
+
+    /**
+     * 获取用户课程信息
+     * @param user 用户信息
+     * @param coursePage 课程页数
+     * @return 课程先关信息
+     * @author 郭欣光
+     */
+    JSONObject getCourseByUser(User user, String coursePage);
 }

@@ -2,6 +2,7 @@ package com.gxg.controller;
 
 import com.gxg.entities.Message;
 import com.gxg.entities.User;
+import com.gxg.service.CourseService;
 import com.gxg.service.MessageService;
 import com.gxg.service.UserService;
 import org.json.JSONObject;
@@ -29,6 +30,9 @@ public class UserController {
 
     @Autowired
     private MessageService messageService;
+
+    @Autowired
+    private CourseService courseService;
 
     @GetMapping(value = "/login")
     public String getLoginPage(@RequestParam(required = false) String next, Model model, HttpServletRequest request) {
@@ -96,6 +100,7 @@ public class UserController {
                 }
                 model = messageCommonModel(model, user);
                 model.addAttribute("messageType", messageType);
+                model.addAttribute("pageName", "消息通知");
                 return "/user/message.html";
             }
         }
@@ -122,6 +127,7 @@ public class UserController {
             } else {
                 model = messageCommonModel(model, user);
                 model.addAttribute("message", message);
+                model.addAttribute("pageName", "消息通知");
                 return "/user/message_detail.html";
             }
         }
@@ -168,5 +174,38 @@ public class UserController {
         int unReadMessageCount = messageService.getUnreadMessageCount(user);
         model.addAttribute("unReadMessageCount", unReadMessageCount);
         return model;
+    }
+
+    @GetMapping("/course/create/{page}")
+    public String myCourse(@PathVariable String page, HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            return "redirect:/user/login?next=" + "/user/course/create/" + page;
+        } else {
+            User user = (User)session.getAttribute("user");
+            JSONObject courseListInfo = courseService.getCourseByUser(user, page);
+            if ("false".equals(courseListInfo.getString("status"))) {
+                return "redirect:/user/course/create/1";
+            } else {
+                int coursePageInt = courseListInfo.getInt("coursePage");
+                int coursePageNumber = courseListInfo.getInt("coursePageNumber");
+                model.addAttribute("coursePage", coursePageInt);
+                model.addAttribute("coursePageNumber", coursePageNumber);
+                if (coursePageInt > 1) {
+                    int coursePrePage = coursePageInt - 1;
+                    model.addAttribute("coursePrePage", coursePrePage);
+                }
+                if (coursePageInt < coursePageNumber) {
+                    int courseNextPage = coursePageInt + 1;
+                    model.addAttribute("courseNextPage", courseNextPage);
+                }
+                if ("true".equals(courseListInfo.getString("hasCourse"))) {
+                    model.addAttribute("courseList", courseListInfo.get("courseList"));
+                }
+                model = messageCommonModel(model, user);
+                model.addAttribute("pageName", "我创建的");
+            }
+            return "/user/my_course.html";
+        }
     }
 }

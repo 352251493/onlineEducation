@@ -61,13 +61,8 @@
                                     <!-- Post Excerpt -->
                                     <p th:text="${course.introduction}"></p>
                                     <!-- Read More btn -->
-                                    <button type="button" class="btn btn-success">添加课时</button>
                                     <button type="button" class="btn btn-info">考试列表</button>
-                                    <button type="button" class="btn btn-primary">添加考试</button>
-                                    <button type="button" class="btn btn-success" onclick="openEditCourseModel();">修改资料</button>
-                                    <button type="button" class="btn btn-primary" onclick="openEditCourseImageModel();">修改封面</button>
-                                    <button type="button" class="btn btn-info" th:if="${course.isPrivate} eq '1'">学习人员管理</button>
-                                    <button type="button" class="btn btn-danger">删除</button>
+                                    <button type="button" class="btn btn-primary" th:if="${course.userEmail} eq ${user.email}">管理课程</button>
                                 </div>
                             </div>
                         </div>
@@ -88,10 +83,7 @@
                                             <p>最后修改于：<span th:text="${#strings.substringBefore(lesson.modifyTime, '.')}"></span></p>
                                             <div class="pull-right">
                                                 <button type="button" class="btn btn-primary">查看</button>
-                                                <button type="button" class="btn btn-info">修改</button>
                                                 <button type="button" class="btn btn-primary">资料列表</button>
-                                                <button type="button" class="btn btn-success">上传资料</button>
-                                                <button type="button" class="btn btn-danger">删除</button>
                                             </div>
                                         </div>
                                         <br/>
@@ -154,10 +146,10 @@
                                     <!--</div>-->
                                     <div class="btn-group pull-right" role="group">
                                         <button type="button" class="btn btn-default" disabled="disabled" th:if="${lessonPrePage} == null"><span aria-hidden="true">&laquo;</span>上一页</button>
-                                        <button type="button" class="btn btn-default" th:if="${lessonPrePage} != null" th:onclick="openMyCourseDetailPage([[${course.id}]], [[${lessonPrePage}]]);"><span aria-hidden="true">&laquo;</span>上一页</button>
+                                        <button type="button" class="btn btn-default" th:if="${lessonPrePage} != null"><span aria-hidden="true">&laquo;</span>上一页</button>
                                         <button type="button" class="btn btn-default" disabled="disabled" th:text="${lessonPage} + '/' + ${lessonPageNumber}">1/1</button>
                                         <button type="button" class="btn btn-default" disabled="disabled" th:if="${lessonNextPage} == null">下一页<span aria-hidden="true">&raquo;</span></button>
-                                        <button type="button" class="btn btn-default" th:if="${lessonNextPage} != null" th:onclick="openMyCourseDetailPage([[${course.id}]], [[${lessonNextPage}]]);">下一页<span aria-hidden="true">&raquo;</span></button>
+                                        <button type="button" class="btn btn-default" th:if="${lessonNextPage} != null">下一页<span aria-hidden="true">&raquo;</span></button>
                                     </div>
                                 </div>
                             </div>
@@ -167,13 +159,11 @@
 
                 <div class="col-12 col-md-4">
                     <div class="academy-blog-sidebar">
-                        <div class="latest-blog-posts mb-30" th:include="/html_templates/my_last_course.html :: myLastCourse">
+                        <div class="latest-blog-posts mb-30" th:include="/html_templates/last_course.html :: lastCourse">
                         </div>
 
-                        <!-- Add Widget -->
-                        <!-- <div class="add-widget">
-                            <a href="#"><img src="img/blog-img/add.png" alt=""></a>
-                        </div> -->
+                        <div class="latest-blog-posts mb-30" th:include="/html_templates/popular_course.html :: popularCourse">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -184,57 +174,6 @@
     <!-- ##### Footer Area Start ##### -->
     <footer class="footer-area" th:include="/html_templates/footer.html :: footer"></footer>
     <!-- ##### Footer Area Start ##### -->
-    <div id="editCourseModel" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="editCourseModelLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="editCourseModelLabel">修改资料</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="editCourseModelClose"><span aria-hidden="true">&times;</span></button>
-                </div>
-                <div class="modal-body" id="editCourseModelInfo">
-                    <form id="editCourseForm">
-                        <div class="form-group">
-                            <label for="courseName" style="font-weight:bold;">课程名称</label>
-                            <input type="text" class="form-control" id="courseName" name="courseName" maxlength="100" placeholder="不得超过100字符" th:value="${course.name}">
-                        </div>
-                        <div class="form-group">
-                            <label for="courseIntroduction" style="font-weight:bold;">课程简介</label>
-                            <textarea class="form-control" rows="3" id="courseIntroduction" name="courseIntroduction" placeholder="不得超过500字符" maxlength="500" th:text="${course.introduction}"></textarea>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
-                    <button class="btn btn-primary" th:onclick="editCourse([[${course.id}]]);">确定</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="editCourseImageModel" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="editCourseImageModelLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="editCourseImageModelLabel">修改封面</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="editCourseImageModelClose"><span aria-hidden="true">&times;</span></button>
-                </div>
-                <div class="modal-body" id="editCourseImageModelInfo">
-                    <form id="editCourseImageForm" enctype="multipart/form-data">
-                        <input type="hidden" name="courseId" id="courseId" th:value="${course.id}">
-                        <div class="form-group">
-                            <label for="courseImage" style="font-weight:bold;">封面图片</label>
-                            <input type="file" id="courseImage" name="courseImage" class="form-control"  multiple accept="image/*">
-                            <p class="help-block" style="color:red;">* 封面图片大小不能超过10MB</p>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
-                    <button class="btn btn-primary" onclick="editCourseImage();">确定</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- 信息提示框 -->
     <div th:include="/html_templates/alert_info.html :: alert"></div>
@@ -253,7 +192,6 @@
     <script src="/js/active.js"></script>
 
     <script src="/my/js/utils.js"></script>
-    <script src="/my/js/my_course_detail.js"></script>
 </body>
 
 </html>
