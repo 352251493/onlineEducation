@@ -28,4 +28,20 @@ public interface LessonDao {
      * @author 郭欣光
      */
     List<Lesson> getLessonByCourseIdAndLimitOrderByModifyTime(String courseId, int limitStart, int limitEnd);
+
+    /**
+     * 根据ID获取课时数量
+     * @param id 课时ID
+     * @return 课时数量
+     * @author 郭欣光
+     */
+    int getCountById(String id);
+
+    /**
+     * 创建课时
+     * @param lesson 课时信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    int createLesson(Lesson lesson);
 }

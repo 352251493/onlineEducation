@@ -61,7 +61,7 @@
                                     <!-- Post Excerpt -->
                                     <p th:text="${course.introduction}"></p>
                                     <!-- Read More btn -->
-                                    <button type="button" class="btn btn-success">添加课时</button>
+                                    <button type="button" class="btn btn-success" th:onclick="openCreateLessonPage([[${course.id}]]);">添加课时</button>
                                     <button type="button" class="btn btn-info">考试列表</button>
                                     <button type="button" class="btn btn-primary">添加考试</button>
                                     <button type="button" class="btn btn-success" onclick="openEditCourseModel();">修改资料</button>

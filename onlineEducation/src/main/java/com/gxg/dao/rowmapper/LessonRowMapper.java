@@ -20,7 +20,7 @@ public class LessonRowMapper implements RowMapper<Lesson> {
         lesson.setContent(resultSet.getString("content"));
         lesson.setCreateTime(resultSet.getTimestamp("create_time"));
         lesson.setModifyTime(resultSet.getTimestamp("modify_time"));
-        lesson.setCourseId(resultSet.getString("courseId"));
+        lesson.setCourseId(resultSet.getString("course_id"));
         return lesson;
     }
 }

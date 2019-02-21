@@ -48,4 +48,32 @@ public class LessonDaoImpl implements LessonDao {
         List<Lesson> lessonList = jdbcTemplate.query(sql, new LessonRowMapper(), courseId, limitStart, limitEnd);
         return lessonList;
     }
+
+    /**
+     * 根据ID获取课时数量
+     *
+     * @param id 课时ID
+     * @return 课时数量
+     * @author 郭欣光
+     */
+    @Override
+    public int getCountById(String id) {
+        String sql = "select count(1) from lesson where id=?";
+        int rowCount = jdbcTemplate.queryForObject(sql, Integer.class, id);
+        return rowCount;
+    }
+
+    /**
+     * 创建课时
+     *
+     * @param lesson 课时信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    @Override
+    public int createLesson(Lesson lesson) {
+        String sql = "insert into lesson(id, name, content, create_time, modify_time, course_id) values(?, ?, ?, ?, ?, ?)";
+        int changeCount = jdbcTemplate.update(sql, lesson.getId(), lesson.getName(), lesson.getContent(), lesson.getCreateTime(), lesson.getModifyTime(), lesson.getCourseId());
+        return changeCount;
+    }
 }

@@ -208,4 +208,16 @@ public class UserController {
             return "/user/my_course.html";
         }
     }
+
+    @PostMapping(value = "/get")
+    @ResponseBody
+    public String getUser(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            return "No user login";
+        } else {
+            User user = (User)session.getAttribute("user");
+            return user.toString();
+        }
+    }
 }

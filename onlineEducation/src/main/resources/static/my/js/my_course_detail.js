@@ -117,3 +117,7 @@ function editCourseImageSuccess(data) {
 function openMyCourseDetailPage(courseId, lessonPage) {
     window.location.href = "/course/my/detail/" + courseId + "/" + lessonPage;
 }
+
+function openCreateLessonPage(courseId) {
+    window.location.href = "/lesson/create/" + courseId;
+}
