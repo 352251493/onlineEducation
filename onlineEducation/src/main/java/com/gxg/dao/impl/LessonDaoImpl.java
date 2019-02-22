@@ -76,4 +76,18 @@ public class LessonDaoImpl implements LessonDao {
         int changeCount = jdbcTemplate.update(sql, lesson.getId(), lesson.getName(), lesson.getContent(), lesson.getCreateTime(), lesson.getModifyTime(), lesson.getCourseId());
         return changeCount;
     }
+
+    /**
+     * 根据课时ID获取课时信息
+     *
+     * @param id 课时ID
+     * @return 课时信息
+     * @author 郭欣光
+     */
+    @Override
+    public Lesson getLessonById(String id) {
+        String sql = "select * from lesson where id=?";
+        Lesson lesson = jdbcTemplate.queryForObject(sql, new LessonRowMapper(), id);
+        return lesson;
+    }
 }

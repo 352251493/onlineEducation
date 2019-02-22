@@ -44,4 +44,12 @@ public interface LessonDao {
      * @author 郭欣光
      */
     int createLesson(Lesson lesson);
+
+    /**
+     * 根据课时ID获取课时信息
+     * @param id 课时ID
+     * @return 课时信息
+     * @author 郭欣光
+     */
+    Lesson getLessonById(String id);
 }

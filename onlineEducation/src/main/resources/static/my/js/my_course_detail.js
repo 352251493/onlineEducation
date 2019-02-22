@@ -121,3 +121,7 @@ function openMyCourseDetailPage(courseId, lessonPage) {
 function openCreateLessonPage(courseId) {
     window.location.href = "/lesson/create/" + courseId;
 }
+
+function openMyLessonPage(lessonId) {
+    window.location.href = "/lesson/my/detail/" + lessonId;
+}

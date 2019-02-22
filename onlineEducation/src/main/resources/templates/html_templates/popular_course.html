@@ -11,7 +11,7 @@
             <img th:src="'/course_resource/' + ${courseOrderByStudyNumber.image}" alt="">
         </div>
         <div class="latest-blog-post-content">
-            <a th:href="'/course/my/detail/' + ${courseOrderByStudyNumber.id} + '/1'" class="post-title">
+            <a th:href="'/course/public/detail/' + ${courseOrderByStudyNumber.id} + '/1'" class="post-title">
                 <h6 th:text="${courseOrderByStudyNumber.name}"></h6>
             </a>
             <a href="" class="post-date" th:text="${#strings.substringBefore(courseOrderByStudyNumber.modifyTime, '.')}"></a>

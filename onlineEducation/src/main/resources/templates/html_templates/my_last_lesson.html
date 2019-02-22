@@ -5,7 +5,7 @@
     <h5>课时列表</h5>
     <span th:if="${myLessonList} == null">这里空空如也~</span>
     <ul th:if="${myLessonList} != null">
-        <li th:each="myLesson : ${myLessonList}"><a href="" th:text="${myLesson.name}"></a></li>
+        <li th:each="myLesson : ${myLessonList}"><a th:href="'/lesson/my/detail/' + ${myLesson.id}" th:text="${myLesson.name}"></a></li>
     </ul>
     <ul th:if="${hasMoreLesson} != null">
         <li><a th:href="'/course/my/detail/' + ${course.id}">查看更多</a></li>

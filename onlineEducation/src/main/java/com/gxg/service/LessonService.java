@@ -42,4 +42,12 @@ public interface LessonService {
      * @author 郭欣光
      */
     String createLesson(String courseId, String lessonName, String lessonContent, HttpServletRequest request);
+
+    /**
+     * 根据课时ID获取课时信息
+     * @param lessonId 课时ID
+     * @return 课时信息
+     * @author 郭欣光
+     */
+    Lesson getLessonById(String lessonId);
 }

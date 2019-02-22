@@ -207,4 +207,24 @@ public class LessonServiceImpl implements LessonService {
         message += "<p style='color: red;'>如果不是您本人操作，可能密码已经泄露，请尽快修改密码！</p>";
         return message;
     }
+
+    /**
+     * 根据课时ID获取课时信息
+     *
+     * @param lessonId 课时ID
+     * @return 课时信息
+     * @author 郭欣光
+     */
+    @Override
+    public Lesson getLessonById(String lessonId) {
+        if (lessonDao.getCountById(lessonId) == 0) {
+            return null;
+        } else {
+            Lesson lesson = lessonDao.getLessonById(lessonId);
+            String lessonFile = courseResourceDir + lesson.getContent();
+            JSONObject fileContent = FileUtils.readFile(lessonFile);
+            lesson.setContent(fileContent.getString("content"));
+            return lesson;
+        }
+    }
 }

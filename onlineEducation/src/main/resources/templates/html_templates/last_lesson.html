@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="lastLesson">
+    <h5>课时列表</h5>
+    <span th:if="${lessonListOrderByModifyTime} == null">这里空空如也~</span>
+    <ul th:if="${lessonListOrderByModifyTime} != null">
+        <li th:each="lessonOrderByModifyTime : ${lessonListOrderByModifyTime}"><a th:href="'/lesson/public/detail/' + ${lessonOrderByModifyTime.id}" th:text="${lessonOrderByModifyTime.name}"></a></li>
+    </ul>
+    <ul th:if="${hasMoreLessonOrderByModifyTime} != null">
+        <li><a th:href="'/course/' + ${courseType} + '/detail/' + ${lessonOrderByModifyTime.courseId}">查看更多</a></li>
+    </ul>
+</div>
+</body>
+</html>
