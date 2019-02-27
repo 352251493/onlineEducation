@@ -5,3 +5,7 @@
 function openMyCourseDetailPage(courseId) {
     window.location.href = "/course/my/detail/" + courseId + "/1";
 }
+
+function openEditLesson(lessonId) {
+    window.location.href = "/lesson/edit/" + lessonId;
+}

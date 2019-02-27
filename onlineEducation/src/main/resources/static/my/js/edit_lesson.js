@@ -1,9 +1,13 @@
 /**
- * Created by 郭欣光 on 2019/2/21.
+ * Created by 郭欣光 on 2019/2/27.
  */
 
 function openCourseDetail(courseId) {
     window.location.href = "/course/my/detail/" + courseId + "/1";
+}
+
+function openMyLessonPage(lessonId) {
+    window.location.href = "/lesson/my/detail/" + lessonId;
 }
 
 function getUser() {
@@ -21,12 +25,12 @@ function getUser() {
     });
 }
 
-function createLesson() {
-    var courseId = $("#courseId").val();
+function editLesson() {
+    var lessonId = $("#lessonId").val();
     var lessonName = $("#lessonName").val();
     var lessonContent = editor.txt.html();
-    if (stringIsEmpty(courseId)) {
-        openAlertModel("系统获取课程信息失败！");
+    if (stringIsEmpty(lessonId)) {
+        openAlertModel("系统获取课时信息失败！");
     } else if (stringIsEmpty(lessonName)) {
         openAlertModel("给课时起个名字吧~");
     } else if (lessonName.length > 100) {
@@ -36,15 +40,15 @@ function createLesson() {
     } else {
         openLoadingModel();
         var obj = new Object();
-        obj.courseId = courseId;
+        obj.lessonId = lessonId;
         obj.lessonName = lessonName;
         obj.lessonContent = lessonContent;
         $.ajax({
-            url: "/lesson/create",
+            url: "/lesson/edit",
             type: "POST",
             cache: false,//设置不缓存
             data: obj,
-            success: createLessonSuccess,
+            success: editLessonSuccess,
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 closeLoadingModel();
                 openAjaxErrorAlert(XMLHttpRequest, textStatus, errorThrown);
@@ -53,7 +57,7 @@ function createLesson() {
     }
 }
 
-function createLessonSuccess(data) {
+function editLessonSuccess(data) {
     var result = JSON.parse(data);
     closeLoadingModel();
     if (result.status == "true") {
@@ -62,6 +66,7 @@ function createLessonSuccess(data) {
         openAlertModel(result.content);
     }
 }
+
 
 $(document).ready(function () {
     var E = window.wangEditor;

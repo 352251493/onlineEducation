@@ -138,4 +138,43 @@ public class LessonController {
             return "/my_lesson_detail.html";
         }
     }
+
+    @GetMapping(value = "/edit/{lessonId}")
+    public String editLesson(@PathVariable String lessonId, HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            return "redirect:/user/login?next=" + "/lesson/edit/" + lessonId;
+        } else {
+            User user = (User)session.getAttribute("user");
+            Lesson lesson = lessonService.getLessonById(lessonId);
+            Course course = courseService.getCourseById(lesson.getCourseId());
+            if (lesson == null || course == null || !course.getUserEmail().equals(user.getEmail())) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            model.addAttribute("lesson", lesson);
+            model.addAttribute("course", course);
+            int unReadMessageCount = messageService.getUnreadMessageCount(user);
+            model.addAttribute("unReadMessageCount", unReadMessageCount);
+            model.addAttribute("user", user);
+            List<Course> courseList = courseService.getUserCourseByTopNumber(user, 5);
+            model.addAttribute("myCourseList", courseList);
+            if (courseList != null && courseList.size() >= 5) {
+                model.addAttribute("hasMoreCourse", "yes");
+            }
+            List<Lesson> lessonList = lessonService.getLessonListByCourseIdAndTopNumber(lesson.getCourseId(), 5);
+            model.addAttribute("myLessonList", lessonList);
+            if (lessonList != null && lessonList.size() >= 5) {
+                model.addAttribute("hasMoreLesson", "yes");
+            }
+            return "/edit_lesson.html";
+        }
+    }
+
+    @PostMapping(value = "/edit")
+    @ResponseBody
+    public String editLesson(@RequestParam String lessonId, @RequestParam String lessonName, @RequestParam String lessonContent, HttpServletRequest request) {
+        return lessonService.editLesson(lessonId, lessonName, lessonContent, request);
+    }
 }

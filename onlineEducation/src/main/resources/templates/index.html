@@ -17,6 +17,8 @@
     <!-- Core Stylesheet -->
     <link rel="stylesheet" href="/style.css">
 
+    <link rel="stylesheet" href="/my/css/course.css">
+
 </head>
 
 <body>
@@ -320,88 +322,20 @@
                 </div>
             </div>
             <div class="row">
-               
+
+                <span th:if="${courseListOrderByStudyNumber} == null">更多精彩请耐心等待~</span>
                 <!-- Single Top Popular Course -->
-                <div class="col-12 col-lg-6">
+                <div class="col-12 col-lg-6" th:if="${courseListOrderByStudyNumber} != null" th:each="courseOrderByStudyNumber : ${courseListOrderByStudyNumber}">
                     <div class="single-top-popular-course d-flex align-items-center flex-wrap mb-30 wow fadeInUp" data-wow-delay="400ms">
                         <div class="popular-course-content">
-                            <h5>Business for begginers</h5>
-                            <span>By Simon Smith   |  March 18, 2018</span>
-                            <div class="course-ratings">
-                                <!-- <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star-o" aria-hidden="true"></i> -->
-								学习人数：609人
+                            <h5 th:text="${courseOrderByStudyNumber.name}"></h5>
+                            <span th:text="${courseOrderByStudyNumber.userName} + '   |  ' + ${#strings.substringBefore(courseOrderByStudyNumber.modifyTime, '.')}"></span>
+                            <div class="course-ratings" th:text="'学习人数：' + ${courseOrderByStudyNumber.studyNumber} + '人'">
                             </div>
-                            <p>Cras vitae turpis lacinia, lacinia lacus non, fermentum nisi. Donec et sollicitudin est, in euismod.</p>
-                            <a href="#" class="btn academy-btn btn-sm">查看详情</a>
+                            <p th:text="${#strings.abbreviate(courseOrderByStudyNumber.introduction,50)}"></p>
+                            <a th:href="'/course/public/detail/' + ${courseOrderByStudyNumber.id} + '/1'" class="btn academy-btn btn-sm">查看详情</a>
                         </div>
-                        <div class="popular-course-thumb bg-img" style="background-image: url(/img/bg-img/pc-1.jpg);"></div>
-                    </div>
-                </div>
-                
-                <!-- Single Top Popular Course -->
-                <div class="col-12 col-lg-6">
-                    <div class="single-top-popular-course d-flex align-items-center flex-wrap mb-30 wow fadeInUp" data-wow-delay="500ms">
-                        <div class="popular-course-content">
-                            <h5>Advanced HTML5</h5>
-                            <span>By Simon Smith   |  March 18, 2018</span>
-                            <div class="course-ratings">
-                                <!-- <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star-o" aria-hidden="true"></i> -->
-								学习人数：609人
-                            </div>
-                            <p>Cras vitae turpis lacinia, lacinia lacus non, fermentum nisi. Donec et sollicitudin est, in euismod.</p>
-                            <a href="#" class="btn academy-btn btn-sm">查看详情</a>
-                        </div>
-                        <div class="popular-course-thumb bg-img" style="background-image: url(/img/bg-img/pc-2.jpg);"></div>
-                    </div>
-                </div>
-                
-                <!-- Single Top Popular Course -->
-                <div class="col-12 col-lg-6">
-                    <div class="single-top-popular-course d-flex align-items-center flex-wrap mb-30 wow fadeInUp" data-wow-delay="600ms">
-                        <div class="popular-course-content">
-                            <h5>Marketing 101</h5>
-                            <span>By Simon Smith   |  March 18, 2018</span>
-                            <div class="course-ratings">
-                                <!-- <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star-o" aria-hidden="true"></i> -->
-								学习人数：609人
-                            </div>
-                            <p>Cras vitae turpis lacinia, lacinia lacus non, fermentum nisi. Donec et sollicitudin est, in euismod.</p>
-                            <a href="#" class="btn academy-btn btn-sm">查看详情</a>
-                        </div>
-                        <div class="popular-course-thumb bg-img" style="background-image: url(/img/bg-img/pc-3.jpg);"></div>
-                    </div>
-                </div>
-                
-                <!-- Single Top Popular Course -->
-                <div class="col-12 col-lg-6">
-                    <div class="single-top-popular-course d-flex align-items-center flex-wrap mb-30 wow fadeInUp" data-wow-delay="700ms">
-                        <div class="popular-course-content">
-                            <h5>Business for begginers</h5>
-                            <span>By Simon Smith   |  March 18, 2018</span>
-                            <div class="course-ratings">
-                                <!-- <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star-o" aria-hidden="true"></i> -->
-								学习人数：609人
-                            </div>
-                            <p>Cras vitae turpis lacinia, lacinia lacus non, fermentum nisi. Donec et sollicitudin est, in euismod.</p>
-                            <a href="#" class="btn academy-btn btn-sm">查看详情</a>
-                        </div>
-                        <div class="popular-course-thumb bg-img" style="background-image: url(/img/bg-img/pc-4.jpg);"></div>
+                        <div class="popular-course-thumb bg-img"><img class="gxg-course-style" th:src="'/course_resource/' + ${courseOrderByStudyNumber.image}" width="100%"></div>
                     </div>
                 </div>
             </div>

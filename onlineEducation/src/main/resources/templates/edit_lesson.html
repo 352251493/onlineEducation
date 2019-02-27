@@ -33,7 +33,7 @@
     <!-- ##### Breadcumb Area Start ##### -->
     <div class="breadcumb-area bg-img" style="background-image: url(/img/bg-img/breadcumb.jpg);">
         <div class="bradcumbContent">
-            <h2>课时详情</h2>
+            <h2>修改课时</h2>
         </div>
     </div>
     <!-- ##### Breadcumb Area End ##### -->
@@ -48,21 +48,48 @@
                             <!-- Single Blog Start -->
                             <div class="col-12">
                                 <div class="single-blog-post mb-50 wow fadeInUp" data-wow-delay="300ms">
+                                    <!-- Post Thumb -->
+                                    <div class="blog-post-thumb mb-50">
+                                        <img th:src="'/course_resource/' + ${course.image}" alt="" width="100%">
+                                    </div>
                                     <!-- Post Title -->
-                                    <a href="" th:text="${lesson.name}" class="post-title"></a>
+                                    <a href="" th:text="${course.name}" class="post-title"></a>
                                     <!-- Post Meta -->
                                     <div class="post-meta">
-                                        <p><a href="" th:text="'创建时间：' + ${#strings.substringBefore(lesson.createTime, '.')}"></a> | <a href="" th:text="'最近修改时间：' + ${#strings.substringBefore(lesson.modifyTime, '.')}"></a></p>
+                                        <p><a href="" th:text="${course.userName}"></a> | <a href="" th:text="'创建时间：' + ${#strings.substringBefore(course.createTime, '.')}"></a> | <a href="" th:text="'最近修改时间：' + ${#strings.substringBefore(course.modifyTime, '.')}"></a> | <a href="" th:text="'学习人数：' + ${course.studyNumber} + '人'"></a></p>
                                     </div>
+                                    <!-- Post Excerpt -->
+                                    <p th:text="${course.introduction}"></p>
                                     <!-- Read More btn -->
-                                    <button type="button" class="btn btn-primary">资料列表</button>
-                                    <button type="button" class="btn btn-success">上传资料</button>
-                                    <button type="button" class="btn btn-primary" th:onclick="openEditLesson([[${lesson.id}]]);">修改</button>
-                                    <button type="button" class="btn btn-info" th:onclick="openMyCourseDetailPage([[${lesson.courseId}]]);">返回课程</button>
-                                    <button type="button" class="btn btn-danger">删除</button>
-                                    <hr/>
-                                    <div th:utext="${lesson.content}">
-                                    </div>
+                                    <button type="button" class="btn btn-primary" th:onclick="openCourseDetail([[${course.id}]]);">课程详情</button>
+                                    <button type="button" class="btn btn-success" th:onclick="openMyLessonPage([[${lesson.id}]]);">课时详情</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="academy-blog-posts">
+                        <div class="row">
+                            <!-- Single Blog Start -->
+                            <div class="col-12">
+                                <div class="single-blog-post mb-50 wow fadeInUp" data-wow-delay="300ms">
+                                    <!-- Post Title -->
+                                    <h5>修改课时</h5>
+                                    <br/>
+                                    <form id="editLessonForm" onsubmit="javascript : editLesson(); return false;">
+                                        <input type="hidden" id="lessonId" name="lessonId" th:value="${lesson.id}">
+                                        <div class="form-group">
+                                            <label for="lessonName" style="font-weight:bold;">课时名称</label>
+                                            <input type="text" class="form-control" id="lessonName" name="lessonName" maxlength="100" placeholder="不得超过100字符" th:value="${lesson.name}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label style="font-weight:bold;">课时内容</label>
+                                            <div id="lessonContent" th:utext="${lesson.content}">
+                                            </div>
+                                        </div>
+                                        <br/>
+                                        <button type="submit" class="btn btn-default">确认</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -76,6 +103,11 @@
 
                         <div class="latest-blog-posts mb-30" th:include="/html_templates/my_last_course.html :: myLastCourse">
                         </div>
+
+                        <!-- Add Widget -->
+                        <!-- <div class="add-widget">
+                            <a href="#"><img src="img/blog-img/add.png" alt=""></a>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -86,7 +118,6 @@
     <!-- ##### Footer Area Start ##### -->
     <footer class="footer-area" th:include="/html_templates/footer.html :: footer"></footer>
     <!-- ##### Footer Area Start ##### -->
-
     <!-- 信息提示框 -->
     <div th:include="/html_templates/alert_info.html :: alert"></div>
     <!-- 等待框 -->
@@ -103,9 +134,10 @@
     <!-- Active js -->
     <script src="/js/active.js"></script>
 
+    <!--wangEditor富文本编辑器-->
+    <script src="/my/js/wangEditor/release/wangEditor.min.js"></script>
     <script src="/my/js/utils.js"></script>
-
-    <script src="/my/js/my_lesson_detail.js"></script>
+    <script src="/my/js/edit_lesson.js"></script>
 </body>
 
 </html>

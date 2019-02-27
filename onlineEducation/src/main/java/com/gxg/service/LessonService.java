@@ -50,4 +50,15 @@ public interface LessonService {
      * @author 郭欣光
      */
     Lesson getLessonById(String lessonId);
+
+    /**
+     * 修改课时内容
+     * @param lessonId 课时ID
+     * @param lessonName 课时名称
+     * @param lessonContent 课时内容
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    String editLesson(String lessonId, String lessonName, String lessonContent, HttpServletRequest request);
 }

@@ -227,4 +227,94 @@ public class LessonServiceImpl implements LessonService {
             return lesson;
         }
     }
+
+
+    /**
+     * 修改课时内容
+     *
+     * @param lessonId      课时ID
+     * @param lessonName    课时名称
+     * @param lessonContent 课时内容
+     * @param request       用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public String editLesson(String lessonId, String lessonName, String lessonContent, HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "修改失败！";
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            content = "系统未检测到登录用户信息，请刷新页面后重试！";
+        } else if (StringUtils.isEmpty(lessonName)) {
+            content = "给课时起个名字吧~";
+        } else if (lessonName.length() > 100) {
+            content = "课时名称不能超过100字符~";
+        } else if (StringUtils.isEmpty(lessonContent)) {
+            content = "写点内容呗~";
+        } else if (lessonDao.getCountById(lessonId) == 0) {
+            content = "没有该课时！";
+        } else {
+            User user = (User)session.getAttribute("user");
+            Lesson lesson = lessonDao.getLessonById(lessonId);
+            if (courseDao.getCountById(lesson.getCourseId()) == 0) {
+                content = "找不到课时相关的课程！";
+            } else {
+                Course course = courseDao.getCourseById(lesson.getCourseId());
+                if (course.getUserEmail() != null && course.getUserEmail().equals(user.getEmail())) {
+                    String filePath = courseResourceDir + Md5.md5(lesson.getCourseId()) + "/lesson/";
+                    JSONObject writeFileResult = FileUtils.writeFile(filePath, Md5.md5(lessonId) + ".html", lessonContent);
+                    if ("true".equals(writeFileResult.getString("status"))) {
+                        boolean updateSuccess = false;
+                        Timestamp time = new Timestamp(System.currentTimeMillis());
+                        lesson.setName(lessonName);
+                        lesson.setModifyTime(time);
+                        try {
+                            if (lessonDao.editLesson(lesson) == 0) {
+                                content = "课时内容修改成功，其他信息由于操作数据库失败导致修改失败！";
+                                System.out.println("ERROR:系统修改课时" + lesson.toString() + "操作数据库失败");
+                            } else {
+                                status = "true";
+                                content = lessonId;
+                                updateSuccess = true;
+                            }
+                        } catch (Exception e) {
+                            content = "课时内容修改成功，其他信息由于操作数据库失败导致修改失败！";
+                            System.out.println("ERROR:系统修改课时" + lesson.toString() + "操作数据库失败，失败原因：" + e);
+                        }
+                        if (updateSuccess) {
+                            course.setModifyTime(time);
+                            try {
+                                if (courseDao.editCourse(course) == 0) {
+                                    System.out.println("ERROR:系统修改课时" + lesson.toString() + "所属课程" + course.toString() + "操作数据库失败");
+                                }
+                            } catch (Exception e) {
+                                System.out.println("ERROR:系统修改课时" + lesson.toString() + "所属课程" + course.toString() + "操作数据库失败，失败原因：" + e);
+                            }
+                            String messageTitle = "您已成功修改课时：" + lessonName;
+                            String messageContent = createEidtLessonSuccessEmailMessage(lesson);
+                            JSONObject createMessageResult = messageService.createMessage(user.getEmail(), messageTitle, messageContent);
+                            System.out.println("INFO:课时" + lesson.toString() + "修改成功时创建消息通知结果：" + createMessageResult.toString());
+                        }
+                    } else {
+                        content = "系统写入文件失败，失败原因：" + writeFileResult.getString("content");
+                        System.out.println("ERROR:系统修改课时" + lesson.toString() + "时写入文件失败，失败原因：" + writeFileResult.getString("content"));
+                    }
+                } else {
+                    content = "您没有修改他人课时的权限！";
+                }
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
+    }
+
+    private String createEidtLessonSuccessEmailMessage(Lesson lesson) {
+        String timeString = lesson.getCreateTime().toString().split("\\.")[0];
+        String message = "<p>恭喜您，您于" + timeString + "修改课时：" + lesson.getName() + "&nbsp;&nbsp;成功！</p>";
+        message += "<p style='color: red;'>如果不是您本人操作，可能密码已经泄露，请尽快修改密码！</p>";
+        return message;
+    }
 }

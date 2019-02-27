@@ -88,7 +88,7 @@
                                             <p>最后修改于：<span th:text="${#strings.substringBefore(lesson.modifyTime, '.')}"></span></p>
                                             <div class="pull-right">
                                                 <button type="button" class="btn btn-primary" th:onclick="openMyLessonPage([[${lesson.id}]]);">查看</button>
-                                                <button type="button" class="btn btn-info">修改</button>
+                                                <button type="button" class="btn btn-info" th:onclick="openEditLesson([[${lesson.id}]]);">修改</button>
                                                 <button type="button" class="btn btn-primary">资料列表</button>
                                                 <button type="button" class="btn btn-success">上传资料</button>
                                                 <button type="button" class="btn btn-danger">删除</button>
