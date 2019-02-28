@@ -6,6 +6,9 @@ var HEAD_IMAG_MAX_SIZE = 10 * 1024 * 1024; //用户头像图片最大大小10MB
 var HEAD_IMAGE_MAX_SIZE_STRING = "10MB"; //用户头像图片最大大小10MB
 var COURSE_IMAGE_MAX_SIZE = 10 * 1024 * 1024;//课程封面图片最大大小10MB
 var COURSE_IMAGE_MAX_SIZE_STRING = "10MB"; //课程封面图片最大大小10MB
+var DATA_MAX_SIZE = 1024 * 1024 * 1024; //课时资料最大1GB
+var DATA_MAX_SIZE_STRING = "1GB"; //课时资料最大1GB
+var DATA_MAX_COUNT_EACH_LESSON = 10; //每个课时的资料最大数量
 
 /**
  * 该方法判断字符串是否为空
