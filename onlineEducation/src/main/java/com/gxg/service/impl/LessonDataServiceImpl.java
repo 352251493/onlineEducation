@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -86,7 +87,7 @@ public class LessonDataServiceImpl implements LessonDataService {
         HttpSession session = request.getSession();
         if (session.getAttribute("user") == null) {
             content = "系统未检测到登录信息，请刷新页面后重试！";
-        } if (lessonDao.getCountById(lessonId) == 0) {
+        } else if (lessonDao.getCountById(lessonId) == 0) {
             content = "系统未检测到相关课时信息！";
         } else if (lessonDataFile == null) {
             content = "请选择上传的资料！";
@@ -182,6 +183,112 @@ public class LessonDataServiceImpl implements LessonDataService {
     private String createCreateLessonDataSuccessEmailMessage(LessonData lessonData) {
         String timeString = lessonData.getCreateTime().toString().split("\\.")[0];
         String message = "<p>恭喜您，您于" + timeString + "上传课时资料：" + lessonData.getName() + "&nbsp;&nbsp;成功！</p>";
+        message += "<p style='color: red;'>如果不是您本人操作，可能密码已经泄露，请尽快修改密码！</p>";
+        return message;
+    }
+
+    /**
+     * 根据课时ID获取课时资料
+     *
+     * @param lessonId 课时ID
+     * @return 课时资料相关
+     * @author 郭欣光
+     */
+    @Override
+    public String getLessonDataListByLessonId(String lessonId) {
+        JSONObject result = new JSONObject();
+        String status = "true";
+        List<LessonData> content = null;
+        if (lessonDataDao.getCountByLessonId(lessonId) != 0) {
+            content = lessonDataDao.getLessonDataByLessonId(lessonId);
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
+    }
+
+    /**
+     * 删除课时资料
+     *
+     * @param lessonDataId 课时资料ID
+     * @param request      用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public String deleteLessonData(String lessonDataId, HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "删除失败！";
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            content = "系统未检测到登录信息，请刷新页面后重试！";
+        } else if (lessonDataDao.getCountById(lessonDataId) == 0) {
+            content = "系统未找到课时资料信息";
+        } else {
+            User user = (User)session.getAttribute("user");
+            LessonData lessonData = lessonDataDao.getLessonDataById(lessonDataId);
+            if (lessonDao.getCountById(lessonData.getLessonId()) == 0) {
+                content = "系统未找到课时信息";
+            } else {
+                Lesson lesson = lessonDao.getLessonById(lessonData.getLessonId());
+                if (courseDao.getCountById(lesson.getCourseId()) == 0) {
+                    content = "系统未找到课程信息";
+                } else {
+                    Course course = courseDao.getCourseById(lesson.getCourseId());
+                    if (user.getEmail().equals(course.getUserEmail())) {
+                        try {
+                            if (lessonDataDao.deleteLessonData(lessonData) == 0) {
+                                System.out.println("ERROR:删除课时资料" + lessonData.toString() + "操作数据库失败");
+                                content = "删除课时资料操作数据库失败！";
+                            } else {
+                                status = "true";
+                                content = "删除成功！";
+                            }
+                        } catch (Exception e) {
+                            System.out.println("ERROR:删除课时资料" + lessonData.toString() + "操作数据库失败，失败原因：" + e);
+                            content = "删除课时资料操作数据库失败！";
+                        }
+                        if ("true".equals(status)) {
+                            JSONObject deleteFileResult = FileUtils.deleteFile(courseResourceDir + lessonData.getPath());
+                            System.out.println("INFO:删除课时资料" + lessonData.toString() + "成功后，删除文件结果：" + deleteFileResult.toString());
+                            Timestamp time = new Timestamp(System.currentTimeMillis());
+                            lesson.setModifyTime(time);
+                            course.setModifyTime(time);
+                            try {
+                                if (lessonDao.editLesson(lesson) == 0) {
+                                    System.out.println("ERROR:删除课时资料" + lessonData.toString() + "成功后更新课时失败");
+                                }
+                            } catch (Exception e) {
+                                System.out.println("ERROR:删除课时资料" + lessonData.toString() + "成功后更新课时失败，失败原因：" + e);
+                            }
+                            try {
+                                if (courseDao.editCourse(course) == 0) {
+                                    System.out.println("ERROR:删除课时资料" + lessonData.toString() + "成功后更新课程" + course.toString() + "失败");
+                                }
+                            } catch (Exception e) {
+                                System.out.println("ERROR:删除课时资料" + lessonData.toString() + "成功后更新课程" + course.toString() + "失败，失败原因：" + e);
+                            }
+                            String messageTitle = "删除课时资料成功";
+                            String messageContent = createDeleteLessonDataSuccessEmailMessage(lessonData);
+                            JSONObject createMessageResult = messageService.createMessage(user.getEmail(), messageTitle, messageContent);
+                            System.out.println("INFO:课时资料" + lessonData.toString() + "删除成功时创建消息通知结果：" + createMessageResult.toString());
+                        }
+                    } else {
+                        content = "抱歉，您没有权限删除他人的课时资料";
+                    }
+                }
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
+    }
+
+    private String createDeleteLessonDataSuccessEmailMessage(LessonData lessonData) {
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        String timeString = time.toString();
+        String message = "<p>恭喜您，您于" + timeString + "删除课时资料：" + lessonData.getName() + "&nbsp;&nbsp;成功！</p>";
         message += "<p style='color: red;'>如果不是您本人操作，可能密码已经泄露，请尽快修改密码！</p>";
         return message;
     }

@@ -32,4 +32,16 @@ public class LessonDataController {
     public String createLessonData(@RequestParam String lessonId, @RequestParam MultipartFile lessonDataFile, HttpServletRequest request) {
         return lessonDataService.createLessonDate(lessonId, lessonDataFile, request);
     }
+
+    @GetMapping(value = "/get/{lessonId}")
+    @ResponseBody
+    public String getLessonDataListByLessonId(@PathVariable String lessonId) {
+        return lessonDataService.getLessonDataListByLessonId(lessonId);
+    }
+
+    @PostMapping(value = "/delete")
+    @ResponseBody
+    public String deleteLessonData(@RequestParam String lessonDataId, HttpServletRequest request) {
+        return lessonDataService.deleteLessonData(lessonDataId, request);
+    }
 }

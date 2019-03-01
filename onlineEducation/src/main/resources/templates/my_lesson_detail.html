@@ -55,7 +55,7 @@
                                         <p><a href="" th:text="'创建时间：' + ${#strings.substringBefore(lesson.createTime, '.')}"></a> | <a href="" th:text="'最近修改时间：' + ${#strings.substringBefore(lesson.modifyTime, '.')}"></a></p>
                                     </div>
                                     <!-- Read More btn -->
-                                    <button type="button" class="btn btn-primary">资料列表</button>
+                                    <button type="button" class="btn btn-primary" th:onclick="openMyLessonDataListModel([[${lesson.id}]]);">资料列表</button>
                                     <button type="button" class="btn btn-success" th:onclick="openUploadLessonDataModel([[${lesson.id}]]);">上传资料</button>
                                     <button type="button" class="btn btn-primary" th:onclick="openEditLesson([[${lesson.id}]]);">修改</button>
                                     <button type="button" class="btn btn-info" th:onclick="openMyCourseDetailPage([[${lesson.courseId}]]);">返回课程</button>
@@ -87,7 +87,8 @@
     <footer class="footer-area" th:include="/html_templates/footer.html :: footer"></footer>
     <!-- ##### Footer Area Start ##### -->
 
-
+    <!-- 课时资料模板-->
+    <div th:include="/html_templates/my_lesson_data_list.html :: myLessonDataList"></div>
     <!-- 上传资料模板-->
     <div th:include="/html_templates/upload_lesson_data.html :: uploadLessonData"></div>
     <!-- 信息提示框 -->
@@ -110,6 +111,7 @@
 
     <script src="/my/js/my_lesson_detail.js"></script>
     <script src="/my/js/upload_lesson_data.js"></script>
+    <script src="/my/js/my_lesson_data_list.js"></script>
 </body>
 
 </html>

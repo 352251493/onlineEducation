@@ -89,7 +89,7 @@
                                             <div class="pull-right">
                                                 <button type="button" class="btn btn-primary" th:onclick="openMyLessonPage([[${lesson.id}]]);">查看</button>
                                                 <button type="button" class="btn btn-info" th:onclick="openEditLesson([[${lesson.id}]]);">修改</button>
-                                                <button type="button" class="btn btn-primary">资料列表</button>
+                                                <button type="button" class="btn btn-primary" th:onclick="openMyLessonDataListModel([[${lesson.id}]]);">资料列表</button>
                                                 <button type="button" class="btn btn-success" th:onclick="openUploadLessonDataModel([[${lesson.id}]]);">上传资料</button>
                                                 <button type="button" class="btn btn-danger">删除</button>
                                             </div>
@@ -235,6 +235,8 @@
             </div>
         </div>
     </div>
+    <!-- 课时资料模板-->
+    <div th:include="/html_templates/my_lesson_data_list.html :: myLessonDataList"></div>
     <!-- 上传资料模板-->
     <div th:include="/html_templates/upload_lesson_data.html :: uploadLessonData"></div>
     <!-- 信息提示框 -->
@@ -256,6 +258,7 @@
     <script src="/my/js/utils.js"></script>
     <script src="/my/js/my_course_detail.js"></script>
     <script src="/my/js/upload_lesson_data.js"></script>
+    <script src="/my/js/my_lesson_data_list.js"></script>
 </body>
 
 </html>
