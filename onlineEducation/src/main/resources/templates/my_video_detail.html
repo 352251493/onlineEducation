@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <!-- Title -->
+    <title>智学新知 - 让教育更智能，让学习更有趣</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="/img/core-img/logo_ico.png">
+
+    <!-- Core Stylesheet -->
+    <link rel="stylesheet" href="/style.css">
+
+    <link rel="stylesheet" href="/my/css/video-js.min.css">
+	<link rel="stylesheet" href="/my/css/course.css">
+</head>
+
+<body>
+    <!-- ##### Preloader ##### -->
+    <div id="preloader">
+        <i class="circle-preloader"></i>
+    </div>
+
+    <!-- ##### Header Area Start ##### -->
+    <header class="header-area" th:include="/html_templates/header.html :: header"></header>
+    <!-- ##### Header Area End ##### -->
+
+    <!-- ##### Breadcumb Area Start ##### -->
+    <div class="breadcumb-area bg-img" style="background-image: url(/img/bg-img/breadcumb.jpg);">
+        <div class="bradcumbContent">
+            <h2>课时视频</h2>
+        </div>
+    </div>
+    <!-- ##### Breadcumb Area End ##### -->
+
+    <!-- ##### Blog Area Start ##### -->
+    <div class="blog-area mt-50 section-padding-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-md-8">
+                    <div class="academy-blog-posts">
+                        <div class="row">
+                            <!-- Single Blog Start -->
+                            <div class="col-12">
+                                <div class="single-blog-post mb-50 wow fadeInUp" data-wow-delay="300ms">
+                                    <!-- Post Title -->
+                                    <a href="" th:text="${lesson.name}" class="post-title"></a>
+                                    <!-- Post Meta -->
+                                    <div class="post-meta">
+                                        <p><a href="" th:text="'创建时间：' + ${#strings.substringBefore(lesson.createTime, '.')}"></a> | <a href="" th:text="'最近修改时间：' + ${#strings.substringBefore(lesson.modifyTime, '.')}"></a></p>
+                                    </div>
+                                    <!-- Read More btn -->
+                                    <button type="button" class="btn btn-primary" th:onclick="openMyLessonDataListModel([[${lesson.id}]]);">资料列表</button>
+                                    <button type="button" class="btn btn-success" th:onclick="openUploadLessonDataModel([[${lesson.id}]]);">上传资料</button>
+                                    <button type="button" class="btn btn-primary" th:onclick="openEditLesson([[${lesson.id}]]);">修改</button>
+                                    <button type="button" class="btn btn-info" th:onclick="openMyCourseDetailPage([[${lesson.courseId}]]);">返回课程</button>
+                                    <button type="button" class="btn btn-danger">删除</button>
+                                    <hr/>
+                                    <div>
+                                        <center>
+                                            <video id="videoPage" class="video-js vjs-default-skin" controls preload="none">
+                                                <source th:src="'/user_resource/test.Ogg?noCatch=' + ${#strings.randomAlphanumeric(20)}">
+                                            </video>
+                                        </center>
+                                            <!--<video controls="controls" width="320" height="240">-->
+                                            <!--<source src="/user_resource/test.mp4" />-->
+                                            <!--<object data="/user_resource/test.mp4" width="320" height="240">-->
+                                                <!--<embed src="/user_resource/test.mp4" width="320" height="240" />-->
+                                            <!--</object>-->
+                                        <!--</video>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <div class="academy-blog-sidebar">
+                        <div class="blog-post-categories mb-30" th:include="/html_templates/my_last_lesson.html :: myLastLesson">
+                        </div>
+
+                        <div class="latest-blog-posts mb-30" th:include="/html_templates/my_last_course.html :: myLastCourse">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ##### Blog Area End ##### -->
+
+    <!-- ##### Footer Area Start ##### -->
+    <footer class="footer-area" th:include="/html_templates/footer.html :: footer"></footer>
+    <!-- ##### Footer Area Start ##### -->
+
+    <!-- 课时资料模板-->
+    <div th:include="/html_templates/my_lesson_data_list.html :: myLessonDataList"></div>
+    <!-- 上传资料模板-->
+    <div th:include="/html_templates/upload_lesson_data.html :: uploadLessonData"></div>
+    <!-- 信息提示框 -->
+    <div th:include="/html_templates/alert_info.html :: alert"></div>
+    <!-- 等待框 -->
+    <div th:include="/html_templates/loading.html :: loading"></div>
+    <!-- ##### All Javascript Script ##### -->
+    <!-- jQuery-2.2.4 js -->
+    <script src="/js/jquery/jquery-2.2.4.min.js"></script>
+    <!-- Popper js -->
+    <script src="/js/bootstrap/popper.min.js"></script>
+    <!-- Bootstrap js -->
+    <script src="/js/bootstrap/bootstrap.min.js"></script>
+    <!-- All Plugins js -->
+    <script src="/js/plugins/plugins.js"></script>
+    <!-- Active js -->
+    <script src="/js/active.js"></script>
+
+    <script src="/my/js/video.min.js"></script>
+
+    <script src="/my/js/utils.js"></script>
+
+    <script src="/my/js/my_lesson_detail.js"></script>
+    <script src="/my/js/upload_lesson_data.js"></script>
+    <script src="/my/js/my_lesson_data_list.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            videojs('videoPage',{
+                muted: false,
+                controls : true,
+                height:400,
+                width:500,
+                loop : false
+            });
+        });
+    </script>
+</body>
+
+</html>

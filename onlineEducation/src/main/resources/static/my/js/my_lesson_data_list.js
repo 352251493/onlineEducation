@@ -34,7 +34,7 @@ function openMyLessonDataListModel(lessonId) {
                         str += "<td>";
                         str += "<button type=\"button\" class=\"btn btn-success\" onclick=\"openLessonDataPage('" + lessonData.path + "');\">查看</button>";
                         str += "&nbsp;&nbsp;";
-                        str += "<button type=\"button\" class=\"btn btn-danger\" onclick=\"deleteLessonData('" + lessonData.id + "');\">删除</button>";
+                        str += "<button type=\"button\" class=\"btn btn-danger\" onclick=\"openDeleteLessonDataModel('" + lessonData.id + "');\">删除</button>";
                         str += "</td>";
                         str += "</tr>";
                     }
@@ -60,7 +60,20 @@ function openMyLessonDataListModel(lessonId) {
 function openLessonDataPage(lessonDataPath) {
     window.open("/course_resource/" + lessonDataPath, "_blank");
 }
-function deleteLessonData(lessonDataId) {
+
+function openDeleteLessonDataModel(lessonDataId) {
+    if (stringIsEmpty(lessonDataId)) {
+        openAlertModel("系统未找到课时资料信息");
+    } else {
+        $("#deleteLessonDataLessonDataId").val(lessonDataId);
+        $("#deleteLessonDataModel").modal({
+            backdrop : 'static'
+        });
+    }
+}
+
+function deleteLessonData() {
+    var lessonDataId = $("#deleteLessonDataLessonDataId").val();
     if (stringIsEmpty(lessonDataId)) {
         openAlertModel("系统未找到课时资料信息");
     } else {
