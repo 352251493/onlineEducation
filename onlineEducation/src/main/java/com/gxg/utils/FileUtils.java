@@ -14,6 +14,9 @@ import java.io.*;
  */
 public class FileUtils {
 
+    public static final String MP4_H264 = "00000020667479706973";
+
+    public static final String OGG = "4f676753000200000000";
     /**
      * 从文件内容判断文件是否为图片
      * @param file 文件
@@ -207,5 +210,63 @@ public class FileUtils {
         result.accumulate("status", status);
         result.accumulate("content", content);
         return result;
+    }
+
+
+    /**
+     * 判断文件类型是否为MP4（H264）或Ogg类型
+     * @param file 文件
+     * @return 结果
+     * @throws Exception 异常信息
+     */
+    public static boolean isMp4H264OrOgg(MultipartFile file) throws Exception {
+        try {
+            InputStream inputStream = file.getInputStream();
+            byte[] b = new byte[10];
+            inputStream.read(b, 0, b.length);
+            String fileCode = bytesToHexString(b);
+            if (MP4_H264.equals(fileCode) || OGG.equals(fileCode)) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    /**
+     * 获得文件头编码
+     * @param src
+     * @return
+     */
+    public static String bytesToHexString(byte[] src) {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (src == null || src.length <= 0) {
+            return null;
+        }
+        for (int i = 0; i < src.length; i++) {
+            int v = src[i] & 0xFF;
+            String hv = Integer.toHexString(v);
+            if (hv.length() < 2) {
+                stringBuilder.append(0);
+            }
+            stringBuilder.append(hv);
+        }
+        return stringBuilder.toString();
+    }
+
+    /**
+     * 根据文件类型判断是否为MP4(H264)或者Ogg类型
+     * @param fileType 文件类型
+     * @return 结果
+     * @author 郭欣光
+     */
+    public static boolean isMp4H264OrOggByFileType(String fileType) {
+        boolean isVideo = true;
+        if (!"mp4".equals(fileType.toLowerCase()) && !"ogg".equals(fileType.toLowerCase()) && !"Ogg".equals(fileType)) {
+            isVideo = false;
+        }
+        return isVideo;
     }
 }

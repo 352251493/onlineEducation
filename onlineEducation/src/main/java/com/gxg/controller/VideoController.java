@@ -6,12 +6,12 @@ import com.gxg.entities.User;
 import com.gxg.service.CourseService;
 import com.gxg.service.LessonService;
 import com.gxg.service.MessageService;
+import com.gxg.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -35,6 +35,9 @@ public class VideoController {
 
     @Autowired
     private MessageService messageService;
+
+    @Autowired
+    private VideoService videoService;
 
     @GetMapping("/my/detail/{lessonId}")
     public String videoPage(@PathVariable String lessonId, HttpServletRequest request, Model model) {
@@ -67,5 +70,17 @@ public class VideoController {
             }
             return "/my_video_detail.html";
         }
+    }
+
+    @GetMapping(value = "/get/number/{lessonId}")
+    @ResponseBody
+    public String getVideoNumberByLessonId(@PathVariable String lessonId) {
+        return videoService.getVideoNumberByLessonId(lessonId);
+    }
+
+    @PostMapping(value = "/create")
+    @ResponseBody
+    public String createVideo(@RequestParam String lessonId, @RequestParam String videoName, @RequestParam MultipartFile videoFile, HttpServletRequest request) {
+        return videoService.createVideo(lessonId, videoName, videoFile, request);
     }
 }

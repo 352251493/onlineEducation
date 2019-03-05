@@ -58,6 +58,8 @@
                                     <button type="button" class="btn btn-primary" th:onclick="openMyLessonDataListModel([[${lesson.id}]]);">资料列表</button>
                                     <button type="button" class="btn btn-success" th:onclick="openUploadLessonDataModel([[${lesson.id}]]);">上传资料</button>
                                     <button type="button" class="btn btn-primary" th:onclick="openEditLesson([[${lesson.id}]]);">修改</button>
+                                    <button type="button" class="btn btn-primary" th:onclick="openMyLessonDataListModel([[${lesson.id}]]);">视频列表</button>
+                                    <button type="button" class="btn btn-success" th:onclick="openUploadVideoModel([[${lesson.id}]]);">上传视频</button>
                                     <button type="button" class="btn btn-info" th:onclick="openMyCourseDetailPage([[${lesson.courseId}]]);">返回课程</button>
                                     <button type="button" class="btn btn-danger">删除</button>
                                     <hr/>
@@ -91,6 +93,8 @@
     <div th:include="/html_templates/my_lesson_data_list.html :: myLessonDataList"></div>
     <!-- 上传资料模板-->
     <div th:include="/html_templates/upload_lesson_data.html :: uploadLessonData"></div>
+    <!-- 上传资料模板-->
+    <div th:include="/html_templates/upload_video.html :: uploadVideo"></div>
     <!-- 信息提示框 -->
     <div th:include="/html_templates/alert_info.html :: alert"></div>
     <!-- 等待框 -->
@@ -112,6 +116,7 @@
     <script src="/my/js/my_lesson_detail.js"></script>
     <script src="/my/js/upload_lesson_data.js"></script>
     <script src="/my/js/my_lesson_data_list.js"></script>
+    <script src="/my/js/upload_video.js"></script>
 </body>
 
 </html>

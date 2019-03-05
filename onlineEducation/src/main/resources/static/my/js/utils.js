@@ -9,6 +9,9 @@ var COURSE_IMAGE_MAX_SIZE_STRING = "10MB"; //课程封面图片最大大小10MB
 var DATA_MAX_SIZE = 1024 * 1024 * 1024; //课时资料最大1GB
 var DATA_MAX_SIZE_STRING = "1GB"; //课时资料最大1GB
 var DATA_MAX_COUNT_EACH_LESSON = 10; //每个课时的资料最大数量
+var VIDEO_MAX_COUNT_EACH_LESSON = 10; //每个课时的视频最大数量
+var VIDEO_MAX_SIZE = 1024 * 1024 * 1024; //课时视频最大1GB
+var VIDEO_MAX_SIZE_STRING = "1GB"; //课时视频最大1GB
 
 /**
  * 该方法判断字符串是否为空
@@ -92,5 +95,18 @@ function openAjaxErrorAlert(XMLHttpRequest, textStatus, errorThrown) {
         openAlertModel("重定向问题！错误代码（" + XMLHttpRequest.status + "," + XMLHttpRequest.readyState + "," + textStatus + "）");
     } else {
         openAlertModel("抱歉，系统好像出现一些异常！错误代码（" + XMLHttpRequest.status + "," + XMLHttpRequest.readyState + "," + textStatus + "）");
+    }
+}
+
+/**
+ * 根据文件后缀名判断是否为mp4及ogg视频格式
+ * @param fileType 文件后缀
+ * @returns {boolean}
+ */
+function isMp4AndOggVideo(fileType) {
+    if (fileType != "mp4" && fileType != "ogg" && fileType != "Ogg") {
+        return false;
+    } else {
+        return true;
     }
 }
