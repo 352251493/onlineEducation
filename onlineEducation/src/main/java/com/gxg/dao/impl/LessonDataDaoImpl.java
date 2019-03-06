@@ -63,7 +63,7 @@ public class LessonDataDaoImpl implements LessonDataDao {
      */
     @Override
     public List<LessonData> getLessonDataByLessonId(String lessonId) {
-        String sql = "select * from lesson_data where lesson_id=?";
+        String sql = "select * from lesson_data where lesson_id=? order by create_time desc";
         List<LessonData> lessonDataList = jdbcTemplate.query(sql, new LessonDataRowMapper(), lessonId);
         return lessonDataList;
     }

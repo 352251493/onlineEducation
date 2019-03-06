@@ -60,4 +60,12 @@ public interface LessonDao {
      * @author 郭欣光
      */
     int editLesson(Lesson lesson);
+
+    /**
+     * 删除课时信息
+     * @param lesson 课时信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    int deleteLesson(Lesson lesson);
 }

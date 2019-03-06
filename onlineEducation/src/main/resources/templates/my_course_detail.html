@@ -91,9 +91,9 @@
                                                 <button type="button" class="btn btn-info" th:onclick="openEditLesson([[${lesson.id}]]);">修改</button>
                                                 <button type="button" class="btn btn-primary" th:onclick="openMyLessonDataListModel([[${lesson.id}]]);">资料列表</button>
                                                 <button type="button" class="btn btn-success" th:onclick="openUploadLessonDataModel([[${lesson.id}]]);">上传资料</button>
-                                                <button type="button" class="btn btn-primary" th:onclick="openMyLessonDataListModel([[${lesson.id}]]);">视频列表</button>
+                                                <button type="button" class="btn btn-primary" th:onclick="openMyVideoList([[${lesson.id}]]);">视频列表</button>
                                                 <button type="button" class="btn btn-success" th:onclick="openUploadVideoModel([[${lesson.id}]]);">上传视频</button>
-                                                <button type="button" class="btn btn-danger">删除</button>
+                                                <button type="button" class="btn btn-danger" th:onclick="openDeleteLesson([[${lesson.id}]], [[${course.id}]]);">删除</button>
                                             </div>
                                         </div>
                                         <br/>
@@ -241,8 +241,12 @@
     <div th:include="/html_templates/my_lesson_data_list.html :: myLessonDataList"></div>
     <!-- 上传资料模板-->
     <div th:include="/html_templates/upload_lesson_data.html :: uploadLessonData"></div>
-    <!-- 上传资料模板-->
+    <!-- 视频模板-->
+    <div th:include="/html_templates/my_video_list.html :: myVideoList"></div>
+    <!-- 上传视频模板-->
     <div th:include="/html_templates/upload_video.html :: uploadVideo"></div>
+    <!-- 课时删除框 -->
+    <div th:include="/html_templates/delete_lesson.html :: deleteLesson"></div>
     <!-- 信息提示框 -->
     <div th:include="/html_templates/alert_info.html :: alert"></div>
     <!-- 等待框 -->
@@ -264,6 +268,8 @@
     <script src="/my/js/upload_lesson_data.js"></script>
     <script src="/my/js/my_lesson_data_list.js"></script>
     <script src="/my/js/upload_video.js"></script>
+    <script src="/my/js/my_video_list.js"></script>
+    <script src="/my/js/delete_lesson.js"></script>
 </body>
 
 </html>

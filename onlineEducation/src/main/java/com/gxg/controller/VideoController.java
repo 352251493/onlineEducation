@@ -3,6 +3,7 @@ package com.gxg.controller;
 import com.gxg.entities.Course;
 import com.gxg.entities.Lesson;
 import com.gxg.entities.User;
+import com.gxg.entities.Video;
 import com.gxg.service.CourseService;
 import com.gxg.service.LessonService;
 import com.gxg.service.MessageService;
@@ -39,20 +40,32 @@ public class VideoController {
     @Autowired
     private VideoService videoService;
 
-    @GetMapping("/my/detail/{lessonId}")
-    public String videoPage(@PathVariable String lessonId, HttpServletRequest request, Model model) {
+    @GetMapping("/my/detail/{videoId}")
+    public String videoPage(@PathVariable String videoId, HttpServletRequest request, Model model) {
         HttpSession session = request.getSession();
         if (session.getAttribute("user") == null) {
-            return "redirect:/user/login?next=" + "/video/my/detail/" + lessonId;
+            return "redirect:/user/login?next=" + "/video/my/detail/" + videoId;
         } else {
-            Lesson lesson = lessonService.getLessonById(lessonId);
-            Course course = courseService.getCourseById(lesson.getCourseId());
-            User user = (User)session.getAttribute("user");
-            if (lesson == null || course == null || !course.getUserEmail().equals(user.getEmail())) {
+            Video video = videoService.getVideoById(videoId);
+            if (video == null) {
                 model.addAttribute("promptTitle", "404");
                 model.addAttribute("promptMessage", "对不起，该页面不存在！");
                 return "/prompt/prompt.html";
             }
+            Lesson lesson = lessonService.getLessonById(video.getLessonId());
+            if (lesson == null) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            Course course = courseService.getCourseById(lesson.getCourseId());
+            User user = (User)session.getAttribute("user");
+            if (course == null || !course.getUserEmail().equals(user.getEmail())) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            model.addAttribute("video", video);
             model.addAttribute("lesson", lesson);
             model.addAttribute("course", course);
             int unReadMessageCount = messageService.getUnreadMessageCount(user);
@@ -82,5 +95,63 @@ public class VideoController {
     @ResponseBody
     public String createVideo(@RequestParam String lessonId, @RequestParam String videoName, @RequestParam MultipartFile videoFile, HttpServletRequest request) {
         return videoService.createVideo(lessonId, videoName, videoFile, request);
+    }
+
+    @GetMapping(value = "/get/{lessonId}")
+    @ResponseBody
+    public String getVideoListByLessonId(@PathVariable String lessonId) {
+        return videoService.getVideoListByLessonId(lessonId);
+    }
+
+    @GetMapping(value = "/public/detail/{videoId}")
+    public String getPublicVideoPage(@PathVariable String videoId, HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            return "redirect:/user/login?next=" + "/video/public/detail/" + videoId;
+        } else {
+            Video video = videoService.getVideoById(videoId);
+            if (video == null) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            Lesson lesson = lessonService.getLessonById(video.getLessonId());
+            if (lesson == null) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            Course course = courseService.getCourseById(lesson.getCourseId());
+            if (course == null || "1".equals(course.getIsPrivate())) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            model.addAttribute("video", video);
+            model.addAttribute("lesson", lesson);
+            model.addAttribute("course", course);
+            User user = (User)session.getAttribute("user");
+            int unReadMessageCount = messageService.getUnreadMessageCount(user);
+            model.addAttribute("unReadMessageCount", unReadMessageCount);
+            model.addAttribute("user", user);
+            List<Course> courseListOrderByModifyTime = courseService.getCourseListByIsPrivateAndTopNumberOrderByModifyTime("0", 5);
+            model.addAttribute("courseListOrderByModifyTime", courseListOrderByModifyTime);
+            if (courseListOrderByModifyTime != null && courseListOrderByModifyTime.size() > 5) {
+                model.addAttribute("hasMoreCourseOrderByModifyTime", "yes");
+            }
+            List<Lesson> lessonList = lessonService.getLessonListByCourseIdAndTopNumber(lesson.getCourseId(), 5);
+            model.addAttribute("lessonListOrderByModifyTime", lessonList);
+            if (lessonList != null && lessonList.size() >= 5) {
+                model.addAttribute("hasMoreLessonOrderByModifyTime", "yes");
+            }
+            model.addAttribute("courseType", "public");
+            return "/video_detail.html";
+        }
+    }
+
+    @PostMapping(value = "/delete")
+    @ResponseBody
+    public String deleteVideo(@RequestParam String videoId, HttpServletRequest request) {
+        return videoService.deleteVideo(videoId, request);
     }
 }

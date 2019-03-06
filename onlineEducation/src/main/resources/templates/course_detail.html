@@ -82,9 +82,9 @@
                                         <div class="post-meta">
                                             <p>最后修改于：<span th:text="${#strings.substringBefore(lesson.modifyTime, '.')}"></span></p>
                                             <div class="pull-right">
-                                                <button type="button" class="btn btn-primary" th:onclick="openLessonPage([[${lesson.id}]]);">查看</button>
+                                                <button type="button" class="btn btn-primary" th:onclick="openLessonPage([[${courseType}]], [[${lesson.id}]]);">查看</button>
                                                 <button type="button" class="btn btn-primary" th:onclick="openLessonDataListModel([[${lesson.id}]]);">资料列表</button>
-                                                <button type="button" class="btn btn-primary" th:onclick="openLessonDataListModel([[${lesson.id}]]);">视频列表</button>
+                                                <button type="button" class="btn btn-primary" th:onclick="openVideoList([[${lesson.id}]], [[${courseType}]]);">视频列表</button>
                                             </div>
                                         </div>
                                         <br/>
@@ -178,6 +178,8 @@
 
     <!-- 课时资料模板-->
     <div th:include="/html_templates/lesson_data_list.html :: lessonDataList"></div>
+    <!-- 课时视频模板-->
+    <div th:include="/html_templates/video_list.html :: videoList"></div>
     <!-- 信息提示框 -->
     <div th:include="/html_templates/alert_info.html :: alert"></div>
     <!-- 等待框 -->
@@ -196,10 +198,11 @@
 
     <script src="/my/js/utils.js"></script>
     <script src="/my/js/lesson_data_list.js"></script>
+    <script src="/my/js/video_list.js"></script>
 
 <script>
-    function openLessonPage(lessonId) {
-        window.location.href = "/lesson/public/detail/" + lessonId;
+    function openLessonPage(courseType, lessonId) {
+        window.location.href = "/lesson/" + courseType + "/detail/" + lessonId;
     }
 
     function openMyCoursePage(courseId) {

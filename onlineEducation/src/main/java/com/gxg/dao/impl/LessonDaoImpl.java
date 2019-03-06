@@ -104,4 +104,18 @@ public class LessonDaoImpl implements LessonDao {
         int changeCount = jdbcTemplate.update(sql, lesson.getName(), lesson.getContent(), lesson.getCreateTime(), lesson.getModifyTime(), lesson.getCourseId(), lesson.getId());
         return changeCount;
     }
+
+    /**
+     * 删除课时信息
+     *
+     * @param lesson 课时信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    @Override
+    public int deleteLesson(Lesson lesson) {
+        String sql = "delete from lesson where id=?";
+        int changeCount = jdbcTemplate.update(sql, lesson.getId());
+        return changeCount;
+    }
 }

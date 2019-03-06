@@ -279,6 +279,7 @@ public class CourseController {
                 if (courseListOrderByStudyNumber != null && courseListOrderByStudyNumber.size() > 5) {
                     model.addAttribute("hasMoreCourseOrderByStudyNumber", "yes");
                 }
+                model.addAttribute("courseType", "public");
             }
             return "/course_detail.html";
         }

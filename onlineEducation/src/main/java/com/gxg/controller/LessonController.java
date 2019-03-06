@@ -79,8 +79,13 @@ public class LessonController {
             return "redirect:/user/login?next=" + "/lesson/public/detail/" + lessonId;
         } else {
             Lesson lesson = lessonService.getLessonById(lessonId);
+            if (lesson == null) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
             Course course = courseService.getCourseById(lesson.getCourseId());
-            if (lesson == null || course == null || "1".equals(course.getIsPrivate())) {
+            if (course == null || "1".equals(course.getIsPrivate())) {
                 model.addAttribute("promptTitle", "404");
                 model.addAttribute("promptMessage", "对不起，该页面不存在！");
                 return "/prompt/prompt.html";
@@ -113,9 +118,14 @@ public class LessonController {
             return "redirect:/user/login?next=" + "/lesson/my/detail/" + lessonId;
         } else {
             Lesson lesson = lessonService.getLessonById(lessonId);
+            if (lesson == null) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
             Course course = courseService.getCourseById(lesson.getCourseId());
             User user = (User)session.getAttribute("user");
-            if (lesson == null || course == null || !course.getUserEmail().equals(user.getEmail())) {
+            if (course == null || !course.getUserEmail().equals(user.getEmail())) {
                 model.addAttribute("promptTitle", "404");
                 model.addAttribute("promptMessage", "对不起，该页面不存在！");
                 return "/prompt/prompt.html";
@@ -176,5 +186,11 @@ public class LessonController {
     @ResponseBody
     public String editLesson(@RequestParam String lessonId, @RequestParam String lessonName, @RequestParam String lessonContent, HttpServletRequest request) {
         return lessonService.editLesson(lessonId, lessonName, lessonContent, request);
+    }
+
+    @PostMapping(value = "/delete")
+    @ResponseBody
+    public String deleteLesson(@RequestParam String lessonId, HttpServletRequest request) {
+        return lessonService.deleteLesson(lessonId, request);
     }
 }

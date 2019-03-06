@@ -1,5 +1,6 @@
 package com.gxg.service;
 
+import com.gxg.entities.Video;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,4 +30,29 @@ public interface VideoService {
      * @author 郭欣光
      */
     String createVideo(String lessonId, String videoName, MultipartFile videoFile, HttpServletRequest request);
+
+    /**
+     * 根据课时ID获取视频列表
+     * @param lessonId 课时ID
+     * @return 视频列表相关信息
+     * @author 郭欣光
+     */
+    String getVideoListByLessonId(String lessonId);
+
+    /**
+     * 根据ID获取视频信息
+     * @param id 视频ID
+     * @return 视频信息
+     * @author 郭欣光
+     */
+    Video getVideoById(String id);
+
+    /**
+     * 删除视频
+     * @param videoId 视频ID
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    String deleteVideo(String videoId, HttpServletRequest request);
 }

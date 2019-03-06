@@ -61,4 +61,13 @@ public interface LessonService {
      * @author 郭欣光
      */
     String editLesson(String lessonId, String lessonName, String lessonContent, HttpServletRequest request);
+
+    /**
+     * 删除课时
+     * @param lessonId 课时ID
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    String deleteLesson(String lessonId, HttpServletRequest request);
 }
