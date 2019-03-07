@@ -4,10 +4,7 @@ import com.gxg.entities.Course;
 import com.gxg.entities.Lesson;
 import com.gxg.entities.User;
 import com.gxg.entities.Video;
-import com.gxg.service.CourseService;
-import com.gxg.service.LessonService;
-import com.gxg.service.MessageService;
-import com.gxg.service.VideoService;
+import com.gxg.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,6 +36,9 @@ public class VideoController {
 
     @Autowired
     private VideoService videoService;
+
+    @Autowired
+    private UserStudyService userStudyService;
 
     @GetMapping("/my/detail/{videoId}")
     public String videoPage(@PathVariable String videoId, HttpServletRequest request, Model model) {
@@ -131,6 +131,7 @@ public class VideoController {
             model.addAttribute("lesson", lesson);
             model.addAttribute("course", course);
             User user = (User)session.getAttribute("user");
+            userStudyService.addPublicUserStudy(user, course);
             int unReadMessageCount = messageService.getUnreadMessageCount(user);
             model.addAttribute("unReadMessageCount", unReadMessageCount);
             model.addAttribute("user", user);

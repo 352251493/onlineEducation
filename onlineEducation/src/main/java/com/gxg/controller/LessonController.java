@@ -6,7 +6,7 @@ import com.gxg.entities.User;
 import com.gxg.service.CourseService;
 import com.gxg.service.LessonService;
 import com.gxg.service.MessageService;
-import org.json.JSONObject;
+import com.gxg.service.UserStudyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,6 +34,9 @@ public class LessonController {
 
     @Autowired
     private LessonService lessonService;
+
+    @Autowired
+    private UserStudyService userStudyService;
 
     @GetMapping(value = "/create/{courseId}")
     public String createLessonPage(@PathVariable String courseId, HttpServletRequest request, Model model) {
@@ -93,6 +96,7 @@ public class LessonController {
             model.addAttribute("lesson", lesson);
             model.addAttribute("course", course);
             User user = (User)session.getAttribute("user");
+            userStudyService.addPublicUserStudy(user, course);
             int unReadMessageCount = messageService.getUnreadMessageCount(user);
             model.addAttribute("unReadMessageCount", unReadMessageCount);
             model.addAttribute("user", user);

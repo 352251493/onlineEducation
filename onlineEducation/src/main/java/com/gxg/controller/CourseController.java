@@ -5,6 +5,7 @@ import com.gxg.entities.User;
 import com.gxg.service.CourseService;
 import com.gxg.service.LessonService;
 import com.gxg.service.MessageService;
+import com.gxg.service.UserStudyService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,6 +35,9 @@ public class CourseController {
 
     @Autowired
     private LessonService lessonService;
+
+    @Autowired
+    private UserStudyService userStudyService;
 
     @GetMapping(value = "/time/{page}")
     public String getCountByTime(@PathVariable String page, HttpServletRequest request, Model model) {
@@ -266,6 +270,7 @@ public class CourseController {
                 }
                 model.addAttribute("course", course);
                 User user = (User)session.getAttribute("user");
+                userStudyService.addPublicUserStudy(user, course);
                 int unReadMessageCount = messageService.getUnreadMessageCount(user);
                 model.addAttribute("unReadMessageCount", unReadMessageCount);
                 model.addAttribute("user", user);

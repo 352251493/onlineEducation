@@ -57,17 +57,17 @@
                                 <h4 th:text="${course.name}"></h4>
                                 <p style="color: green;font-size:8px;">创建时间：<span th:text="${course.createTime}"></span> | 最近修改时间：<span th:text="${course.modifyTime}"></span></p>
                                 <p style="font-size:8px;" th:text="${#strings.abbreviate(course.introduction,50)}"></p>
-                                <button type="button" class="btn btn-primary" th:onclick="openCourseDetail([[${course.id}]]);">课程详情</button>
+                                <button type="button" class="btn btn-primary" th:onclick="openCourseDetail([[${course.id}]], [[${pageName}]]);">课程详情</button>
                                 <hr/>
                             </div>
                         </div>
 					  <div class="col-lg-12">
 						  <div class="btn-group pull-right" role="group">
 							  <button type="button" class="btn btn-default" disabled="disabled" th:if="${coursePrePage} == null"><span aria-hidden="true">&laquo;</span>上一页</button>
-							  <button type="button" class="btn btn-default" th:if="${coursePrePage} != null" th:onclick="openCourseList([[${coursePrePage}]]);"><span aria-hidden="true">&laquo;</span>上一页</button>
+							  <button type="button" class="btn btn-default" th:if="${coursePrePage} != null" th:onclick="openCourseList([[${coursePrePage}]], [[${pageName}]]);"><span aria-hidden="true">&laquo;</span>上一页</button>
                               <button type="button" class="btn btn-default" disabled="disabled" th:text="${coursePage} + '/' + ${coursePageNumber}">1/1</button>
 							  <button type="button" class="btn btn-default" disabled="disabled" th:if="${courseNextPage} == null">下一页<span aria-hidden="true">&raquo;</span></button>
-							  <button type="button" class="btn btn-default" th:if="${courseNextPage} != null" th:onclick="openCourseList([[${courseNextPage}]]);">下一页<span aria-hidden="true">&raquo;</span></button>
+							  <button type="button" class="btn btn-default" th:if="${courseNextPage} != null" th:onclick="openCourseList([[${courseNextPage}]], [[${pageName}]]);">下一页<span aria-hidden="true">&raquo;</span></button>
 						  </div>
 					  </div>
                     </div>
@@ -102,12 +102,24 @@
     <script src="/user_static/my/js/user.js"></script>
 
       <script>
-          function openCourseList(coursePage) {
-              window.location.href = "/user/course/create/" + coursePage;
+          function openCourseList(coursePage, pageName) {
+              if (pageName == "我创建的") {
+                  window.location.href = "/user/course/create/" + coursePage;
+              } else if (pageName == "公共课程") {
+                  window.location.href = "/user/course/public/" + coursePage;
+              } else if (pageName == "私有课程") {
+                  window.location.href = "/user/course/private/" + coursePage;
+              }
           }
 
-          function openCourseDetail(courseId) {
-              window.location.href = "/course/my/detail/" + courseId + "/1";
+          function openCourseDetail(courseId, pageName) {
+              if (pageName == "我创建的") {
+                  window.location.href = "/course/my/detail/" + courseId + "/1";
+              } else if (pageName == "公共课程") {
+                  window.location.href = "/course/public/detail/" + courseId + "/1";
+              } else if (pageName == "私有课程") {
+                  window.location.href = "/course/private/detail/" + courseId + "/1";
+              }
           }
       </script>
   </body>

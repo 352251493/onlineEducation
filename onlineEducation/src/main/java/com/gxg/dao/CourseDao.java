@@ -151,4 +151,13 @@ public interface CourseDao {
      * @author 郭欣光
      */
     int editCourse(Course course);
+
+    /**
+     * 根据课程ID更新学习人数
+     * @param studyNumber 学习人数
+     * @param id 课程ID
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    int updateStudyNumberById(int studyNumber, String id);
 }

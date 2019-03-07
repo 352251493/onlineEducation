@@ -259,4 +259,19 @@ public class CourseDaoImpl implements CourseDao {
         int changeCount = jdbcTemplate.update(sql, course.getName(), course.getIntroduction(), course.getImage(), course.getStudyNumber(), course.getCreateTime(), course.getModifyTime(), course.getUserEmail(), course.getIsPrivate(), course.getId());
         return changeCount;
     }
+
+    /**
+     * 根据课程ID更新学习人数
+     *
+     * @param studyNumber 学习人数
+     * @param id          课程ID
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    @Override
+    public int updateStudyNumberById(int studyNumber, String id) {
+        String sql = "update course set study_number=? where id=?";
+        int changeCount = jdbcTemplate.update(sql, studyNumber, id);
+        return changeCount;
+    }
 }
