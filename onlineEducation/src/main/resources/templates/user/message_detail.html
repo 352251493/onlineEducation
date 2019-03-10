@@ -42,7 +42,7 @@
           <!-- Breadcrumb-->
           <div class="breadcrumb-holder container-fluid">
               <ul class="breadcrumb">
-                  <li class="breadcrumb-item active"><a href='javascript:history.go(-1)'>返回</a></li>
+                  <li class="breadcrumb-item active"><a href='javascript:toPrePage();'>返回</a></li>
               </ul>
           </div>
           <section class="tables">
@@ -98,5 +98,15 @@
     <script src="/my/js/utils.js"></script>
     <script src="/user_static/my/js/user.js"></script>
     <script src="/user_static/my/js/message.js"></script>
+    <script>
+      function toPrePage() {
+        var prePageUrl = document.referrer;
+        if (prePageUrl == "") {
+          window.location.href = "/user/message/all/1";
+        } else {
+          window.location.href = prePageUrl;
+        }
+      }
+    </script>
   </body>
 </html>
