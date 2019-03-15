@@ -12,9 +12,7 @@ import com.gxg.service.UserStudyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -73,5 +71,11 @@ public class UserStudyController {
             }
             return "/user_study_manage.html";
         }
+    }
+
+    @PostMapping(value = "/add")
+    @ResponseBody
+    public String addUserStudy(@RequestParam String courseId, @RequestParam String userStudyEmail, HttpServletRequest request) {
+        return userStudyService.addUserStudy(courseId, userStudyEmail, request);
     }
 }

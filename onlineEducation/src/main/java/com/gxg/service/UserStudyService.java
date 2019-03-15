@@ -5,6 +5,7 @@ import com.gxg.entities.User;
 import com.gxg.entities.UserStudy;
 import org.json.JSONObject;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -39,4 +40,13 @@ public interface UserStudyService {
      * @author 郭欣光
      */
     List<UserStudy> getUserStudyListByCourseId(String courseId);
+
+    /**
+     * 添加用户学习信息
+     * @param courseId 课程ID
+     * @param userStudyEmail 添加用户邮箱
+     * @param request 用户请求信息
+     * @return 处理结果
+     */
+    String addUserStudy(String courseId, String userStudyEmail, HttpServletRequest request);
 }
