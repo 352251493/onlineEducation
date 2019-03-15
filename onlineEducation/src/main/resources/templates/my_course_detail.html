@@ -66,7 +66,7 @@
                                     <button type="button" class="btn btn-primary">添加考试</button>
                                     <button type="button" class="btn btn-success" onclick="openEditCourseModel();">修改资料</button>
                                     <button type="button" class="btn btn-primary" onclick="openEditCourseImageModel();">修改封面</button>
-                                    <button type="button" class="btn btn-info" th:if="${course.isPrivate} eq '1'">学习人员管理</button>
+                                    <button type="button" class="btn btn-info" th:if="${course.isPrivate} eq '1'" th:onclick="openUserStudyManagePage([[${course.id}]]);">学习人员管理</button>
                                     <button type="button" class="btn btn-danger">删除</button>
                                 </div>
                             </div>

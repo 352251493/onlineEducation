@@ -181,4 +181,27 @@ public class UserStudyServiceImpl implements UserStudyService {
         result.accumulate("hasCourse", hasCourse);
         return result;
     }
+
+
+    /**
+     * 根据课程ID获取用户学习信息
+     *
+     * @param courseId 课程ID
+     * @return 用户学习信息
+     * @author 郭欣光
+     */
+    @Override
+    public List<UserStudy> getUserStudyListByCourseId(String courseId) {
+        if (userStudyDao.getCountByCourseId(courseId) == 0) {
+            return null;
+        }
+        List<UserStudy> userStudyList = userStudyDao.getUserStudyByCourseIdOrderByCreateTime(courseId);
+        for (UserStudy userStudy : userStudyList) {
+            if (userStudy.getUserEmail() != null && userDao.getUserCountByEmail(userStudy.getUserEmail()) != 0) {
+                User user = userDao.getUserByEmail(userStudy.getUserEmail());
+                userStudy.setUserName(user.getName());
+            }
+        }
+        return userStudyList;
+    }
 }

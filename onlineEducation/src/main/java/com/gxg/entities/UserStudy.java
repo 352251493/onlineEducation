@@ -21,6 +21,8 @@ public class UserStudy {
 
     private Timestamp lastStudyTime;
 
+    private String userName;
+
     public String getId() {
         return id;
     }
@@ -69,6 +71,7 @@ public class UserStudy {
         this.lastStudyTime = lastStudyTime;
     }
 
+
     @Override
     public String toString() {
         return "UserStudy{" +
@@ -78,6 +81,15 @@ public class UserStudy {
                 ", isPrivate='" + isPrivate + '\'' +
                 ", createTime=" + createTime +
                 ", lastStudyTime=" + lastStudyTime +
+                ", userName='" + userName + '\'' +
                 '}';
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

@@ -2,7 +2,10 @@ package com.gxg.service;
 
 import com.gxg.entities.Course;
 import com.gxg.entities.User;
+import com.gxg.entities.UserStudy;
 import org.json.JSONObject;
+
+import java.util.List;
 
 /**
  * 用户学习信息相关业务处理接口
@@ -28,4 +31,12 @@ public interface UserStudyService {
      * @author 郭欣光
      */
     JSONObject getStudyCourseByUserAndIsPrivate(User user, String isPrivate, String coursePage);
+
+    /**
+     * 根据课程ID获取用户学习信息
+     * @param courseId 课程ID
+     * @return 用户学习信息
+     * @author 郭欣光
+     */
+    List<UserStudy> getUserStudyListByCourseId(String courseId);
 }

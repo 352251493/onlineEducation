@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <!-- Title -->
+    <title>智学新知 - 让教育更智能，让学习更有趣</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="/img/core-img/logo_ico.png">
+
+    <!-- Core Stylesheet -->
+    <link rel="stylesheet" href="/style.css">
+
+	<link rel="stylesheet" href="/my/css/course.css">
+</head>
+
+<body>
+    <!-- ##### Preloader ##### -->
+    <div id="preloader">
+        <i class="circle-preloader"></i>
+    </div>
+
+    <!-- ##### Header Area Start ##### -->
+    <header class="header-area" th:include="/html_templates/header.html :: header"></header>
+    <!-- ##### Header Area End ##### -->
+
+    <!-- ##### Breadcumb Area Start ##### -->
+    <div class="breadcumb-area bg-img" style="background-image: url(/img/bg-img/breadcumb.jpg);">
+        <div class="bradcumbContent">
+            <h2>学习人员管理</h2>
+        </div>
+    </div>
+    <!-- ##### Breadcumb Area End ##### -->
+
+    <!-- ##### Blog Area Start ##### -->
+    <div class="blog-area mt-50 section-padding-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-md-8">
+                    <div class="academy-blog-posts">
+                        <div class="row">
+                            <!-- Single Blog Start -->
+                            <div class="col-12">
+                                <div class="single-blog-post mb-50 wow fadeInUp" data-wow-delay="300ms">
+                                    <!-- Post Thumb -->
+                                    <div class="blog-post-thumb mb-50">
+                                        <img th:src="'/course_resource/' + ${course.image}" alt="" width="100%">
+                                    </div>
+                                    <!-- Post Title -->
+                                    <a href="" th:text="${course.name}" class="post-title"></a>
+                                    <!-- Post Meta -->
+                                    <div class="post-meta">
+                                        <p><a href="" th:text="${course.userName}"></a> | <a href="" th:text="'创建时间：' + ${#strings.substringBefore(course.createTime, '.')}"></a> | <a href="" th:text="'最近修改时间：' + ${#strings.substringBefore(course.modifyTime, '.')}"></a> | <a href="" th:text="'学习人数：' + ${course.studyNumber} + '人'"></a></p>
+                                    </div>
+                                    <!-- Post Excerpt -->
+                                    <p th:text="${course.introduction}"></p>
+                                    <!-- Read More btn -->
+                                    <button type="button" class="btn btn-primary" th:onclick="openCourseDetail([[${course.id}]]);">课程详情</button>
+                                    <button type="button" class="btn btn-success" onclick="openAddUserStudyModel();">添加学习人员</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="academy-blog-posts">
+                        <div class="row">
+                            <!-- Single Blog Start -->
+                            <div class="col-12">
+                                <div class="single-blog-post mb-50 wow fadeInUp" data-wow-delay="300ms">
+                                    <!-- Post Title -->
+                                    <h5>学习人员列表</h5>
+                                    <br/>
+                                    <div th:if="${userStudyList} == null">还没有添加任何学习人员，私有课程只有被添加的人员才可以学习哦，赶快<a href="javascript:openAddUserStudyModel();">添加</a>吧~</div>
+                                    <table class="table table-hover" th:if="${userStudyList} != null">
+                                        <tr>
+                                            <th>邮箱</th>
+                                            <th>姓名</th>
+                                            <th>添加时间</th>
+                                            <th>操作</th>
+                                        </tr>
+                                        <tr th:each="userStudy : ${userStudyList}">
+                                            <td th:text="${userStudy.userEmail}">
+                                            </td>
+                                            <td th:text="${userStudy.userName}">
+                                            </td>
+                                            <td th:text="${#strings.substringBefore(userStudy.createTime, '.')}">
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-danger">删除</button>
+                                            </td>
+                                        </tr>
+                                        <!--<tr>-->
+                                            <!--<td>-->
+                                                <!--guoxinguang123@sina,cn-->
+                                            <!--</td>-->
+                                            <!--<td>-->
+                                                <!--李四-->
+                                            <!--</td>-->
+                                            <!--<td>-->
+                                                <!--2019-03-01 10:30:21-->
+                                            <!--</td>-->
+                                            <!--<td>-->
+                                                <!--<button type="button" class="btn btn-danger">删除</button>-->
+                                            <!--</td>-->
+                                        <!--</tr>-->
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <div class="academy-blog-sidebar">
+                        <div class="blog-post-categories mb-30" th:include="/html_templates/my_last_lesson.html :: myLastLesson">
+                        </div>
+
+                        <div class="latest-blog-posts mb-30" th:include="/html_templates/my_last_course.html :: myLastCourse">
+                        </div>
+
+                        <!-- Add Widget -->
+                        <!-- <div class="add-widget">
+                            <a href="#"><img src="img/blog-img/add.png" alt=""></a>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ##### Blog Area End ##### -->
+
+    <!-- ##### Footer Area Start ##### -->
+    <footer class="footer-area" th:include="/html_templates/footer.html :: footer"></footer>
+    <!-- ##### Footer Area Start ##### -->
+    <!-- 添加学习用户框 -->
+    <div th:include="/html_templates/add_user_study.html :: addUserStudy"></div>
+    <!-- 信息提示框 -->
+    <div th:include="/html_templates/alert_info.html :: alert"></div>
+    <!-- 等待框 -->
+    <div th:include="/html_templates/loading.html :: loading"></div>
+    <!-- ##### All Javascript Script ##### -->
+    <!-- jQuery-2.2.4 js -->
+    <script src="/js/jquery/jquery-2.2.4.min.js"></script>
+    <!-- Popper js -->
+    <script src="/js/bootstrap/popper.min.js"></script>
+    <!-- Bootstrap js -->
+    <script src="/js/bootstrap/bootstrap.min.js"></script>
+    <!-- All Plugins js -->
+    <script src="/js/plugins/plugins.js"></script>
+    <!-- Active js -->
+    <script src="/js/active.js"></script>
+
+    <!--wangEditor富文本编辑器-->
+    <script src="/my/js/wangEditor/release/wangEditor.min.js"></script>
+    <script src="/my/js/utils.js"></script>
+    <script src="/my/js/user_study_manage.js"></script>
+</body>
+
+</html>

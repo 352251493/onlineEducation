@@ -98,4 +98,12 @@ public interface UserStudyDao {
      * @author 郭欣光
      */
     List<UserStudy> getUserStudyByUserEmailAndIsPrivateAndLimitOrderByLastStudyTime(String userEmail, String isPrivate, int limitStart, int limitEnd);
+
+    /**
+     * 根据课程ID按照创建时间排序获取用户学习信息
+     * @param courseId 课程ID
+     * @return 用户学习信息
+     * @author 郭欣光
+     */
+    List<UserStudy> getUserStudyByCourseIdOrderByCreateTime(String courseId);
 }

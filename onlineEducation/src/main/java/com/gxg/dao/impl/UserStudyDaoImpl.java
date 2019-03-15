@@ -169,4 +169,18 @@ public class UserStudyDaoImpl implements UserStudyDao {
         List<UserStudy> userStudyList = jdbcTemplate.query(sql, new UserStudyRowMapper(), userEmail, isPrivate, limitStart, limitEnd);
         return userStudyList;
     }
+
+    /**
+     * 根据课程ID按照创建时间排序获取用户学习信息
+     *
+     * @param courseId 课程ID
+     * @return 用户学习信息
+     * @author 郭欣光
+     */
+    @Override
+    public List<UserStudy> getUserStudyByCourseIdOrderByCreateTime(String courseId) {
+        String sql = "select * from user_study where course_id=? order by create_time desc";
+        List<UserStudy> userStudyList = jdbcTemplate.query(sql, new UserStudyRowMapper(), courseId);
+        return userStudyList;
+    }
 }
