@@ -48,3 +48,49 @@ function addUserStudySuccess(data) {
         openAlertModel(result.content);
     }
 }
+
+function openDeleteUserStudyConfirmModel(id, userName) {
+    if (stringIsEmpty(id) || stringIsEmpty(userName)) {
+        openAlertModel("系统未获得该用户学习信息！");
+    } else {
+        $("#deleteUserStudyId").val(id);
+        $("#deleteUserStudyUserName").html(userName);
+        $("#deleteUserStudyConfirmModel").modal({
+            backdrop : 'static'
+        });
+    }
+}
+
+
+function deleteUserStudy() {
+    $("#deleteUserStudyConfirmModel").modal('hide');
+    var userStudyId = $("#deleteUserStudyId").val();
+    if (stringIsEmpty("userStudyId")) {
+        openAlertModel("系统未获得该用户学习信息！");
+    } else {
+        openLoadingModel();
+        var obj = new Object();
+        obj.userStudyId = userStudyId;
+        $.ajax({
+            url: "/study/user/delete",
+            type: "POST",
+            cache: false,//设置不缓存
+            data: obj,
+            success: deleteUserStudySuccess,
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                closeLoadingModel();
+                openAjaxErrorAlert(XMLHttpRequest, textStatus, errorThrown);
+            }
+        });
+    }
+}
+
+function deleteUserStudySuccess(data) {
+    var result = JSON.parse(data);
+    if (result.status == "true") {
+        window.location.reload();
+    } else {
+        closeLoadingModel();
+        openAlertModel(result.content);
+    }
+}

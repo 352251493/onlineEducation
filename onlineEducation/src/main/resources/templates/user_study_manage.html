@@ -92,7 +92,7 @@
                                             <td th:text="${#strings.substringBefore(userStudy.createTime, '.')}">
                                             </td>
                                             <td>
-                                                <button type="button" class="btn btn-danger">删除</button>
+                                                <button type="button" class="btn btn-danger" th:onclick="openDeleteUserStudyConfirmModel([[${userStudy.id}]], [[${userStudy.userName}]]);">删除</button>
                                             </td>
                                         </tr>
                                         <!--<tr>-->
@@ -144,6 +144,8 @@
     <div th:include="/html_templates/alert_info.html :: alert"></div>
     <!-- 等待框 -->
     <div th:include="/html_templates/loading.html :: loading"></div>
+    <!-- 删除用户学习信息确认框 -->
+    <div th:include="/html_templates/confirm_modal.html :: deleteUserStudyConfirm"></div>
     <!-- ##### All Javascript Script ##### -->
     <!-- jQuery-2.2.4 js -->
     <script src="/js/jquery/jquery-2.2.4.min.js"></script>

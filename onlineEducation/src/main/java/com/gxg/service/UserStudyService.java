@@ -49,4 +49,22 @@ public interface UserStudyService {
      * @return 处理结果
      */
     String addUserStudy(String courseId, String userStudyEmail, HttpServletRequest request);
+
+    /**
+     * 删除用户学习信息
+     * @param userStudyId 用户学习信息ID
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    String deleteUserStudy(String userStudyId, HttpServletRequest request);
+
+    /**
+     * 根据课程ID及用户邮箱获取用户学习信息
+     * @param courseId 课程ID
+     * @param userEmail 用户邮箱
+     * @return 用户学习信息
+     * @author 郭欣光
+     */
+    List<UserStudy> getUserStudyByCourseIdAndUserEmail(String courseId, String userEmail);
 }

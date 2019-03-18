@@ -183,4 +183,32 @@ public class UserStudyDaoImpl implements UserStudyDao {
         List<UserStudy> userStudyList = jdbcTemplate.query(sql, new UserStudyRowMapper(), courseId);
         return userStudyList;
     }
+
+    /**
+     * 根据ID获取用户学习信息
+     *
+     * @param id ID
+     * @return 用户学习信息
+     * @author 郭欣光
+     */
+    @Override
+    public UserStudy getUserStudyById(String id) {
+        String sql = "select * from user_study where id=?";
+        UserStudy userStudy = jdbcTemplate.queryForObject(sql, new UserStudyRowMapper(), id);
+        return userStudy;
+    }
+
+    /**
+     * 删除用户学习信息
+     *
+     * @param userStudy 用户学习信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    @Override
+    public int deleteUserStudy(UserStudy userStudy) {
+        String sql = "delete from user_study where id=?";
+        int changeCount = jdbcTemplate.update(sql, userStudy.getId());
+        return changeCount;
+    }
 }

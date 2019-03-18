@@ -106,4 +106,20 @@ public interface UserStudyDao {
      * @author 郭欣光
      */
     List<UserStudy> getUserStudyByCourseIdOrderByCreateTime(String courseId);
+
+    /**
+     * 根据ID获取用户学习信息
+     * @param id ID
+     * @return 用户学习信息
+     * @author 郭欣光
+     */
+    UserStudy getUserStudyById(String id);
+
+    /**
+     * 删除用户学习信息
+     * @param userStudy 用户学习信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    int deleteUserStudy(UserStudy userStudy);
 }

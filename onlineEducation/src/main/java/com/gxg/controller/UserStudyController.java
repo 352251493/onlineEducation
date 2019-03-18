@@ -78,4 +78,10 @@ public class UserStudyController {
     public String addUserStudy(@RequestParam String courseId, @RequestParam String userStudyEmail, HttpServletRequest request) {
         return userStudyService.addUserStudy(courseId, userStudyEmail, request);
     }
+
+    @PostMapping(value = "/delete")
+    @ResponseBody
+    public String deleteUserStudy(@RequestParam String userStudyId, HttpServletRequest request) {
+        return userStudyService.deleteUserStudy(userStudyId, request);
+    }
 }

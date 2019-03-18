@@ -3,6 +3,7 @@ package com.gxg.controller;
 import com.gxg.entities.Course;
 import com.gxg.entities.Lesson;
 import com.gxg.entities.User;
+import com.gxg.entities.UserStudy;
 import com.gxg.service.CourseService;
 import com.gxg.service.LessonService;
 import com.gxg.service.MessageService;
@@ -196,5 +197,50 @@ public class LessonController {
     @ResponseBody
     public String deleteLesson(@RequestParam String lessonId, HttpServletRequest request) {
         return lessonService.deleteLesson(lessonId, request);
+    }
+
+    @GetMapping(value = "/private/detail/{lessonId}")
+    public String getPrivateLessonPage(@PathVariable String lessonId, HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            return "redirect:/user/login?next=" + "/lesson/private/detail/" + lessonId;
+        } else {
+            Lesson lesson = lessonService.getLessonById(lessonId);
+            if (lesson == null) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            Course course = courseService.getCourseById(lesson.getCourseId());
+            if (course == null || "0".equals(course.getIsPrivate())) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            User user = (User)session.getAttribute("user");
+            List<UserStudy> userStudyList = userStudyService.getUserStudyByCourseIdAndUserEmail(course.getId(), user.getEmail());
+            if (userStudyList == null || userStudyList.size() == 0) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            model.addAttribute("lesson", lesson);
+            model.addAttribute("course", course);
+            int unReadMessageCount = messageService.getUnreadMessageCount(user);
+            model.addAttribute("unReadMessageCount", unReadMessageCount);
+            model.addAttribute("user", user);
+            List<Course> courseListOrderByModifyTime = courseService.getCourseListByIsPrivateAndTopNumberOrderByModifyTime("0", 5);
+            model.addAttribute("courseListOrderByModifyTime", courseListOrderByModifyTime);
+            if (courseListOrderByModifyTime != null && courseListOrderByModifyTime.size() > 5) {
+                model.addAttribute("hasMoreCourseOrderByModifyTime", "yes");
+            }
+            List<Lesson> lessonList = lessonService.getLessonListByCourseIdAndTopNumber(lesson.getCourseId(), 5);
+            model.addAttribute("lessonListOrderByModifyTime", lessonList);
+            if (lessonList != null && lessonList.size() >= 5) {
+                model.addAttribute("hasMoreLessonOrderByModifyTime", "yes");
+            }
+            model.addAttribute("courseType", "private");
+            return "/lesson_detail.html";
+        }
     }
 }

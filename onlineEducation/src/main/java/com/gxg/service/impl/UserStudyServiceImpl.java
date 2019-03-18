@@ -276,7 +276,7 @@ public class UserStudyServiceImpl implements UserStudyService {
                                 Course course1 = courseDao.getCourseById(courseId);
                                 if (course1.getStudyNumber() != studyNumber) {
                                     try {
-                                        if (courseDao.updateStudyNumberById(studyNumber, course.getId()) == 0) {
+                                        if (courseDao.updateStudyNumberById(studyNumber, course1.getId()) == 0) {
                                             System.out.println("ERROR:更新课程" + course1.toString() + "学习人数操作数据库失败");
                                         }
                                     } catch (Exception e) {
@@ -323,5 +323,119 @@ public class UserStudyServiceImpl implements UserStudyService {
         message += "<p>您可直接点击：<a href='" + sysRootUrl + "/course/private/detail/" +course.getId() + "/1'>" + course.getName() + "</a>进入该课程学习</p>";
         message += "<p style='color: red;'>如果不是您不想学习该课程，您可以忽略该条信息！</p>";
         return message;
+    }
+
+
+    /**
+     * 删除用户学习信息
+     *
+     * @param userStudyId 用户学习信息ID
+     * @param request     用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public String deleteUserStudy(String userStudyId, HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "删除失败！";
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            content = "系统未检测到登录信息，请刷新页面后重试！";
+        } else if (userStudyDao.getCountById(userStudyId) == 0) {
+            content = "系统未获得该用户学习信息！";
+        } else {
+            UserStudy userStudy = userStudyDao.getUserStudyById(userStudyId);
+            if (courseDao.getCountById(userStudy.getCourseId()) == 0) {
+                content = "系统未检测到对应的课程信息！";
+            } else {
+                Course course = courseDao.getCourseById(userStudy.getCourseId());
+                User user = (User)session.getAttribute("user");
+                if (user.getEmail().equals(course.getUserEmail())) {
+                    if ("1".equals(course.getIsPrivate())) {
+                        try {
+                            if (userStudyDao.deleteUserStudy(userStudy) == 0) {
+                                content = "删除用户学习信息操作数据库失败！";
+                            } else {
+                                status = "true";
+                                content = "删除成功！";
+                            }
+                        } catch (Exception e) {
+                            System.out.println("ERROR:删除用户学习信息" + userStudy.toString() + "操作数据库失败，失败原因：" + e);
+                            content = "删除用户学习信息操作数据库失败！";
+                        }
+                    } else {
+                        content = "该课程为公开课程，仅有私有课程才可以删除学习人员信息！";
+                    }
+                } else {
+                    content = "抱歉，您没有权限删除他人课程的学习人员！";
+                }
+
+                if ("true".equals(status)) {
+                    int studyNumber = userStudyDao.getCountByCourseId(course.getId());
+                    if (courseDao.getCountById(course.getId()) != 0) {
+                        Course course1 = courseDao.getCourseById(course.getId());
+                        if (course1.getStudyNumber() != studyNumber) {
+                            try {
+                                if (courseDao.updateStudyNumberById(studyNumber, course1.getId()) == 0) {
+                                    System.out.println("ERROR:更新课程" + course1.toString() + "学习人数操作数据库失败");
+                                }
+                            } catch (Exception e) {
+                                System.out.println("ERROR:更新课程" + course1.toString() + "学习人数操作数据库失败，失败原因：" + e);
+                            }
+                        }
+                    }
+                    if (userDao.getUserCountByEmail(userStudy.getUserEmail()) != 0) {
+                        User user1 = userDao.getUserByEmail(userStudy.getUserEmail());
+                        String messageTitle = "删除学习人员成功";
+                        String messageContent = createDeleteUserStudySuccessTeacherEmailMessage(course, user1);
+                        JSONObject createMessageResult = messageService.createMessage(user.getEmail(), messageTitle, messageContent);
+                        System.out.println("INFO:用户学习信息" + userStudy.toString() + "删除成功时创建教师消息通知结果：" + createMessageResult.toString());
+                        messageTitle = "您有一门课程被移除";
+                        messageContent = createDeleteUserStudySuccessStudentEmailMessage(course, user);
+                        createMessageResult = messageService.createMessage(user1.getEmail(), messageTitle, messageContent);
+                        System.out.println("INFO:用户学习信息" + userStudy.toString() + "删除成功时创建学生消息通知结果：" + createMessageResult.toString());
+                    }
+                }
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
+    }
+
+    private String createDeleteUserStudySuccessTeacherEmailMessage(Course course, User user) {
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        String timeString = time.toString().toString().split("\\.")[0];
+        String message = "<p>您于" + timeString + "将" + user.getName() + "移除您的私有课程&nbsp;&nbsp:" + course.getName() + "</p>";
+        message += "<p style='color: red;'>如果不是您本人操作，可能密码已经泄露，请尽快修改密码！</p>";
+        return message;
+    }
+
+    private String createDeleteUserStudySuccessStudentEmailMessage(Course course, User user) {
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        String timeString = time.toString().toString().split("\\.")[0];
+        String message = "<p>" + user.getName() + "于" + timeString + "将您移出课程：" + course.getName() + "</p>";
+        message += "<p style='color: red;'>如果您急切希望学习该课程，请私下联系该课程的教师</p>";
+        return message;
+    }
+
+
+    /**
+     * 根据课程ID及用户邮箱获取用户学习信息
+     *
+     * @param courseId  课程ID
+     * @param userEmail 用户邮箱
+     * @return 用户学习信息
+     * @author 郭欣光
+     */
+    @Override
+    public List<UserStudy> getUserStudyByCourseIdAndUserEmail(String courseId, String userEmail) {
+        if (userStudyDao.getCountByUserEmailAndCourseId(userEmail, courseId) == 0) {
+            return null;
+        } else {
+            List<UserStudy> userStudyList = userStudyDao.getUserStudyByUserEmailAndCourseId(userEmail, courseId);
+            return userStudyList;
+        }
     }
 }

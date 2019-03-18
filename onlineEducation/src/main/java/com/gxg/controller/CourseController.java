@@ -2,6 +2,7 @@ package com.gxg.controller;
 
 import com.gxg.entities.Course;
 import com.gxg.entities.User;
+import com.gxg.entities.UserStudy;
 import com.gxg.service.CourseService;
 import com.gxg.service.LessonService;
 import com.gxg.service.MessageService;
@@ -285,6 +286,64 @@ public class CourseController {
                     model.addAttribute("hasMoreCourseOrderByStudyNumber", "yes");
                 }
                 model.addAttribute("courseType", "public");
+            }
+            return "/course_detail.html";
+        }
+    }
+
+    @GetMapping(value = "/private/detail/{courseId}/{page}")
+    public String privateCourseDetail(@PathVariable String courseId, @PathVariable String page, HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            return "redirect:/user/login?next=" + "/course/private/detail/" + courseId + "/" + page;
+        } else {
+            Course course = courseService.getCourseById(courseId);
+            if (course == null || "0".equals(course.getIsPrivate())) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            User user = (User)session.getAttribute("user");
+            List<UserStudy> userStudyList = userStudyService.getUserStudyByCourseIdAndUserEmail(courseId, user.getEmail());
+            if (userStudyList == null || userStudyList.size() == 0) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            JSONObject lessonListInfo = lessonService.getLessonListByCourseId(courseId, page);
+            if ("false".equals(lessonListInfo.getString("status"))) {
+                return "redirect:/course/private/detail/" + courseId + "/1";
+            } else {
+                int lessonPageInt = lessonListInfo.getInt("lessonPage");
+                int lessonPageNumber = lessonListInfo.getInt("lessonPageNumber");
+                model.addAttribute("lessonPage", lessonPageInt);
+                model.addAttribute("lessonPageNumber", lessonPageNumber);
+                if (lessonPageInt > 1) {
+                    int lessonPrePage = lessonPageInt - 1;
+                    model.addAttribute("lessonPrePage", lessonPrePage);
+                }
+                if (lessonPageInt < lessonPageNumber) {
+                    int lessonNextPage = lessonPageInt + 1;
+                    model.addAttribute("lessonNextPage", lessonNextPage);
+                }
+                if ("true".equals(lessonListInfo.getString("hasLesson"))) {
+                    model.addAttribute("lessonList", lessonListInfo.get("lessonList"));
+                }
+                model.addAttribute("course", course);
+                int unReadMessageCount = messageService.getUnreadMessageCount(user);
+                model.addAttribute("unReadMessageCount", unReadMessageCount);
+                model.addAttribute("user", user);
+                List<Course> courseListOrderByModifyTime = courseService.getCourseListByIsPrivateAndTopNumberOrderByModifyTime("0", 5);
+                model.addAttribute("courseListOrderByModifyTime", courseListOrderByModifyTime);
+                if (courseListOrderByModifyTime != null && courseListOrderByModifyTime.size() > 5) {
+                    model.addAttribute("hasMoreCourseOrderByModifyTime", "yes");
+                }
+                List<Course> courseListOrderByStudyNumber = courseService.getCourseListByIsPrivateAndTopNumberOrderByStudyNumber("0", 5);
+                model.addAttribute("courseListOrderByStudyNumber", courseListOrderByStudyNumber);
+                if (courseListOrderByStudyNumber != null && courseListOrderByStudyNumber.size() > 5) {
+                    model.addAttribute("hasMoreCourseOrderByStudyNumber", "yes");
+                }
+                model.addAttribute("courseType", "private");
             }
             return "/course_detail.html";
         }
