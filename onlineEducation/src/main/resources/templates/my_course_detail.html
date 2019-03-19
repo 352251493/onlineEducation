@@ -18,6 +18,8 @@
     <link rel="stylesheet" href="/style.css">
 
 	<link rel="stylesheet" href="/my/css/course.css">
+
+    <link rel="stylesheet" href="/my/css/datetimepicker/bootstrap-datetimepicker.min.css">
 </head>
 
 <body>
@@ -63,7 +65,7 @@
                                     <!-- Read More btn -->
                                     <button type="button" class="btn btn-success" th:onclick="openCreateLessonPage([[${course.id}]]);">添加课时</button>
                                     <button type="button" class="btn btn-info">考试列表</button>
-                                    <button type="button" class="btn btn-primary">添加考试</button>
+                                    <button type="button" class="btn btn-primary" onclick="openAddExamModel();">添加考试</button>
                                     <button type="button" class="btn btn-success" onclick="openEditCourseModel();">修改资料</button>
                                     <button type="button" class="btn btn-primary" onclick="openEditCourseImageModel();">修改封面</button>
                                     <button type="button" class="btn btn-info" th:if="${course.isPrivate} eq '1'" th:onclick="openUserStudyManagePage([[${course.id}]]);">学习人员管理</button>
@@ -251,6 +253,8 @@
     <div th:include="/html_templates/alert_info.html :: alert"></div>
     <!-- 等待框 -->
     <div th:include="/html_templates/loading.html :: loading"></div>
+    <!-- 添加考试提示框 -->
+    <div th:include="/html_templates/add_exam.html :: addExam"></div>
     <!-- ##### All Javascript Script ##### -->
     <!-- jQuery-2.2.4 js -->
     <script src="/js/jquery/jquery-2.2.4.min.js"></script>
@@ -270,6 +274,9 @@
     <script src="/my/js/upload_video.js"></script>
     <script src="/my/js/my_video_list.js"></script>
     <script src="/my/js/delete_lesson.js"></script>
+    <script src="/my/js/datetimepicker/bootstrap-datetimepicker.min.js"></script>
+    <script src="/my/js/datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script src="/my/js/add_exam.js"></script>
 </body>
 
 </html>
