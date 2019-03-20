@@ -22,10 +22,15 @@
                         </div>
                         <div class="form-group">
                             <label for="examStartTime" style="font-weight:bold;">入场开始时间</label>
-                            <div class="controls input-append date form_datetime" data-date="1979-09-16T05:25:07Z" data-date-format="yyyy-mm-dd hh:ii" data-link-field="examStartTime">
-                                <input class="form-control" size="16" type="text" value="" readonly>
-                                <span class="add-on"><i class="icon-remove"></i></span>
-                                <span class="add-on"><i class="icon-th"></i></span>
+                            <div class="controls input-append date form_datetime" th:data-date="${#dates.format(new java.util.Date().getTime(), 'yyyy-MM-dd')}" data-date-format="yyyy-mm-dd hh:ii" data-link-field="examStartTime">
+                                <div class="form-control container">
+                                    <div class="row">
+                                        <input id="examStartTimeShow" class="col-md-10" size="16" type="text" value="" readonly>
+                                        <span class="add-on"><i class="icon-remove"></i></span>
+                                        <span class="add-on"><i class="icon-th"></i></span>
+                                        <button class="col-md-2 btn btn-default" onclick="clearTime('examStartTime', 'examStartTimeShow');return false;">清除</button>
+                                    </div>
+                                </div>
                             </div>
                             <input type="hidden" id="examStartTime" name="examStartTime"  value="" /><br/>
                             <!--<input type="text" id="examStartTime" name="examStartTime" class="form-control" maxlength="100" placeholder="不能超过100字符...">-->
@@ -33,10 +38,15 @@
                         </div>
                         <div class="form-group">
                             <label for="examEndTime" style="font-weight:bold;">入场结束时间</label>
-                            <div class="input-group date form_datetime" data-date="1979-09-16T05:25:07Z" data-date-format="yyyy-mm-dd hh:ii" data-link-field="examEndTime">
-                                <input class="form-control" size="16" type="text" value="" readonly>
-                                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-                                <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                            <div class="input-group date form_datetime" th:data-date="${#dates.format(new java.util.Date().getTime(), 'yyyy-MM-dd')}" data-date-format="yyyy-mm-dd hh:ii" data-link-field="examEndTime">
+                                <div class="form-control container">
+                                    <div class="row">
+                                        <input id="examEndTimeShow" class="col-md-10" size="16" type="text" value="" readonly>
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                                        <button class="col-md-2 btn btn-default" onclick="clearTime('examEndTime', 'examEndTimeShow');return false;">清除</button>
+                                    </div>
+                                </div>
                             </div>
                             <input type="hidden" id="examEndTime" name="examEndTime"  value="" /><br/>
                             <!--<input type="text" id="examEndTime" name="examEndTime" class="form-control" maxlength="100" placeholder="不能超过100字符...">-->
@@ -44,14 +54,14 @@
                         </div>
                         <div class="form-group">
                             <label for="examDuration" style="font-weight:bold;">考试时长（分钟）</label>
-                            <input type="number" id="examDuration" name="examDuration" class="form-control">
+                            <input type="text" id="examDuration" name="examDuration" class="form-control">
                             <p style="color:red">*如对考试时长无要求，可不填写</p>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
-                    <button class="btn btn-primary" onclick="addUserStudy();">确定</button>
+                    <button class="btn btn-primary" onclick="addExam();return false;">确定</button>
                 </div>
             </div>
         </div>

@@ -110,3 +110,37 @@ function isMp4AndOggVideo(fileType) {
         return true;
     }
 }
+
+/**
+ * 校验是否为数字
+ * @param val
+ * @returns {boolean}
+ */
+function isNumber(val){
+
+    val = val.trim;
+    var regPos = /^\d+(\.\d+)?$/; //非负浮点数
+    var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; //负浮点数
+    if(regPos.test(val) || regNeg.test(val)){
+        return true;
+    }else{
+        return false;
+    }
+
+}
+
+/**
+ * 校验是否为整数
+ * @param val
+ * @returns {boolean}
+ */
+function isIntNum(val){
+    val = val.trim;
+    var regPos = / ^\d+$/; // 非负整数
+    var regNeg = /^\-[1-9][0-9]*$/; // 负整数
+    if(regPos.test(val) || regNeg.test(val)){
+        return true;
+    }else{
+        return false;
+    }
+}
