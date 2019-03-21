@@ -425,7 +425,7 @@ public class LessonServiceImpl implements LessonService {
 
     private String createDeleteLessonSuccessEmailMessage(Lesson lesson) {
         Timestamp time = new Timestamp(System.currentTimeMillis());
-        String timeString = time.toString();
+        String timeString = time.toString().split("\\.")[0];
         String message = "<p>恭喜您，您于" + timeString + "删除课时：" + lesson.getName() + "&nbsp;&nbsp;成功！</p>";
         message += "<p style='color: red;'>如果不是您本人操作，可能密码已经泄露，请尽快修改密码！</p>";
         return message;

@@ -71,6 +71,35 @@ function addExam() {
                 return;
             }
         }
-        alert("成功！")
+        openLoadingModel();
+        var obj = new Object();
+        obj.courseId = courseId;
+        obj.examName = examName;
+        obj.examRequirement = examRequirement;
+        obj.examStartTime = examStartTime;
+        obj.examEndTime = examEndTime;
+        obj.examDuration = examDuration;
+        $.ajax({
+            url: "/exam/create",
+            type: "POST",
+            cache: false,//设置不缓存
+            data: obj,
+            success: addExamSuccess,
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                closeLoadingModel();
+                openAjaxErrorAlert(XMLHttpRequest, textStatus, errorThrown);
+            }
+        });
+    }
+}
+
+function addExamSuccess(data) {
+    var result = JSON.parse(data);
+    if (result.status == "true") {
+        closeLoadingModel();
+        openAlertModel(result.content);
+    } else {
+        closeLoadingModel();
+        openAlertModel(result.content);
     }
 }
