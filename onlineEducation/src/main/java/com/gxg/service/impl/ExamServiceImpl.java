@@ -13,6 +13,7 @@ import com.gxg.service.MessageService;
 import com.gxg.utils.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,6 +44,9 @@ public class ExamServiceImpl implements ExamService {
 
     @Autowired
     private UserDao userDao;
+
+    @Value("${exam.count.each.page}")
+    private int examCountEachPage;
 
     /**
      * 创建考试
@@ -222,5 +226,47 @@ public class ExamServiceImpl implements ExamService {
         }
         message += "您可以通过<b>我的课程-课程详情-考试列表</b>进行查看";
         return message;
+    }
+
+    /**
+     * 获取指定课程指定页数的考试信息
+     *
+     * @param courseId 课程ID
+     * @param examPage 页数
+     * @return 考试先关信息
+     * @author 郭欣光
+     */
+    @Override
+    public JSONObject getExamListByCourseId(String courseId, String examPage) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        int examPageNumber = 1;
+        int examPageInt = 0;
+        String hasExam = "false";
+        try {
+            examPageInt = Integer.parseInt(examPage);
+        } catch (Exception e) {
+            examPageInt = 0;
+        }
+        List<Exam> examList = null;
+        if (examPageInt > 0) {
+            int examCount = examDao.getCountByCourseId(courseId);
+            if (examCount != 0) {
+                examPageNumber = ((examCount % examCountEachPage) == 0) ? (examCount / examCountEachPage) : (examCount / examCountEachPage + 1);
+                if (examPageInt <= examPageNumber) {
+                    status = "true";
+                    hasExam = "true";
+                    examList = examDao.getExamByCourseIdAndLimitOrderByModifyTime(courseId, examPageInt - 1, examCountEachPage);
+                }
+            } else if (examPageInt == 1) {
+                status = "true";
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("examPageNumber", examPageNumber);
+        result.accumulate("examPage", examPageInt);
+        result.accumulate("examList", examList);
+        result.accumulate("hasExam", hasExam);
+        return result;
     }
 }

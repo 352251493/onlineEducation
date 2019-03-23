@@ -134,3 +134,7 @@ function openEditLesson(lessonId) {
 function openUserStudyManagePage(courseId) {
     window.location.href = "/study/user/list/" + courseId;
 }
+
+function openExamListPage(courseId, page) {
+    window.location.href = "/exam/my/list/" + courseId + "/" + page;
+}
