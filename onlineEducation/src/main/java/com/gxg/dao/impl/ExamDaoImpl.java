@@ -77,4 +77,18 @@ public class ExamDaoImpl implements ExamDao {
         List<Exam> examList = jdbcTemplate.query(sql, new ExamRowMapper(), courseId, limitStart, limitEnd);
         return examList;
     }
+
+    /**
+     * 根据ID获取考试信息
+     *
+     * @param id 考试ID
+     * @return 考试信息
+     * @author 郭欣光
+     */
+    @Override
+    public Exam getExamById(String id) {
+        String sql = "select * from exam where id=?";
+        Exam exam = jdbcTemplate.queryForObject(sql, new ExamRowMapper(), id);
+        return exam;
+    }
 }

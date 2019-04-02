@@ -44,4 +44,12 @@ public interface ExamDao {
      * @author 郭欣光
      */
     List<Exam> getExamByCourseIdAndLimitOrderByModifyTime(String courseId, int limitStart, int limitEnd);
+
+    /**
+     * 根据ID获取考试信息
+     * @param id 考试ID
+     * @return 考试信息
+     * @author 郭欣光
+     */
+    Exam getExamById(String id);
 }

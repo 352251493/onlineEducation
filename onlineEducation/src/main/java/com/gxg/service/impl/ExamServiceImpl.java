@@ -269,4 +269,39 @@ public class ExamServiceImpl implements ExamService {
         result.accumulate("hasExam", hasExam);
         return result;
     }
+
+    /**
+     * 根据考试ID获取考试信息
+     *
+     * @param examId 考试ID
+     * @return 考试信息
+     * @author 郭欣光
+     */
+    @Override
+    public Exam getExamById(String examId) {
+        if (examDao.getCountById(examId) == 0) {
+            return null;
+        } else {
+            Exam exam = examDao.getExamById(examId);
+            return exam;
+        }
+    }
+
+    /**
+     * 获取指定课程ID的前N个考试信息
+     *
+     * @param courseId  课程ID
+     * @param topNumber N
+     * @return 考试信息
+     * @author 郭欣光
+     */
+    @Override
+    public List<Exam> getExamListByCourseIdAndTopNumber(String courseId, int topNumber) {
+        if (examDao.getCountByCourseId(courseId) == 0) {
+            return null;
+        } else {
+            List<Exam> examList = examDao.getExamByCourseIdAndLimitOrderByModifyTime(courseId, 0, topNumber);
+            return examList;
+        }
+    }
 }

@@ -1,8 +1,12 @@
 package com.gxg.service;
 
+import com.gxg.entities.Exam;
+import com.gxg.entities.Lesson;
 import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.AssertFalse;
+import java.util.List;
 
 /**
  * 考试相关业务处理接口
@@ -34,4 +38,21 @@ public interface ExamService {
      * @author 郭欣光
      */
     JSONObject getExamListByCourseId(String courseId, String examPage);
+
+    /**
+     * 根据考试ID获取考试信息
+     * @param examId 考试ID
+     * @return 考试信息
+     * @author 郭欣光
+     */
+    Exam getExamById(String examId);
+
+    /**
+     * 获取指定课程ID的前N个考试信息
+     * @param courseId 课程ID
+     * @param topNumber N
+     * @return 考试信息
+     * @author 郭欣光
+     */
+    List<Exam> getExamListByCourseIdAndTopNumber(String courseId, int topNumber);
 }

@@ -1,6 +1,7 @@
 package com.gxg.controller;
 
 import com.gxg.entities.Course;
+import com.gxg.entities.Exam;
 import com.gxg.entities.User;
 import com.gxg.service.CourseService;
 import com.gxg.service.ExamService;
@@ -83,6 +84,44 @@ public class ExamController {
                 }
             }
             return "/my_exam_list.html";
+        }
+    }
+
+    @GetMapping(value = "/my/detail/{examId}")
+    public String myExamDetailPage(@PathVariable String examId, Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            return "redirect:/user/login?next=" + "/exam/my/detail/" + examId;
+        } else {
+            Exam exam = examService.getExamById(examId);
+            if (exam == null) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            Course course = courseService.getCourseById(exam.getCourseId());
+            User user = (User)session.getAttribute("user");
+            if (course == null || !course.getUserEmail().equals(user.getEmail())) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            model.addAttribute("exam", exam);
+            model.addAttribute("course", course);
+            int unReadMessageCount = messageService.getUnreadMessageCount(user);
+            model.addAttribute("unReadMessageCount", unReadMessageCount);
+            model.addAttribute("user", user);
+            List<Course> courseList = courseService.getUserCourseByTopNumber(user, 5);
+            model.addAttribute("myCourseList", courseList);
+            if (courseList != null && courseList.size() >= 5) {
+                model.addAttribute("hasMoreCourse", "yes");
+            }
+            List<Exam> examList = examService.getExamListByCourseIdAndTopNumber(exam.getCourseId(), 5);
+            model.addAttribute("myExamList", examList);
+            if (examList != null && examList.size() >= 5) {
+                model.addAttribute("hasMoreExam", "yes");
+            }
+            return "/my_exam_detail.html";
         }
     }
 }
