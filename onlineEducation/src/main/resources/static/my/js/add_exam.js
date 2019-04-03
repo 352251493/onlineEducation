@@ -96,8 +96,7 @@ function addExam() {
 function addExamSuccess(data) {
     var result = JSON.parse(data);
     if (result.status == "true") {
-        closeLoadingModel();
-        openAlertModel(result.content);
+        window.location.href = "/exam/my/detail/" + result.content;
     } else {
         closeLoadingModel();
         openAlertModel(result.content);

@@ -73,7 +73,7 @@ public class ExamDaoImpl implements ExamDao {
      */
     @Override
     public List<Exam> getExamByCourseIdAndLimitOrderByModifyTime(String courseId, int limitStart, int limitEnd) {
-        String sql = "select * from exam where course_id=? order by modify_time limit ?, ?";
+        String sql = "select * from exam where course_id=? order by modify_time desc limit ?, ?";
         List<Exam> examList = jdbcTemplate.query(sql, new ExamRowMapper(), courseId, limitStart, limitEnd);
         return examList;
     }

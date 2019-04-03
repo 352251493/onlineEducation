@@ -91,7 +91,7 @@ public class ExamServiceImpl implements ExamService {
                 if (!StringUtils.isEmpty(examStartTime)) {
                     try {
                         startTime = Timestamp.valueOf(examStartTime);
-                        if (time.before(endTime)) {
+                        if (!time.before(startTime)) {
                             content = "开始时间不能早于当前时间！";
                             isSuccess = false;
                         }
@@ -109,7 +109,7 @@ public class ExamServiceImpl implements ExamService {
                             isSuccess = false;
                         }
                         if (isSuccess) {
-                            if (time.before(endTime)) {
+                            if (!time.before(endTime)) {
                                 content = "结束时间不能早于当前时间！";
                                 isSuccess = false;
                             } else if (startTime != null && endTime.before(startTime)) {

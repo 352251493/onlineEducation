@@ -33,7 +33,7 @@
     <!-- ##### Breadcumb Area Start ##### -->
     <div class="breadcumb-area bg-img" style="background-image: url(/img/bg-img/breadcumb.jpg);">
         <div class="bradcumbContent">
-            <h2>课程详情</h2>
+            <h2>考试列表</h2>
         </div>
     </div>
     <!-- ##### Breadcumb Area End ##### -->
@@ -61,7 +61,7 @@
                                     <!-- Post Excerpt -->
                                     <p th:text="${course.introduction}"></p>
                                     <!-- Read More btn -->
-                                    <button type="button" class="btn btn-info" th:onclick="openExamLisPage([[${courseType}]], [[${course.id}]], 1);">考试列表</button>
+                                    <button type="button" class="btn btn-info" th:onclick="openCourseDetailPage([[${courseType}]], [[${course.id}]], 1);">课时列表</button>
                                     <button type="button" class="btn btn-primary" th:if="${course.userEmail} eq ${user.email}" th:onclick="openMyCoursePage([[${course.id}]]);">管理课程</button>
                                 </div>
                             </div>
@@ -74,17 +74,15 @@
                             <div class="col-12">
                                 <div class="single-blog-post mb-50 wow fadeInUp" data-wow-delay="300ms">
                                     <!-- Post Title -->
-                                    <h5>课时列表</h5>
+                                    <h5>考试列表</h5>
                                     <br/>
-                                     <p th:if="${lessonList} == null">这里空空如也~</p>
-                                    <div th:if="${lessonList} != null" th:each="lesson : ${lessonList}">
-                                        <h6 th:text="${lesson.name}"></h6>
+                                     <p th:if="${examList} == null">这里空空如也~</p>
+                                    <div th:if="${examList} != null" th:each="exam : ${examList}">
+                                        <h6 th:text="${exam.name}"></h6>
                                         <div class="post-meta">
-                                            <p>最后修改于：<span th:text="${#strings.substringBefore(lesson.modifyTime, '.')}"></span></p>
+                                            <p>最后修改于：<span th:text="${#strings.substringBefore(exam.modifyTime, '.')}"></span> | 考试开始时间：<span th:if="${exam.startTime} != null" th:text="${#strings.substringBefore(exam.startTime, '.')}"></span><span th:if="${exam.startTime} == null">无</span> | 考试结束时间：<span th:if="${exam.endTime} != null" th:text="${#strings.substringBefore(exam.endTime, '.')}"></span><span th:if="${exam.endTime} == null">无</span> | 考试时长：<span th:if="${exam.duration} ne '0'" th:text="${exam.duration}"></span><span th:if="${exam.duration} eq '0'">无</span></p>
                                             <div class="pull-right">
-                                                <button type="button" class="btn btn-primary" th:onclick="openLessonPage([[${courseType}]], [[${lesson.id}]]);">查看</button>
-                                                <button type="button" class="btn btn-primary" th:onclick="openLessonDataListModel([[${lesson.id}]]);">资料列表</button>
-                                                <button type="button" class="btn btn-primary" th:onclick="openVideoList([[${lesson.id}]], [[${courseType}]]);">视频列表</button>
+                                                <button type="button" class="btn btn-primary">开始考试</button>
                                             </div>
                                         </div>
                                         <br/>
@@ -146,11 +144,11 @@
                                         <!--<br/>-->
                                     <!--</div>-->
                                     <div class="btn-group pull-right" role="group">
-                                        <button type="button" class="btn btn-default" disabled="disabled" th:if="${lessonPrePage} == null"><span aria-hidden="true">&laquo;</span>上一页</button>
-                                        <button type="button" class="btn btn-default" th:if="${lessonPrePage} != null" th:onclick="openCourseDetailPage([[${courseType}]], [[${course.id}]], [[${lessonPrePage}]]);"><span aria-hidden="true">&laquo;</span>上一页</button>
-                                        <button type="button" class="btn btn-default" disabled="disabled" th:text="${lessonPage} + '/' + ${lessonPageNumber}">1/1</button>
-                                        <button type="button" class="btn btn-default" disabled="disabled" th:if="${lessonNextPage} == null">下一页<span aria-hidden="true">&raquo;</span></button>
-                                        <button type="button" class="btn btn-default" th:if="${lessonNextPage} != null" th:onclick="openCourseDetailPage([[${courseType}]], [[${course.id}]], [[${lessonNextPage}]]);">下一页<span aria-hidden="true">&raquo;</span></button>
+                                        <button type="button" class="btn btn-default" disabled="disabled" th:if="${examPrePage} == null"><span aria-hidden="true">&laquo;</span>上一页</button>
+                                        <button type="button" class="btn btn-default" th:if="${examPrePage} != null" th:onclick="openExamLisPage([[${courseType}]], [[${course.id}]], [[${examPrePage}]]);"><span aria-hidden="true">&laquo;</span>上一页</button>
+                                        <button type="button" class="btn btn-default" disabled="disabled" th:text="${examPage} + '/' + ${examPageNumber}">1/1</button>
+                                        <button type="button" class="btn btn-default" disabled="disabled" th:if="${examNextPage} == null">下一页<span aria-hidden="true">&raquo;</span></button>
+                                        <button type="button" class="btn btn-default" th:if="${examNextPage} != null" th:onclick="openExamLisPage([[${courseType}]], [[${course.id}]], [[${examNextPage}]]);">下一页<span aria-hidden="true">&raquo;</span></button>
                                     </div>
                                 </div>
                             </div>
@@ -176,10 +174,6 @@
     <footer class="footer-area" th:include="/html_templates/footer.html :: footer"></footer>
     <!-- ##### Footer Area Start ##### -->
 
-    <!-- 课时资料模板-->
-    <div th:include="/html_templates/lesson_data_list.html :: lessonDataList"></div>
-    <!-- 课时视频模板-->
-    <div th:include="/html_templates/video_list.html :: videoList"></div>
     <!-- 信息提示框 -->
     <div th:include="/html_templates/alert_info.html :: alert"></div>
     <!-- 等待框 -->
@@ -197,13 +191,11 @@
     <script src="/js/active.js"></script>
 
     <script src="/my/js/utils.js"></script>
-    <script src="/my/js/lesson_data_list.js"></script>
-    <script src="/my/js/video_list.js"></script>
 
 <script>
-    function openLessonPage(courseType, lessonId) {
-        window.location.href = "/lesson/" + courseType + "/detail/" + lessonId;
-    }
+//    function openLessonPage(courseType, lessonId) {
+//        window.location.href = "/lesson/" + courseType + "/detail/" + lessonId;
+//    }
 
     function openMyCoursePage(courseId) {
         window.location.href = "/course/my/detail/" + courseId + "/1";

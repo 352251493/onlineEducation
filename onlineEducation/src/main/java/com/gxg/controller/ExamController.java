@@ -3,9 +3,12 @@ package com.gxg.controller;
 import com.gxg.entities.Course;
 import com.gxg.entities.Exam;
 import com.gxg.entities.User;
+import com.gxg.entities.UserStudy;
 import com.gxg.service.CourseService;
 import com.gxg.service.ExamService;
 import com.gxg.service.MessageService;
+import com.gxg.service.UserStudyService;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,6 +37,9 @@ public class ExamController {
 
     @Autowired
     private MessageService messageService;
+
+    @Autowired
+    private UserStudyService userStudyService;
 
     @PostMapping(value = "/create")
     @ResponseBody
@@ -122,6 +128,117 @@ public class ExamController {
                 model.addAttribute("hasMoreExam", "yes");
             }
             return "/my_exam_detail.html";
+        }
+    }
+
+    @GetMapping(value = "/public/list/{courseId}/{page}")
+    public String getPublicExamListPage(@PathVariable String courseId, @PathVariable String page, HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            return "redirect:/user/login?next=" + "/exam/public/list/" + courseId + "/" + page;
+        } else {
+            Course course = courseService.getCourseById(courseId);
+            if (course == null || "1".equals(course.getIsPrivate())) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            JSONObject examListInfo = examService.getExamListByCourseId(courseId, page);
+            if ("false".equals(examListInfo.getString("status"))) {
+                return "redirect:/exam/public/list/" + courseId + "/1";
+            } else {
+                int examPageInt = examListInfo.getInt("examPage");
+                int examPageNumber = examListInfo.getInt("examPageNumber");
+                model.addAttribute("examPage", examPageInt);
+                model.addAttribute("examPageNumber", examPageNumber);
+                if (examPageInt > 1) {
+                    int examPrePage = examPageInt - 1;
+                    model.addAttribute("examPrePage", examPrePage);
+                }
+                if (examPageInt < examPageNumber) {
+                    int examNextPage = examPageInt + 1;
+                    model.addAttribute("examNextPage", examNextPage);
+                }
+                if ("true".equals(examListInfo.getString("hasExam"))) {
+                    model.addAttribute("examList", examListInfo.get("examList"));
+                }
+                model.addAttribute("course", course);
+                User user = (User)session.getAttribute("user");
+                userStudyService.addPublicUserStudy(user, course);
+                int unReadMessageCount = messageService.getUnreadMessageCount(user);
+                model.addAttribute("unReadMessageCount", unReadMessageCount);
+                model.addAttribute("user", user);
+                List<Course> courseListOrderByModifyTime = courseService.getCourseListByIsPrivateAndTopNumberOrderByModifyTime("0", 5);
+                model.addAttribute("courseListOrderByModifyTime", courseListOrderByModifyTime);
+                if (courseListOrderByModifyTime != null && courseListOrderByModifyTime.size() > 5) {
+                    model.addAttribute("hasMoreCourseOrderByModifyTime", "yes");
+                }
+                List<Course> courseListOrderByStudyNumber = courseService.getCourseListByIsPrivateAndTopNumberOrderByStudyNumber("0", 5);
+                model.addAttribute("courseListOrderByStudyNumber", courseListOrderByStudyNumber);
+                if (courseListOrderByStudyNumber != null && courseListOrderByStudyNumber.size() > 5) {
+                    model.addAttribute("hasMoreCourseOrderByStudyNumber", "yes");
+                }
+                model.addAttribute("courseType", "public");
+            }
+        }
+        return "/exam_list.html";
+    }
+
+    @GetMapping(value = "/private/list/{courseId}/{page}")
+    public String getPrivateExamListPage(@PathVariable String courseId, @PathVariable String page, HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            return "redirect:/user/login?next=" + "/exam/private/list/" + courseId + "/" + page;
+        } else {
+            Course course = courseService.getCourseById(courseId);
+            if (course == null || "0".equals(course.getIsPrivate())) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            User user = (User)session.getAttribute("user");
+            List<UserStudy> userStudyList = userStudyService.getUserStudyByCourseIdAndUserEmail(courseId, user.getEmail());
+            if (userStudyList == null || userStudyList.size() == 0) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            JSONObject examListInfo = examService.getExamListByCourseId(courseId, page);
+            if ("false".equals(examListInfo.getString("status"))) {
+                return "redirect:/exam/private/list/" + courseId + "/1";
+            } else {
+                int examPageInt = examListInfo.getInt("examPage");
+                int examPageNumber = examListInfo.getInt("examPageNumber");
+                model.addAttribute("examPage", examPageInt);
+                model.addAttribute("examPageNumber", examPageNumber);
+                if (examPageInt > 1) {
+                    int examPrePage = examPageInt - 1;
+                    model.addAttribute("examPrePage", examPrePage);
+                }
+                if (examPageInt < examPageNumber) {
+                    int examNextPage = examPageInt + 1;
+                    model.addAttribute("examNextPage", examNextPage);
+                }
+                if ("true".equals(examListInfo.getString("hasExam"))) {
+                    model.addAttribute("examList", examListInfo.get("examList"));
+                }
+                model.addAttribute("course", course);
+                int unReadMessageCount = messageService.getUnreadMessageCount(user);
+                model.addAttribute("unReadMessageCount", unReadMessageCount);
+                model.addAttribute("user", user);
+                List<Course> courseListOrderByModifyTime = courseService.getCourseListByIsPrivateAndTopNumberOrderByModifyTime("0", 5);
+                model.addAttribute("courseListOrderByModifyTime", courseListOrderByModifyTime);
+                if (courseListOrderByModifyTime != null && courseListOrderByModifyTime.size() > 5) {
+                    model.addAttribute("hasMoreCourseOrderByModifyTime", "yes");
+                }
+                List<Course> courseListOrderByStudyNumber = courseService.getCourseListByIsPrivateAndTopNumberOrderByStudyNumber("0", 5);
+                model.addAttribute("courseListOrderByStudyNumber", courseListOrderByStudyNumber);
+                if (courseListOrderByStudyNumber != null && courseListOrderByStudyNumber.size() > 5) {
+                    model.addAttribute("hasMoreCourseOrderByStudyNumber", "yes");
+                }
+                model.addAttribute("courseType", "private");
+            }
+            return "/exam_list.html";
         }
     }
 }
