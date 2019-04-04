@@ -82,7 +82,7 @@
                                         <div class="post-meta">
                                             <p>最后修改于：<span th:text="${#strings.substringBefore(exam.modifyTime, '.')}"></span> | 考试开始时间：<span th:if="${exam.startTime} != null" th:text="${#strings.substringBefore(exam.startTime, '.')}"></span><span th:if="${exam.startTime} == null">无</span> | 考试结束时间：<span th:if="${exam.endTime} != null" th:text="${#strings.substringBefore(exam.endTime, '.')}"></span><span th:if="${exam.endTime} == null">无</span> | 考试时长：<span th:if="${exam.duration} ne '0'" th:text="${exam.duration}"></span><span th:if="${exam.duration} eq '0'">无</span></p>
                                             <div class="pull-right">
-                                                <button type="button" class="btn btn-primary">开始考试</button>
+                                                <button type="button" class="btn btn-primary" th:onclick="openExamDetailPage([[${exam}]]);">开始考试</button>
                                             </div>
                                         </div>
                                         <br/>
@@ -208,6 +208,62 @@
     function openExamLisPage(courseType, courseId, pageNumber) {
         window.location.href = "/exam/" + courseType + "/list/" + courseId + "/" + pageNumber;
     }
+
+    function openExamDetailPage(exam, courseType) {
+        if (exam.startTime != null) {
+            var startTime = exam.startTime.split(".")[0].split("T")[0] + " " + exam.startTime.split(".")[0].split("T")[1];
+            var curDate = new Date();
+            var curDateString = curDate.getFullYear() + "-" + (curDate.getMonth() + 1) + "-" + curDate.getDate() + " " + curDate.getHours() + ":" + curDate.getMinutes() + ":" + curDate.getSeconds();
+            var startTimeDate = new Date(startTime.replace("-","/"));
+            var curDateStringDate = new Date(curDateString.replace("-","/"));
+            if (curDateStringDate < startTimeDate) {
+                openAlertModel("考试尚未开始！");
+            } else {
+                if (exam.endTime == null) {
+                    window.location.href = "/exam/" + courseType + "/detail/" + exam.id;
+                } else {
+                    var endTime = exam.endTime.split(".")[0].split("T")[0] + " " + exam.endTime.split(".")[0].split("T")[1];
+                    var endTimeDate = new Date(endTime.replace("-","/"));
+                    if (curDateStringDate > endTimeDate) {
+                        openAlertModel("考试已结束！");
+                    } else {
+                        window.location.href = "/exam/" + courseType + "/detail/" + exam.id;
+                    }
+                }
+            }
+        } else {
+            if (exam.endTime == null) {
+                window.location.href = "/exam/" + courseType + "/detail/" + exam.id;
+            } else {
+                var endTime = exam.endTime.split(".")[0].split("T")[0] + " " + exam.endTime.split(".")[0].split("T")[1];
+                var endTimeDate = new Date(endTime.replace("-","/"));
+                var curDate = new Date();
+                var curDateString = curDate.getFullYear() + "-" + (curDate.getMonth() + 1) + "-" + curDate.getDate() + " " + curDate.getHours() + ":" + curDate.getMinutes() + ":" + curDate.getSeconds();
+                var curDateStringDate = new Date(curDateString.replace("-","/"));
+                if (curDateStringDate > endTimeDate) {
+                    openAlertModel("考试已结束！");
+                } else {
+                    window.location.href = "/exam/" + courseType + "/detail/" + exam.id;
+                }
+            }
+        }
+    }
+
+//    function openExamDetailPageSuccess(data) {
+//        var result = JSON.parse(data);
+//        if (result.status == "true") {
+//            var exam = result.content;
+//            if (exam.startTime != null) {
+//                var startTime = exam.startTime.split(".")[0];
+//                var curDate = new Date();
+//                var curDateString = curDate.getFullYear() + "-" + (curDate.getMonth() + 1) + "-" + curDate.getDate() + " " + curDate.getHours() + ":" + curDate.getMinutes() + ":" + curDate.getSeconds();
+//
+//            }
+//        } else {
+//            closeLoadingModel();
+//            openAlertModel(result.content);
+//        }
+//    }
 </script>
 </body>
 

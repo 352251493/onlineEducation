@@ -91,4 +91,18 @@ public class ExamDaoImpl implements ExamDao {
         Exam exam = jdbcTemplate.queryForObject(sql, new ExamRowMapper(), id);
         return exam;
     }
+
+    /**
+     * 修改考试信息
+     *
+     * @param exam 考试信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    @Override
+    public int updateExam(Exam exam) {
+        String sql = "update exam set name=?, requirement=?, start_time=?, end_time=?, duration=?, create_time=?, modify_time=?, course_id=? where id=?";
+        int changeCount = jdbcTemplate.update(sql, exam.getName(), exam.getRequirement(), exam.getStartTime(), exam.getEndTime(), exam.getDuration(), exam.getCreateTime(), exam.getModifyTime(), exam.getCourseId(), exam.getId());
+        return changeCount;
+    }
 }

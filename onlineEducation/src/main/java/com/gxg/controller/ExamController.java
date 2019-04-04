@@ -1,14 +1,7 @@
 package com.gxg.controller;
 
-import com.gxg.entities.Course;
-import com.gxg.entities.Exam;
-import com.gxg.entities.User;
-import com.gxg.entities.UserStudy;
-import com.gxg.service.CourseService;
-import com.gxg.service.ExamService;
-import com.gxg.service.MessageService;
-import com.gxg.service.UserStudyService;
-import com.sun.org.apache.xpath.internal.operations.Mod;
+import com.gxg.entities.*;
+import com.gxg.service.*;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,6 +33,9 @@ public class ExamController {
 
     @Autowired
     private UserStudyService userStudyService;
+
+    @Autowired
+    private ChoiceQuestionService choiceQuestionService;
 
     @PostMapping(value = "/create")
     @ResponseBody
@@ -240,5 +236,11 @@ public class ExamController {
             }
             return "/exam_list.html";
         }
+    }
+
+    @PostMapping(value = "/add/choice")
+    @ResponseBody
+    public String addChoiceQuestion(@RequestParam String examId, @RequestParam String subject, @RequestParam String optionA, @RequestParam String optionB, @RequestParam String optionC, @RequestParam String optionD, @RequestParam String answer, HttpServletRequest request) {
+        return choiceQuestionService.addChoiceQuestion(examId, subject, optionA, optionB, optionC, optionD, answer, request);
     }
 }

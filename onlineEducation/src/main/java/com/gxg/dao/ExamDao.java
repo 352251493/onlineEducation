@@ -52,4 +52,12 @@ public interface ExamDao {
      * @author 郭欣光
      */
     Exam getExamById(String id);
+
+    /**
+     * 修改考试信息
+     * @param exam 考试信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    int updateExam(Exam exam);
 }
