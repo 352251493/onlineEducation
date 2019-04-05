@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="addObjectiveQuestion">
+    <div id="addObjectiveQuestionModel" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="addObjectiveQuestionModelLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="addObjectiveQuestionModelLabel">添加问答题</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="addObjectiveQuestionModelClose"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body" id="addObjectiveQuestionModelInfo">
+                    <form id="addObjectiveQuestionForm">
+                        <input type="hidden" name="examId" id="addObjectiveQuestionExamId" th:value="${exam.id}">
+                        <div class="form-group">
+                            <label for="addObjectiveQuestionExamSubject" style="font-weight:bold;">题目</label>
+                            <input type="text" id="addObjectiveQuestionExamSubject" name="examSubject" class="form-control" maxlength="1000">
+                        </div>
+                        <div class="form-group">
+                            <label for="addObjectiveQuestionExamScore" style="font-weight:bold;">分值</label>
+                            <input type="text" id="addObjectiveQuestionExamScore" name="examScore" class="form-control">
+                            <p style="color: red">*分值只能为整数</p>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                    <button class="btn btn-primary" onclick="addObjectiveQuestion();">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -9,7 +9,7 @@
                     <h4 class="modal-title" id="addChoiceQuestionModelLabel">添加选择题</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="addChoiceQuestionModelClose"><span aria-hidden="true">&times;</span></button>
                 </div>
-                <div class="modal-body" id="addUserStudyModelInfo">
+                <div class="modal-body" id="addChoiceQuestionModelInfo">
                     <form id="addUserStudyForm">
                         <input type="hidden" name="examId" id="addChoiceQuestionExamId" th:value="${exam.id}">
                         <div class="form-group">
@@ -36,6 +36,11 @@
                             <label for="examAnswer" style="font-weight:bold;">答案</label>
                             <input type="text" id="examAnswer" name="examAnswer" class="form-control" maxlength="1">
                             <p style="color: red">*答案只能写A/B/C/D</p>
+                        </div>
+                        <div class="form-group">
+                            <label for="examScore" style="font-weight:bold;">分值</label>
+                            <input type="text" id="examScore" name="examScore" class="form-control">
+                            <p style="color: red">*分值只能为整数</p>
                         </div>
                     </form>
                 </div>

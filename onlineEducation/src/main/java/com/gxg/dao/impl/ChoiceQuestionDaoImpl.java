@@ -41,8 +41,8 @@ public class ChoiceQuestionDaoImpl implements ChoiceQuestionDao {
      */
     @Override
     public int addChoiceQuestion(ChoiceQuestion choiceQuestion) {
-        String sql = "insert into choice_question(id, subject, option_a, option_b, option_c, option_d, answer, create_time, exam_id) values(?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        int changeCount = jdbcTemplate.update(sql, choiceQuestion.getId(), choiceQuestion.getSubject(), choiceQuestion.getOptionA(), choiceQuestion.getOptionB(), choiceQuestion.getOptionC(), choiceQuestion.getOptionD(), choiceQuestion.getAnswer(), choiceQuestion.getCreateTime(), choiceQuestion.getExamId());
+        String sql = "insert into choice_question(id, subject, option_a, option_b, option_c, option_d, answer, create_time, exam_id, score) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        int changeCount = jdbcTemplate.update(sql, choiceQuestion.getId(), choiceQuestion.getSubject(), choiceQuestion.getOptionA(), choiceQuestion.getOptionB(), choiceQuestion.getOptionC(), choiceQuestion.getOptionD(), choiceQuestion.getAnswer(), choiceQuestion.getCreateTime(), choiceQuestion.getExamId(), choiceQuestion.getScore());
         return changeCount;
     }
 }

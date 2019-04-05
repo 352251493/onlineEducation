@@ -43,6 +43,7 @@ function addChoiceQuestion() {
     var optionC = $("#examOptionC").val();
     var optionD = $("#examOptionD").val();
     var answer = $("#examAnswer").val();
+    var score = $("#examScore").val();
     $("#addChoiceQuestionModel").modal('hide');
     if (stringIsEmpty(examId)) {
         openAlertModel("系统获取考试信息失败！");
@@ -68,6 +69,8 @@ function addChoiceQuestion() {
         openAlertModel("选项D长度不能超过1000字符！");
     } else if (stringIsEmpty(answer)) {
         openAlertModel("答案不能为空！");
+    } else if (stringIsEmpty(score)) {
+        openAlertModel("请输入分值");
     } else {
         answer = answer.trim().toUpperCase();
         if (answer == "A" || answer == "B" || answer == "C" || answer == "D") {
@@ -80,6 +83,7 @@ function addChoiceQuestion() {
             obj.optionC = optionC;
             obj.optionD = optionD;
             obj.answer = answer;
+            obj.score = score;
             $.ajax({
                 url: "/exam/add/choice",
                 type: "POST",

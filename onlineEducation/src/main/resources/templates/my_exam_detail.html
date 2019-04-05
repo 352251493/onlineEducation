@@ -64,7 +64,7 @@
                                     </div>
                                     <!-- Read More btn -->
                                     <button type="button" class="btn btn-primary" th:onclick="openAddChoiceQuestionModel([[${exam}]]);">添加选择题</button>
-                                    <button type="button" class="btn btn-success">添加客观题</button>
+                                    <button type="button" class="btn btn-success" th:onclick="openAddObjectiveQuestionModel([[${exam}]]);">添加客观题</button>
                                     <button type="button" class="btn btn-primary" th:onclick="openMyExamListPage([[${course.id}]]);">返回考试列表</button>
                                     <button type="button" class="btn btn-info" th:onclick="openMyCourseDetailPage([[${course.id}]]);">返回课程</button>
                                     <button type="button" class="btn btn-danger">删除</button>
@@ -98,6 +98,8 @@
     <!-- ##### Footer Area Start ##### -->
     <!-- 选择题添加框 -->
     <div th:include="/html_templates/add_choice_question.html :: addChoiceQuestion"></div>
+    <!-- 问答题添加框 -->
+    <div th:include="/html_templates/add_objective_question.html :: addObjectiveQuestion"></div>
     <!-- 信息提示框 -->
     <div th:include="/html_templates/alert_info.html :: alert"></div>
     <!-- 等待框 -->
@@ -116,6 +118,7 @@
 
     <script src="/my/js/utils.js"></script>
     <script src="/my/js/add_choice_question.js"></script>
+    <script src="/my/js/add_objective_question.js"></script>
     <script>
         function openMyExamListPage(courseId) {
             window.location.href = "/exam/my/list/" + courseId + "/1";

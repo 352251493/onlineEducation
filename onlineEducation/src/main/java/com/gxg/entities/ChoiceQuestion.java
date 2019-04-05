@@ -27,6 +27,8 @@ public class ChoiceQuestion {
 
     private String examId;
 
+    private int score;
+
     public String getId() {
         return id;
     }
@@ -99,6 +101,14 @@ public class ChoiceQuestion {
         this.examId = examId;
     }
 
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
     @Override
     public String toString() {
         return "ChoiceQuestion{" +
@@ -111,6 +121,7 @@ public class ChoiceQuestion {
                 ", answer='" + answer + '\'' +
                 ", createTime=" + createTime +
                 ", examId='" + examId + '\'' +
+                ", score=" + score +
                 '}';
     }
 }

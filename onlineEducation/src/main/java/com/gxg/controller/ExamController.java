@@ -37,6 +37,9 @@ public class ExamController {
     @Autowired
     private ChoiceQuestionService choiceQuestionService;
 
+    @Autowired
+    private ObjectiveQuestionService objectiveQuestionService;
+
     @PostMapping(value = "/create")
     @ResponseBody
     public String createExam(@RequestParam String courseId, @RequestParam String examName, @RequestParam String examRequirement, @RequestParam String examStartTime, @RequestParam String examEndTime, @RequestParam String examDuration, HttpServletRequest request) {
@@ -240,7 +243,13 @@ public class ExamController {
 
     @PostMapping(value = "/add/choice")
     @ResponseBody
-    public String addChoiceQuestion(@RequestParam String examId, @RequestParam String subject, @RequestParam String optionA, @RequestParam String optionB, @RequestParam String optionC, @RequestParam String optionD, @RequestParam String answer, HttpServletRequest request) {
-        return choiceQuestionService.addChoiceQuestion(examId, subject, optionA, optionB, optionC, optionD, answer, request);
+    public String addChoiceQuestion(@RequestParam String examId, @RequestParam String subject, @RequestParam String optionA, @RequestParam String optionB, @RequestParam String optionC, @RequestParam String optionD, @RequestParam String answer, @RequestParam String score, HttpServletRequest request) {
+        return choiceQuestionService.addChoiceQuestion(examId, subject, optionA, optionB, optionC, optionD, answer, score, request);
+    }
+
+    @PostMapping(value = "/add/objective")
+    @ResponseBody
+    public String addObjectiveQuestion(@RequestParam String examId, @RequestParam String subject, @RequestParam String score, HttpServletRequest request) {
+        return objectiveQuestionService.addObjectQuestion(examId, subject, score, request);
     }
 }
