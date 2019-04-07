@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -173,6 +174,94 @@ public class ChoiceQuestionServiceImpl implements ChoiceQuestionService {
                 }
             } else {
                 content = "答案只能写A/B/C/D";
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
+    }
+
+    /**
+     * 根据考试ID获取选择题信息
+     *
+     * @param examId 考试ID
+     * @return 选择题信息
+     * @author 郭欣光
+     */
+    @Override
+    public List<ChoiceQuestion> getChoiceQuestionByExamId(String examId) {
+        if (choiceQuestionDao.getCountByExamId(examId) == 0) {
+            return null;
+        } else {
+            List<ChoiceQuestion> choiceQuestionList = choiceQuestionDao.getChoiceQuestionByExamId(examId);
+            return choiceQuestionList;
+        }
+    }
+
+    /**
+     * 删除选择题
+     * @param choiceQuestionId 选择题ID
+     * @param request 用户请求相关信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public String deleteChoiceQuestion(String choiceQuestionId, HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "删除失败！";
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            content = "系统未检测到登录信息，请刷新页面后重试！";
+        } else if (choiceQuestionDao.getCountById(choiceQuestionId) == 0) {
+            content = "系统获取选择题信息失败！";
+        } else {
+            ChoiceQuestion choiceQuestion = choiceQuestionDao.getChoiceQuestionById(choiceQuestionId);
+            if (examDao.getCountById(choiceQuestion.getExamId()) == 0) {
+                content = "系统获取考试信息失败！";
+            } else {
+                Exam exam = examDao.getExamById(choiceQuestion.getExamId());
+                if (courseDao.getCountById(exam.getCourseId()) == 0) {
+                    content = "系统获取课程信息失败！";
+                } else {
+                    Course course = courseDao.getCourseById(exam.getCourseId());
+                    User user = (User)session.getAttribute("user");
+                    if (user.getEmail().equals(course.getUserEmail())) {
+                        try {
+                            if (choiceQuestionDao.deleteChoiceQuestion(choiceQuestion) == 0) {
+                                content = "删除选择题时操作数据库失败！";
+                                System.out.println("ERROR:删除选择题" + choiceQuestion.toString() + "时，操作数据库失败");
+                            } else {
+                                status = "true";
+                                content = "删除成功！";
+                            }
+                        } catch (Exception e) {
+                            content = "删除选择题时操作数据库失败！";
+                            System.out.println("ERROR:删除选择题" + choiceQuestion.toString() + "时，操作数据库失败，失败原因：" + e);
+                        }
+                    } else {
+                        content = "抱歉，您没有权限修改他人的考试试题！";
+                    }
+                    if ("true".equals(status)) {
+                        Timestamp time = new Timestamp(System.currentTimeMillis());
+                        exam.setModifyTime(time);
+                        course.setModifyTime(time);
+                        try {
+                            if (examDao.updateExam(exam) == 0) {
+                                System.out.println("ERROR:删除选择题成功后修改考试" + exam.toString() + "操作数据库失败");
+                            }
+                        } catch (Exception e) {
+                            System.out.println("ERROR:删除选择题成功后修改考试" + exam.toString() + "操作数据库失败，失败原因：" + e);
+                        }
+                        try {
+                            if (courseDao.editCourse(course) == 0) {
+                                System.out.println("ERROR:删除选择题成功后修改课程" + course.toString() + "操作数据库失败");
+                            }
+                        } catch (Exception e) {
+                            System.out.println("ERROR:删除选择题成功后修改课程" + course.toString() + "操作数据库失败，失败原因：" + e);
+                        }
+                    }
+                }
             }
         }
         result.accumulate("status", status);

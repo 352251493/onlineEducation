@@ -71,8 +71,7 @@ function addObjectiveQuestion() {
 function addObjectiveQuestionSuccess(data) {
     var result = JSON.parse(data);
     if (result.status = "true") {
-        closeLoadingModel();
-        openAlertModel(result.content);
+        window.location.reload();
     } else {
         closeLoadingModel();
         openAlertModel(result.content);

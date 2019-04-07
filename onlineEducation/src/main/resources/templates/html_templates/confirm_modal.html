@@ -62,5 +62,47 @@
         </div>
     </div>
 </div>
+
+<div th:fragment="deleteChoiceQuestionConfirm">
+    <div id="deleteChoiceQuestionConfirmModel" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="deleteChoiceQuestionConfirmModelLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="deleteChoiceQuestionConfirmModelLabel">确认删除？</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="deleteChoiceQuestionConfirmModelClose"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body" id="deleteChoiceQuestionConfirmModelInfo">
+                    <input type="hidden" id="deleteChoiceQuestionId">
+                    您确定要删除该选择题吗？一经删除无法恢复
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal">取消</button>
+                    <button class="btn btn-primary" onclick="deleteChoiceQuestion()">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="deleteObjectiveQuestionConfirm">
+    <div id="deleteObjectiveQuestionConfirmModel" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="deleteObjectiveQuestionConfirmModelLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="deleteObjectiveQuestionConfirmModelLabel">确认删除？</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="deleteObjectiveQuestionConfirmModelClose"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body" id="deleteObjectiveQuestionConfirmModelInfo">
+                    <input type="hidden" id="deleteObjectiveQuestionId">
+                    您确定要删除该客观题吗？一经删除无法恢复
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal">取消</button>
+                    <button class="btn btn-primary" onclick="deleteObjectiveQuestion()">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

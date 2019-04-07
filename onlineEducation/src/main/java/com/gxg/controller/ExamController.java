@@ -113,6 +113,10 @@ public class ExamController {
             }
             model.addAttribute("exam", exam);
             model.addAttribute("course", course);
+            List<ChoiceQuestion> choiceQuestionList = choiceQuestionService.getChoiceQuestionByExamId(examId);
+            model.addAttribute("choiceQuestionList", choiceQuestionList);
+            List<ObjectiveQuestion> objectiveQuestionList = objectiveQuestionService.getObjectQuestionByExamId(examId);
+            model.addAttribute("objectiveQuestionList", objectiveQuestionList);
             int unReadMessageCount = messageService.getUnreadMessageCount(user);
             model.addAttribute("unReadMessageCount", unReadMessageCount);
             model.addAttribute("user", user);
@@ -251,5 +255,17 @@ public class ExamController {
     @ResponseBody
     public String addObjectiveQuestion(@RequestParam String examId, @RequestParam String subject, @RequestParam String score, HttpServletRequest request) {
         return objectiveQuestionService.addObjectQuestion(examId, subject, score, request);
+    }
+
+    @PostMapping(value = "/choice/delete")
+    @ResponseBody
+    public String deleteChoiceQuestion(@RequestParam String choiceQuestionId, HttpServletRequest request) {
+        return choiceQuestionService.deleteChoiceQuestion(choiceQuestionId, request);
+    }
+
+    @PostMapping(value = "/objective/delete")
+    @ResponseBody
+    public String deleteObjectiveQuestion(@RequestParam String objectiveQuestionId, HttpServletRequest request) {
+        return objectiveQuestionService.deleteObjectiveQuestion(objectiveQuestionId, request);
     }
 }
