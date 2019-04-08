@@ -105,4 +105,18 @@ public class ExamDaoImpl implements ExamDao {
         int changeCount = jdbcTemplate.update(sql, exam.getName(), exam.getRequirement(), exam.getStartTime(), exam.getEndTime(), exam.getDuration(), exam.getCreateTime(), exam.getModifyTime(), exam.getCourseId(), exam.getId());
         return changeCount;
     }
+
+    /**
+     * 删除考试
+     *
+     * @param exam 考试信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    @Override
+    public int deleteExam(Exam exam) {
+        String sql = "delete from exam where id=?";
+        int changeCount = jdbcTemplate.update(sql, exam.getId());
+        return changeCount;
+    }
 }

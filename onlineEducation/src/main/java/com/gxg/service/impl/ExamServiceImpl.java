@@ -1,13 +1,7 @@
 package com.gxg.service.impl;
 
-import com.gxg.dao.CourseDao;
-import com.gxg.dao.ExamDao;
-import com.gxg.dao.UserDao;
-import com.gxg.dao.UserStudyDao;
-import com.gxg.entities.Course;
-import com.gxg.entities.Exam;
-import com.gxg.entities.User;
-import com.gxg.entities.UserStudy;
+import com.gxg.dao.*;
+import com.gxg.entities.*;
 import com.gxg.service.ExamService;
 import com.gxg.service.MessageService;
 import com.gxg.utils.StringUtils;
@@ -47,6 +41,12 @@ public class ExamServiceImpl implements ExamService {
 
     @Value("${exam.count.each.page}")
     private int examCountEachPage;
+
+    @Autowired
+    private ChoiceQuestionDao choiceQuestionDao;
+
+    @Autowired
+    private ObjectiveQuestionDao objectiveQuestionDao;
 
     /**
      * 创建考试
@@ -303,5 +303,140 @@ public class ExamServiceImpl implements ExamService {
             List<Exam> examList = examDao.getExamByCourseIdAndLimitOrderByModifyTime(courseId, 0, topNumber);
             return examList;
         }
+    }
+
+    /**
+     * 删除考试信息
+     *
+     * @param examId  考试ID
+     * @param request 用户请求相关信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public String deleteExam(String examId, HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "删除失败！";
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            content = "系统未检测到登录信息，请刷新页面后重试！";
+        } else if (examDao.getCountById(examId) == 0) {
+            content = "系统获取考试信息失败！";
+        } else {
+            Exam exam = examDao.getExamById(examId);
+            Timestamp time = new Timestamp(System.currentTimeMillis());
+            if (exam.getStartTime() != null && !time.before(exam.getStartTime())) {
+                content = "考试已经开始，无法删除试题！";
+            } else if (exam.getEndTime() != null && !time.before(exam.getEndTime())) {
+                content = "开始已经结束，无法删除试题！";
+            } else {
+                if (courseDao.getCountById(exam.getCourseId()) == 0) {
+                    content = "系统获取课程信息失败！";
+                } else {
+                    Course course = courseDao.getCourseById(exam.getCourseId());
+                    User user = (User)session.getAttribute("user");
+                    if (user.getEmail().equals(course.getUserEmail())) {
+                        List<ChoiceQuestion> choiceQuestionList = null;
+                        List<ObjectiveQuestion> objectiveQuestionList = null;
+                        if (choiceQuestionDao.getCountByExamId(examId) != 0) {
+                            choiceQuestionList = choiceQuestionDao.getChoiceQuestionByExamId(examId);
+                        }
+                        if (objectiveQuestionDao.getCountByExamId(examId) != 0) {
+                            objectiveQuestionList = objectiveQuestionDao.getObjectiveQuestionByExamId(examId);
+                        }
+                        try {
+                            if (examDao.deleteExam(exam) == 0) {
+                                content = "删除考试时操作数据库失败！";
+                                System.out.println("ERROR:删除考试" + exam.toString() + "时，操作数据库失败");
+                            } else {
+                                status = "true";
+                                content = course.getId();
+                            }
+                        } catch (Exception e) {
+                            content = "删除考试时操作数据库失败！";
+                            System.out.println("ERROR:删除考试" + exam.toString() + "时，操作数据库失败，失败原因：" + e);
+                        }
+                        if ("true".equals(status)) {
+                            course.setModifyTime(time);
+                            try {
+                                if (courseDao.editCourse(course) == 0) {
+                                    System.out.println("ERROR:删除考试成功后修改课程" + course.toString() + "操作数据库失败");
+                                }
+                            } catch (Exception e) {
+                                System.out.println("ERROR:删除考试成功后修改课程" + course.toString() + "操作数据库失败，失败原因：" + e);
+                            }
+                            if (choiceQuestionList != null) {
+                                for (ChoiceQuestion choiceQuestion : choiceQuestionList) {
+                                    if (choiceQuestionDao.getCountById(choiceQuestion.getId()) != 0) {
+                                        try {
+                                            if (choiceQuestionDao.deleteChoiceQuestion(choiceQuestion) == 0) {
+                                                System.out.println("ERROR:删除考试" + exam.toString() + "成功后，删除选择题" + choiceQuestion.toString() + "操作数据库失败");
+                                            }
+                                        } catch (Exception e) {
+                                            System.out.println("ERROR:删除考试" + exam.toString() + "成功后，删除选择题" + choiceQuestion.toString() + "操作数据库失败，失败原因：" + e);
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (objectiveQuestionList != null) {
+                                for (ObjectiveQuestion objectiveQuestion : objectiveQuestionList) {
+                                    if (objectiveQuestionDao.getCountById(objectiveQuestion.getId()) != 0) {
+                                        try {
+                                            if (objectiveQuestionDao.deleteObjectiveQuestion(objectiveQuestion) == 0) {
+                                                System.out.println("ERROR:删除考试" + exam.toString() + "成功后，删除客观题" + objectiveQuestion.toString() + "操作数据库失败");
+                                            }
+                                        } catch (Exception e) {
+                                            System.out.println("ERROR:删除考试" + exam.toString() + "成功后，删除客观题" + objectiveQuestion.toString() + "操作数据库失败，失败原因：" + e);
+                                        }
+                                    }
+                                }
+                            }
+
+                            String messageTitle = "您已成功删除考试";
+                            String messageContent = createDeleteExamSuccessTeacherEmailMessage(exam);
+                            JSONObject createMessageResult = messageService.createMessage(user.getEmail(), messageTitle, messageContent);
+                            System.out.println("INFO:考试" + exam.toString() + "删除成功时创建教师消息通知结果：" + createMessageResult.toString());
+                            if (userStudyDao.getCountByCourseId(course.getId()) != 0) {
+                                List<UserStudy> userStudyList = userStudyDao.getUserStudyByCourseIdOrderByCreateTime(course.getId());
+                                for (UserStudy userStudy : userStudyList) {
+                                    if (userDao.getUserCountByEmail(userStudy.getUserEmail()) != 0) {
+                                        User user1 = userDao.getUserByEmail(userStudy.getUserEmail());
+                                        messageTitle = "您有一门考试被取消";
+                                        messageContent = createDeleteExamSuccessStudentEmailMessage(course, exam, user);
+                                        createMessageResult = messageService.createMessage(user1.getEmail(), messageTitle, messageContent);
+                                        System.out.println("INFO:考试" + exam.toString() + "删除成功时创建学生" + user1.toString() + "消息通知结果：" + createMessageResult.toString());
+                                    }
+                                }
+                            }
+
+                        }
+                    } else {
+                        content = "抱歉，您没有权限修改他人的考试试题！";
+                    }
+                }
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
+    }
+
+    private String createDeleteExamSuccessTeacherEmailMessage(Exam exam) {
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        String timeString = time.toString().split("\\.")[0];
+        String message = "<p>恭喜您，您于" + timeString + "成功删除考试" + exam.getName() + "&nbsp;&nbsp;！</p>";
+        message += "<p>我们将自动为学习该课程的用户发送提醒，为了保证所有人都收到该提醒，您也可自行通知！</p>";
+        message += "<p style='color: red;'>如果不是您本人操作，可能密码已经泄露，请尽快修改密码！</p>";
+        return message;
+    }
+
+    private String createDeleteExamSuccessStudentEmailMessage(Course course, Exam exam, User user) {
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        String timeString = time.toString().split("\\.")[0];
+        String message = "<p>您学习的课程" + course.getName() + "&nbsp;&nbsp;由" + user.getName() + "于" + timeString + "删除考试" + exam.getName() + "&nbsp;&nbsp;！</p>";
+        message += "<p>愿考试连接已经作废，如有疑问请自行联系该门课程的教师！</p>";
+        return message;
     }
 }

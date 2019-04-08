@@ -55,4 +55,13 @@ public interface ExamService {
      * @author 郭欣光
      */
     List<Exam> getExamListByCourseIdAndTopNumber(String courseId, int topNumber);
+
+    /**
+     * 删除考试信息
+     * @param examId 考试ID
+     * @param request 用户请求相关信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    String deleteExam(String examId, HttpServletRequest request);
 }

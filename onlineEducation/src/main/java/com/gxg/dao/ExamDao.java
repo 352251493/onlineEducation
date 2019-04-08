@@ -60,4 +60,12 @@ public interface ExamDao {
      * @author 郭欣光
      */
     int updateExam(Exam exam);
+
+    /**
+     * 删除考试
+     * @param exam 考试信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    int deleteExam(Exam exam);
 }

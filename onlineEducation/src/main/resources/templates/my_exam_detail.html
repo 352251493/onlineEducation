@@ -67,7 +67,7 @@
                                     <button type="button" class="btn btn-success" th:onclick="openAddObjectiveQuestionModel([[${exam}]]);">添加客观题</button>
                                     <button type="button" class="btn btn-primary" th:onclick="openMyExamListPage([[${course.id}]]);">返回考试列表</button>
                                     <button type="button" class="btn btn-info" th:onclick="openMyCourseDetailPage([[${course.id}]]);">返回课程</button>
-                                    <button type="button" class="btn btn-danger">删除</button>
+                                    <button type="button" class="btn btn-danger" th:onclick="openDeleteExamConfirmModel([[${exam}]]);">删除</button>
                                     <hr/>
                                     <h3>考试内容</h3>
                                     <div th:if="${choiceQuestionList} == null and ${objectiveQuestionList} == null">
@@ -76,7 +76,7 @@
                                     <div th:if="${choiceQuestionList} != null">
                                         <h4>选择题</h4>
                                         <div th:each="choiceQuestion, choiceQuestionStat : ${choiceQuestionList}">
-                                            <p><span th:text="${choiceQuestionStat.count} + '、' + ${choiceQuestion.subject} + '（' + ${choiceQuestion.score} + '分）'"></span><a th:onclick="openDeleteChoiceQuestionConfirmModel([[${choiceQuestion.id}]]);" style="color: red;" >删除</a></p>
+                                            <p><span th:text="${choiceQuestionStat.count} + '、' + ${choiceQuestion.subject} + '（' + ${choiceQuestion.score} + '分）'"></span><a th:onclick="openDeleteChoiceQuestionConfirmModel([[${exam}]], [[${choiceQuestion.id}]]);" style="color: red;" >删除</a></p>
                                             <div class="radio">
                                                 <label>
                                                     <input type="radio" th:name="'choice_name_' + ${choiceQuestion.id}" value="A">
@@ -106,7 +106,7 @@
                                     <div th:if="${objectiveQuestionList} != null">
                                         <h4>客观题</h4>
                                         <div th:each="objectiveQuestion, objectiveQuestionStat : ${objectiveQuestionList}">
-                                            <p><span th:text="${objectiveQuestionStat.count} + '、' + ${objectiveQuestion.subject} + '（' + ${objectiveQuestion.score} + '分）'"></span><a th:onclick="openDeleteObjectiveQuestionConfirmModel([[${objectiveQuestion.id}]]);" style="color: red;" >删除</a></p>
+                                            <p><span th:text="${objectiveQuestionStat.count} + '、' + ${objectiveQuestion.subject} + '（' + ${objectiveQuestion.score} + '分）'"></span><a th:onclick="openDeleteObjectiveQuestionConfirmModel([[${exam}]], [[${objectiveQuestion.id}]]);" style="color: red;" >删除</a></p>
                                             <textarea class="form-control" th:id="'objective_id_' + ${objectiveQuestion.id}" rows="3"></textarea>
                                         </div>
                                     </div>
@@ -141,6 +141,8 @@
     <div th:include="/html_templates/confirm_modal.html :: deleteChoiceQuestionConfirm"></div>
     <!-- 删除客观题提示框 -->
     <div th:include="/html_templates/confirm_modal.html :: deleteObjectiveQuestionConfirm"></div>
+    <!-- 删除考试提示框 -->
+    <div th:include="/html_templates/confirm_modal.html :: deleteExamConfirm"></div>
     <!-- 信息提示框 -->
     <div th:include="/html_templates/alert_info.html :: alert"></div>
     <!-- 等待框 -->
@@ -162,6 +164,7 @@
     <script src="/my/js/add_objective_question.js"></script>
     <script src="/my/js/delete_choice_question.js"></script>
     <script src="/my/js/delete_objective_question.js"></script>
+    <script src="/my/js/delete_exam.js"></script>
     <script>
         function openMyExamListPage(courseId) {
             window.location.href = "/exam/my/list/" + courseId + "/1";

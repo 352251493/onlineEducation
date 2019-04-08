@@ -268,4 +268,10 @@ public class ExamController {
     public String deleteObjectiveQuestion(@RequestParam String objectiveQuestionId, HttpServletRequest request) {
         return objectiveQuestionService.deleteObjectiveQuestion(objectiveQuestionId, request);
     }
+
+    @PostMapping(value = "/delete")
+    @ResponseBody
+    public String deleteExam(@RequestParam String examId, HttpServletRequest request) {
+        return examService.deleteExam(examId, request);
+    }
 }
