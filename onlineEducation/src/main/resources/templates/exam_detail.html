@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <!-- Title -->
+    <title>智学新知 - 让教育更智能，让学习更有趣</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="/img/core-img/logo_ico.png">
+
+    <!-- Core Stylesheet -->
+    <link rel="stylesheet" href="/style.css">
+
+	<link rel="stylesheet" href="/my/css/course.css">
+</head>
+
+<body>
+    <!-- ##### Preloader ##### -->
+    <div id="preloader">
+        <i class="circle-preloader"></i>
+    </div>
+
+    <!-- ##### Header Area Start ##### -->
+    <header class="header-area" th:include="/html_templates/header.html :: header"></header>
+    <!-- ##### Header Area End ##### -->
+
+    <!-- ##### Breadcumb Area Start ##### -->
+    <div class="breadcumb-area bg-img" style="background-image: url(/img/bg-img/breadcumb.jpg);">
+        <div class="bradcumbContent">
+            <h2>考试详情</h2>
+        </div>
+    </div>
+    <!-- ##### Breadcumb Area End ##### -->
+
+    <!-- ##### Blog Area Start ##### -->
+    <div class="blog-area mt-50 section-padding-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-md-8">
+                    <div class="academy-blog-posts">
+                        <div class="row">
+                            <!-- Single Blog Start -->
+                            <div class="col-12">
+                                <div class="single-blog-post mb-50 wow fadeInUp" data-wow-delay="300ms">
+                                    <!-- Post Title -->
+                                    <a href="" th:text="${exam.name}" class="post-title"></a>
+                                    <!-- Post Meta -->
+                                    <div class="post-meta">
+                                        <p><a href="" th:text="'创建时间：' + ${#strings.substringBefore(exam.createTime, '.')}"></a> | <a href="" th:text="'最近修改时间：' + ${#strings.substringBefore(exam.modifyTime, '.')}"></a></p>
+                                        <p th:if="${exam.requirement} == null"><a href="">考试要求：无</a></p>
+                                        <p th:if="${exam.requirement} != null"><a href="" th:text="'考试要求：' + ${exam.requirement}"></a></p>
+                                        <p th:if="${exam.startTime} == null"><a href="">考试开始时间：无</a></p>
+                                        <p th:if="${exam.startTime} != null"><a href="" th:text="'考试开始时间：' + ${exam.startTime}"></a> </p>
+                                        <p th:if="${exam.endTime} == null"><a href="">考试结束时间：无</a></p>
+                                        <p th:if="${exam.endTime} != null"><a href="" th:text="'考试结束时间：' + ${exam.endTime}"></a> </p>
+                                        <p th:if="${exam.duration} eq '0'"><a href="">考试时长：无</a></p>
+                                        <p th:if="${exam.duration} ne '0'"><a href="" th:text="'考试时长：' + ${exam.duration}"></a> </p>
+                                    </div>
+                                    <!-- Read More btn -->
+                                    <button type="button" class="btn btn-primary" th:onclick="openExamLisPage([[${courseType}]], [[${course.id}]], 1);">返回考试列表</button>
+                                    <button type="button" class="btn btn-info" th:onclick="openCourseDetailPage([[${courseType}]], [[${course.id}]], 1);">返回课程</button>
+                                    <hr/>
+                                    <h3>考试内容</h3>
+                                    <div th:if="${choiceQuestionList} == null and ${objectiveQuestionList} == null">
+                                        这里空空如也~
+                                    </div>
+                                    <div th:if="${choiceQuestionList} != null">
+                                        <h4>选择题</h4>
+                                        <div th:each="choiceQuestion, choiceQuestionStat : ${choiceQuestionList}">
+                                            <p><span th:text="${choiceQuestionStat.count} + '、' + ${choiceQuestion.subject} + '（' + ${choiceQuestion.score} + '分）'"></span></p>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" th:name="'choice_name_' + ${choiceQuestion.id}" value="A">
+                                                    <span th:text="'A、' + ${choiceQuestion.optionA}"></span>
+                                                </label>
+                                            </div>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" th:name="'choice_name_' + ${choiceQuestion.id}" value="B">
+                                                    <span th:text="'B、' + ${choiceQuestion.optionB}"></span>
+                                                </label>
+                                            </div>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" th:name="'choice_name_' + ${choiceQuestion.id}" value="C">
+                                                    <span th:text="'C、' + ${choiceQuestion.optionC}"></span>
+                                                </label>
+                                            </div>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" th:name="'choice_name_' + ${choiceQuestion.id}" value="D">
+                                                    <span th:text="'D、' + ${choiceQuestion.optionD}"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div th:if="${objectiveQuestionList} != null">
+                                        <h4>客观题</h4>
+                                        <div th:each="objectiveQuestion, objectiveQuestionStat : ${objectiveQuestionList}">
+                                            <p><span th:text="${objectiveQuestionStat.count} + '、' + ${objectiveQuestion.subject} + '（' + ${objectiveQuestion.score} + '分）'"></span></p>
+                                            <textarea class="form-control" th:id="'objective_id_' + ${objectiveQuestion.id}" rows="3"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <div class="academy-blog-sidebar">
+                        <div class="blog-post-categories mb-30">
+                            <h5>时间</h5>
+                            <h3 th:if="${exam.duration} eq '0'" id="examDuration">不限时</h3>
+                            <h3 th:if="${exam.duration} ne '0'" th:text="${exam.duration} + ':00'" id="examDuration"></h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ##### Blog Area End ##### -->
+
+    <!-- ##### Footer Area Start ##### -->
+    <footer class="footer-area" th:include="/html_templates/footer.html :: footer"></footer>
+    <!-- ##### Footer Area Start ##### -->
+    <!-- 信息提示框 -->
+    <div th:include="/html_templates/alert_info.html :: alert"></div>
+    <!-- 等待框 -->
+    <div th:include="/html_templates/loading.html :: loading"></div>
+    <!-- ##### All Javascript Script ##### -->
+    <!-- jQuery-2.2.4 js -->
+    <script src="/js/jquery/jquery-2.2.4.min.js"></script>
+    <!-- Popper js -->
+    <script src="/js/bootstrap/popper.min.js"></script>
+    <!-- Bootstrap js -->
+    <script src="/js/bootstrap/bootstrap.min.js"></script>
+    <!-- All Plugins js -->
+    <script src="/js/plugins/plugins.js"></script>
+    <!-- Active js -->
+    <script src="/js/active.js"></script>
+
+    <script src="/my/js/utils.js"></script>
+    <script>
+        var timeInterval = null;
+        function openCourseDetailPage(courseType, courseId, pageNumber) {
+            window.location.href = "/course/" + courseType + "/detail/" + courseId + "/" + pageNumber;
+        }
+
+        function openExamLisPage(courseType, courseId, pageNumber) {
+            window.location.href = "/exam/" + courseType + "/list/" + courseId + "/" + pageNumber;
+        }
+        
+        function recordTime () {
+            var examDuration = $("#examDuration").html();
+            if (examDuration != "不限时") {
+                var minute = examDuration.split(":")[0];
+                var second = examDuration.split(":")[1];
+                var sumSecond = parseInt(minute) * 60 + parseInt(second) - 1;
+                minute = parseInt(sumSecond / 60);
+                second = parseInt(sumSecond % 60);
+                $("#examDuration").html(minute + ":" + second);
+                if (parseInt(sumSecond) < 300) {
+                    openAlertModel("考试时间仅剩最后5分钟，请留意！");
+                }
+                if (parseInt(sumSecond) == 0) {
+                    openAlertModel("考试结束，已经自动为您提交试卷");
+                    if (timeInterval != null) {
+                        clearInterval(timeInterval);
+                    }
+                }
+            }
+        }
+        
+        $(document).ready(function () {
+            timeInterval = setInterval(recordTime, 1000);
+        });
+    </script>
+</body>
+
+</html>

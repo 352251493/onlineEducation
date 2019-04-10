@@ -48,6 +48,9 @@ public class ExamServiceImpl implements ExamService {
     @Autowired
     private ObjectiveQuestionDao objectiveQuestionDao;
 
+    @Value("${sys.root.url}")
+    private String sysRootUrl;
+
     /**
      * 创建考试
      *
@@ -205,6 +208,10 @@ public class ExamServiceImpl implements ExamService {
     }
 
     private String createCreateExamSuccessStudentEmailMessage(Course course, Exam exam, User user) {
+        String courseType = "public";
+        if ("1".equals(course.getIsPrivate())) {
+            courseType = "private";
+        }
         Timestamp time = new Timestamp(System.currentTimeMillis());
         String timeString = time.toString().split("\\.")[0];
         String message = "<p>您所学习的课程：" + course.getName() + "&nbsp;&nbsp;由" + user.getName() + "于" + timeString + "创建考试：" + exam.getName() + "！</p>";
@@ -224,7 +231,7 @@ public class ExamServiceImpl implements ExamService {
         } else {
             message += "<p>考试时长：" + exam.getDuration() + "</p>";
         }
-        message += "您可以通过<b>我的课程-课程详情-考试列表</b>进行查看";
+        message += "<p>您可以通过<b>我的课程-课程详情-考试列表</b>进行查看，或点击连接<a href='" + sysRootUrl + "exam/" + courseType + "/detail/" + exam.getId() + "'>" + sysRootUrl + "exam/" + courseType + "/detail/" + exam.getId() + "</a>进入考试";
         return message;
     }
 

@@ -274,4 +274,77 @@ public class ExamController {
     public String deleteExam(@RequestParam String examId, HttpServletRequest request) {
         return examService.deleteExam(examId, request);
     }
+
+    @GetMapping(value = "/public/detail/{examId}")
+    public String getPublicExamDetailPage(@PathVariable String examId, HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            return "redirect:/user/login?next=" + "/exam/public/detail/" + examId;
+        } else {
+            Exam exam = examService.getExamById(examId);
+            if (exam == null) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            Course course = courseService.getCourseById(exam.getCourseId());
+            if (course == null || "1".equals(course.getIsPrivate())) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            User user = (User) session.getAttribute("user");
+            model.addAttribute("exam", exam);
+            model.addAttribute("course", course);
+            List<ChoiceQuestion> choiceQuestionList = choiceQuestionService.getChoiceQuestionByExamId(examId);
+            model.addAttribute("choiceQuestionList", choiceQuestionList);
+            List<ObjectiveQuestion> objectiveQuestionList = objectiveQuestionService.getObjectQuestionByExamId(examId);
+            model.addAttribute("objectiveQuestionList", objectiveQuestionList);
+            int unReadMessageCount = messageService.getUnreadMessageCount(user);
+            model.addAttribute("unReadMessageCount", unReadMessageCount);
+            model.addAttribute("user", user);
+            model.addAttribute("courseType", "public");
+            return "/exam_detail.html";
+        }
+    }
+
+    @GetMapping(value = "/private/detail/{examId}")
+    public String getPrivateExamDetailPage(@PathVariable String examId, HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            return "redirect:/user/login?next=" + "/exam/private/detail/" + examId;
+        } else {
+            Exam exam = examService.getExamById(examId);
+            if (exam == null) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            Course course = courseService.getCourseById(exam.getCourseId());
+            if (course == null || "0".equals(course.getIsPrivate())) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            User user = (User) session.getAttribute("user");
+            List<UserStudy> userStudyList = userStudyService.getUserStudyByCourseIdAndUserEmail(course.getId(), user.getEmail());
+            if (userStudyList == null || userStudyList.size() == 0) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            model.addAttribute("exam", exam);
+            model.addAttribute("course", course);
+            List<ChoiceQuestion> choiceQuestionList = choiceQuestionService.getChoiceQuestionByExamId(examId);
+            model.addAttribute("choiceQuestionList", choiceQuestionList);
+            List<ObjectiveQuestion> objectiveQuestionList = objectiveQuestionService.getObjectQuestionByExamId(examId);
+            model.addAttribute("objectiveQuestionList", objectiveQuestionList);
+            int unReadMessageCount = messageService.getUnreadMessageCount(user);
+            model.addAttribute("unReadMessageCount", unReadMessageCount);
+            model.addAttribute("user", user);
+            model.addAttribute("courseType", "public");
+            model.addAttribute("courseType", "private");
+            return "/exam_detail.html";
+        }
+    }
 }
