@@ -40,6 +40,9 @@ public class ExamController {
     @Autowired
     private ObjectiveQuestionService objectiveQuestionService;
 
+    @Autowired
+    private StudentExamService studentExamService;
+
     @PostMapping(value = "/create")
     @ResponseBody
     public String createExam(@RequestParam String courseId, @RequestParam String examName, @RequestParam String examRequirement, @RequestParam String examStartTime, @RequestParam String examEndTime, @RequestParam String examDuration, HttpServletRequest request) {
@@ -294,6 +297,13 @@ public class ExamController {
                 return "/prompt/prompt.html";
             }
             User user = (User) session.getAttribute("user");
+            StudentExam studentExam = studentExamService.getSetStudentExam(examId, user.getEmail());
+            if (studentExam == null) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            model.addAttribute("studentExam", studentExam);
             model.addAttribute("exam", exam);
             model.addAttribute("course", course);
             List<ChoiceQuestion> choiceQuestionList = choiceQuestionService.getChoiceQuestionByExamId(examId);
@@ -333,6 +343,18 @@ public class ExamController {
                 model.addAttribute("promptMessage", "对不起，该页面不存在！");
                 return "/prompt/prompt.html";
             }
+            StudentExam studentExam = studentExamService.getSetStudentExam(examId, user.getEmail());
+            if (studentExam == null) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            if ("0.00".equals(studentExam.getTime().trim())) {
+                model.addAttribute("promptTitle", "考试已结束");
+                model.addAttribute("promptMessage", "您好，该考试已经结束，系统已经保存您的试卷！");
+                return "/prompt/prompt.html";
+            }
+            model.addAttribute("studentExam", studentExam);
             model.addAttribute("exam", exam);
             model.addAttribute("course", course);
             List<ChoiceQuestion> choiceQuestionList = choiceQuestionService.getChoiceQuestionByExamId(examId);
@@ -346,5 +368,11 @@ public class ExamController {
             model.addAttribute("courseType", "private");
             return "/exam_detail.html";
         }
+    }
+
+    @PostMapping(value = "/student/time")
+    @ResponseBody
+    public String setStudentExamTime(@RequestParam String examId, @RequestParam String examTime, HttpServletRequest request) {
+        return studentExamService.setStudentExamTime(examId, examTime, request);
     }
 }

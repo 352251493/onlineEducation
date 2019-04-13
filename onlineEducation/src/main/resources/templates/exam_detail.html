@@ -73,6 +73,7 @@
                                     <div th:if="${choiceQuestionList} != null">
                                         <h4>选择题</h4>
                                         <div th:each="choiceQuestion, choiceQuestionStat : ${choiceQuestionList}">
+                                            <input class="choice_question_class" type="hidden" th:value="${choiceQuestion.id}">
                                             <p><span th:text="${choiceQuestionStat.count} + '、' + ${choiceQuestion.subject} + '（' + ${choiceQuestion.score} + '分）'"></span></p>
                                             <div class="radio">
                                                 <label>
@@ -103,6 +104,7 @@
                                     <div th:if="${objectiveQuestionList} != null">
                                         <h4>客观题</h4>
                                         <div th:each="objectiveQuestion, objectiveQuestionStat : ${objectiveQuestionList}">
+                                            <input class="objective_question_class" type="hidden" th:value="${objectiveQuestion.id}">
                                             <p><span th:text="${objectiveQuestionStat.count} + '、' + ${objectiveQuestion.subject} + '（' + ${objectiveQuestion.score} + '分）'"></span></p>
                                             <textarea class="form-control" th:id="'objective_id_' + ${objectiveQuestion.id}" rows="3"></textarea>
                                         </div>
@@ -117,14 +119,15 @@
                     <div class="academy-blog-sidebar">
                         <div class="blog-post-categories mb-30">
                             <h5>时间</h5>
-                            <h3 th:if="${exam.duration} eq '0'" id="examDuration">不限时</h3>
-                            <h3 th:if="${exam.duration} ne '0'" th:text="${exam.duration} + ':00'" id="examDuration"></h3>
+                            <h3 th:if="${studentExam.time} eq '0'" id="examDuration">不限时</h3>
+                            <h3 th:if="${studentExam.time} ne '0'" th:text="${studentExam.time}" id="examDuration"></h3>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <input type="hidden" id="examId" th:value="${exam.id}">
     <!-- ##### Blog Area End ##### -->
 
     <!-- ##### Footer Area Start ##### -->
@@ -165,8 +168,12 @@
                 var sumSecond = parseInt(minute) * 60 + parseInt(second) - 1;
                 minute = parseInt(sumSecond / 60);
                 second = parseInt(sumSecond % 60);
-                $("#examDuration").html(minute + ":" + second);
-                if (parseInt(sumSecond) < 300) {
+                if (second < 10) {
+                    $("#examDuration").html(minute + ":0" + second);
+                } else {
+                    $("#examDuration").html(minute + ":" + second);
+                }
+                if (parseInt(sumSecond) == 300) {
                     openAlertModel("考试时间仅剩最后5分钟，请留意！");
                 }
                 if (parseInt(sumSecond) == 0) {
@@ -175,6 +182,54 @@
                         clearInterval(timeInterval);
                     }
                 }
+                updateExamTime(examDuration);
+                getAnswerAndSubmit();
+            }
+        }
+
+        function updateExamTime(examTime) {
+            var examId = $("#examId").val();
+            if (stringIsEmpty(examId)) {
+                console.log("获取考试ID失败！");
+            } else {
+                var obj = new Object();
+                obj.examId = examId;
+                obj.examTime = examTime;
+                $.ajax({
+                    url: "/exam/student/time",
+                    type: "POST",
+                    cache: false,//设置不缓存
+                    data: obj,
+                    success: function (data) {
+                        console.log(data);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        console.log(XMLHttpRequest + textStatus + errorThrown);
+                    }
+                });
+            }
+        }
+
+        function getAnswerAndSubmit() {
+            if ($(".choice_question_class").length > 0) {
+                $(".choice_question_class").each(function(){
+                    console.log($(this).val());
+                    var choiceQuestionName = "choice_name_" + $(this).val();
+                    var answer = $("input[name='" + choiceQuestionName + "']:checked").val();
+                    if (answer != undefined) {
+                        console.log(answer);
+                    }
+                });
+            }
+            if ($(".objective_question_class").length > 0) {
+                $(".objective_question_class").each(function(){
+                    console.log($(this).val());
+                    var ObjectiveQuestionName = "#objective_id_" + $(this).val();
+                    var answer = $(ObjectiveQuestionName).val();
+                    if (!stringIsEmpty(answer)) {
+                        console.log(answer);
+                    }
+                });
             }
         }
         
