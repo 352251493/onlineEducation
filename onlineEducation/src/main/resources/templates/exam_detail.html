@@ -77,25 +77,29 @@
                                             <p><span th:text="${choiceQuestionStat.count} + '、' + ${choiceQuestion.subject} + '（' + ${choiceQuestion.score} + '分）'"></span></p>
                                             <div class="radio">
                                                 <label>
-                                                    <input type="radio" th:name="'choice_name_' + ${choiceQuestion.id}" value="A">
+                                                    <input type="radio" th:name="'choice_name_' + ${choiceQuestion.id}" value="A" th:if="${choiceQuestion.studentAnswer} != null and ${choiceQuestion.studentAnswer} eq 'A'" checked>
+                                                    <input type="radio" th:name="'choice_name_' + ${choiceQuestion.id}" value="A" th:if="${choiceQuestion.studentAnswer} == null or ${choiceQuestion.studentAnswer} ne 'A'">
                                                     <span th:text="'A、' + ${choiceQuestion.optionA}"></span>
                                                 </label>
                                             </div>
                                             <div class="radio">
                                                 <label>
-                                                    <input type="radio" th:name="'choice_name_' + ${choiceQuestion.id}" value="B">
+                                                    <input type="radio" th:name="'choice_name_' + ${choiceQuestion.id}" value="B" th:if="${choiceQuestion.studentAnswer} != null and ${choiceQuestion.studentAnswer} eq 'B'" checked>
+                                                    <input type="radio" th:name="'choice_name_' + ${choiceQuestion.id}" value="B" th:if="${choiceQuestion.studentAnswer} == null or ${choiceQuestion.studentAnswer} ne 'B'">
                                                     <span th:text="'B、' + ${choiceQuestion.optionB}"></span>
                                                 </label>
                                             </div>
                                             <div class="radio">
                                                 <label>
-                                                    <input type="radio" th:name="'choice_name_' + ${choiceQuestion.id}" value="C">
+                                                    <input type="radio" th:name="'choice_name_' + ${choiceQuestion.id}" value="C" th:if="${choiceQuestion.studentAnswer} != null and ${choiceQuestion.studentAnswer} eq 'C'" checked>
+                                                    <input type="radio" th:name="'choice_name_' + ${choiceQuestion.id}" value="C" th:if="${choiceQuestion.studentAnswer} == null or ${choiceQuestion.studentAnswer} ne 'C'">
                                                     <span th:text="'C、' + ${choiceQuestion.optionC}"></span>
                                                 </label>
                                             </div>
                                             <div class="radio">
                                                 <label>
-                                                    <input type="radio" th:name="'choice_name_' + ${choiceQuestion.id}" value="D">
+                                                    <input type="radio" th:name="'choice_name_' + ${choiceQuestion.id}" value="D" th:if="${choiceQuestion.studentAnswer} != null and ${choiceQuestion.studentAnswer} eq 'D'" checked>
+                                                    <input type="radio" th:name="'choice_name_' + ${choiceQuestion.id}" value="D" th:if="${choiceQuestion.studentAnswer} == null or ${choiceQuestion.studentAnswer} ne 'D'">
                                                     <span th:text="'D、' + ${choiceQuestion.optionD}"></span>
                                                 </label>
                                             </div>
@@ -128,6 +132,7 @@
         </div>
     </div>
     <input type="hidden" id="examId" th:value="${exam.id}">
+    <input type="hidden" id="studentExamId" th:value="${studentExam.id}">
     <!-- ##### Blog Area End ##### -->
 
     <!-- ##### Footer Area Start ##### -->
@@ -182,7 +187,7 @@
                         clearInterval(timeInterval);
                     }
                 }
-                updateExamTime(examDuration);
+//                updateExamTime(examDuration);
                 getAnswerAndSubmit();
             }
         }
@@ -213,11 +218,12 @@
         function getAnswerAndSubmit() {
             if ($(".choice_question_class").length > 0) {
                 $(".choice_question_class").each(function(){
-                    console.log($(this).val());
-                    var choiceQuestionName = "choice_name_" + $(this).val();
+                    var choiceQuestionId = $(this).val();
+                    console.log(choiceQuestionId);
+                    var choiceQuestionName = "choice_name_" + choiceQuestionId;
                     var answer = $("input[name='" + choiceQuestionName + "']:checked").val();
                     if (answer != undefined) {
-                        console.log(answer);
+                        setChoiceQuestionAnswer(choiceQuestionId, answer);
                     }
                 });
             }
@@ -228,6 +234,30 @@
                     var answer = $(ObjectiveQuestionName).val();
                     if (!stringIsEmpty(answer)) {
                         console.log(answer);
+                    }
+                });
+            }
+        }
+
+        function setChoiceQuestionAnswer(choiceQuestionId, answer) {
+            var studentExamId = $("#studentExamId").val();
+            if (stringIsEmpty(studentExamId)) {
+                console.log("系统获取学生考试信息失败！");
+            } else {
+                var obj = new Object();
+                obj.studentExamId = studentExamId;
+                obj.choiceQuestionId = choiceQuestionId;
+                obj.answer = answer;
+                $.ajax({
+                    url: "/exam/student/choice/answer",
+                    type: "POST",
+                    cache: false,//设置不缓存
+                    data: obj,
+                    success: function (data) {
+                        console.log(data);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        console.log(XMLHttpRequest + textStatus + errorThrown);
                     }
                 });
             }

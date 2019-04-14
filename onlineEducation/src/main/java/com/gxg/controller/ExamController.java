@@ -43,6 +43,9 @@ public class ExamController {
     @Autowired
     private StudentExamService studentExamService;
 
+    @Autowired
+    private StudentChoiceQuestionService studentChoiceQuestionService;
+
     @PostMapping(value = "/create")
     @ResponseBody
     public String createExam(@RequestParam String courseId, @RequestParam String examName, @RequestParam String examRequirement, @RequestParam String examStartTime, @RequestParam String examEndTime, @RequestParam String examDuration, HttpServletRequest request) {
@@ -307,6 +310,7 @@ public class ExamController {
             model.addAttribute("exam", exam);
             model.addAttribute("course", course);
             List<ChoiceQuestion> choiceQuestionList = choiceQuestionService.getChoiceQuestionByExamId(examId);
+            choiceQuestionList = studentChoiceQuestionService.setAnswerForChoiceQuestion(choiceQuestionList, studentExam);
             model.addAttribute("choiceQuestionList", choiceQuestionList);
             List<ObjectiveQuestion> objectiveQuestionList = objectiveQuestionService.getObjectQuestionByExamId(examId);
             model.addAttribute("objectiveQuestionList", objectiveQuestionList);
@@ -358,6 +362,8 @@ public class ExamController {
             model.addAttribute("exam", exam);
             model.addAttribute("course", course);
             List<ChoiceQuestion> choiceQuestionList = choiceQuestionService.getChoiceQuestionByExamId(examId);
+            choiceQuestionList = studentChoiceQuestionService.setAnswerForChoiceQuestion(choiceQuestionList, studentExam);
+            model.addAttribute("choiceQuestionList", choiceQuestionList);
             model.addAttribute("choiceQuestionList", choiceQuestionList);
             List<ObjectiveQuestion> objectiveQuestionList = objectiveQuestionService.getObjectQuestionByExamId(examId);
             model.addAttribute("objectiveQuestionList", objectiveQuestionList);
@@ -374,5 +380,11 @@ public class ExamController {
     @ResponseBody
     public String setStudentExamTime(@RequestParam String examId, @RequestParam String examTime, HttpServletRequest request) {
         return studentExamService.setStudentExamTime(examId, examTime, request);
+    }
+
+    @PostMapping(value = "/student/choice/answer")
+    @ResponseBody
+    public String setStudentChoiceAnswer(@RequestParam String studentExamId, @RequestParam String choiceQuestionId, @RequestParam String answer, HttpServletRequest request) {
+        return studentChoiceQuestionService.setStudentChoiceQuestionAnswer(studentExamId, choiceQuestionId, answer, request);
     }
 }

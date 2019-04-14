@@ -53,4 +53,12 @@ public interface StudentExamDao {
      * @author 郭欣光
      */
     int updateStudentExamTimeByExamIdAndUserEmail(String time, String examId, String userEmail);
+
+    /**
+     * 根据ID获取学生考试信息
+     * @param id ID
+     * @return 学生考试信息
+     * @author 郭欣光
+     */
+    StudentExam getStudentExamById(String id);
 }

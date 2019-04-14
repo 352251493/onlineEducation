@@ -83,7 +83,7 @@ public class ChoiceQuestionServiceImpl implements ChoiceQuestionService {
             content = "答案不能为空！";
         } else {
             answer = answer.toUpperCase();
-            if ("A".equals(answer) || "B".equals(answer) || "c".equals(answer) || "D".equals(answer)) {
+            if ("A".equals(answer) || "B".equals(answer) || "C".equals(answer) || "D".equals(answer)) {
                 if (StringUtils.isEmpty(score)) {
                     content = "分值不能为空！";
                 } else {

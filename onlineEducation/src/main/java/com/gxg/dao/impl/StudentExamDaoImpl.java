@@ -91,4 +91,18 @@ public class StudentExamDaoImpl implements StudentExamDao {
         int changeCount = jdbcTemplate.update(sql, time, examId, userEmail);
         return changeCount;
     }
+
+    /**
+     * 根据ID获取学生考试信息
+     *
+     * @param id ID
+     * @return 学生考试信息
+     * @author 郭欣光
+     */
+    @Override
+    public StudentExam getStudentExamById(String id) {
+        String sql = "select * from student_exam where id=?";
+        StudentExam studentExam = jdbcTemplate.queryForObject(sql, new StudentExamRowMapper(), id);
+        return studentExam;
+    }
 }
