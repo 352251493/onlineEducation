@@ -1,5 +1,6 @@
 package com.gxg.controller;
 
+import com.gxg.dao.StudentObjectiveQuestionDao;
 import com.gxg.entities.*;
 import com.gxg.service.*;
 import org.json.JSONObject;
@@ -45,6 +46,9 @@ public class ExamController {
 
     @Autowired
     private StudentChoiceQuestionService studentChoiceQuestionService;
+
+    @Autowired
+    private StudentObjectiveQuestionService studentObjectiveQuestionService;
 
     @PostMapping(value = "/create")
     @ResponseBody
@@ -364,8 +368,8 @@ public class ExamController {
             List<ChoiceQuestion> choiceQuestionList = choiceQuestionService.getChoiceQuestionByExamId(examId);
             choiceQuestionList = studentChoiceQuestionService.setAnswerForChoiceQuestion(choiceQuestionList, studentExam);
             model.addAttribute("choiceQuestionList", choiceQuestionList);
-            model.addAttribute("choiceQuestionList", choiceQuestionList);
             List<ObjectiveQuestion> objectiveQuestionList = objectiveQuestionService.getObjectQuestionByExamId(examId);
+            studentObjectiveQuestionService.setAnswerForObjectiveQuestion(objectiveQuestionList, studentExam);
             model.addAttribute("objectiveQuestionList", objectiveQuestionList);
             int unReadMessageCount = messageService.getUnreadMessageCount(user);
             model.addAttribute("unReadMessageCount", unReadMessageCount);
@@ -386,5 +390,11 @@ public class ExamController {
     @ResponseBody
     public String setStudentChoiceAnswer(@RequestParam String studentExamId, @RequestParam String choiceQuestionId, @RequestParam String answer, HttpServletRequest request) {
         return studentChoiceQuestionService.setStudentChoiceQuestionAnswer(studentExamId, choiceQuestionId, answer, request);
+    }
+
+    @PostMapping(value = "/student/objective/answer")
+    @ResponseBody
+    public String setStudentObjectiveAnswer(@RequestParam String studentExamId, @RequestParam String objectiveQuestionId, @RequestParam String answer, HttpServletRequest request) {
+        return studentObjectiveQuestionService.setStudentObjectiveQuestionAnswer(studentExamId, objectiveQuestionId, answer, request);
     }
 }

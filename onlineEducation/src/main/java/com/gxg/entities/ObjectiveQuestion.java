@@ -19,6 +19,8 @@ public class ObjectiveQuestion {
 
     private String examId;
 
+    private String studentAnswer;
+
     public String getId() {
         return id;
     }
@@ -59,6 +61,14 @@ public class ObjectiveQuestion {
         this.examId = examId;
     }
 
+    public String getStudentAnswer() {
+        return studentAnswer;
+    }
+
+    public void setStudentAnswer(String studentAnswer) {
+        this.studentAnswer = studentAnswer;
+    }
+
     @Override
     public String toString() {
         return "ObjectiveQuestion{" +
@@ -67,6 +77,7 @@ public class ObjectiveQuestion {
                 ", createTime=" + createTime +
                 ", score=" + score +
                 ", examId='" + examId + '\'' +
+                ", studentAnswer='" + studentAnswer + '\'' +
                 '}';
     }
 }

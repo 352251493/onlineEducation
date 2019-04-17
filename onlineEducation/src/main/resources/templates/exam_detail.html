@@ -110,7 +110,8 @@
                                         <div th:each="objectiveQuestion, objectiveQuestionStat : ${objectiveQuestionList}">
                                             <input class="objective_question_class" type="hidden" th:value="${objectiveQuestion.id}">
                                             <p><span th:text="${objectiveQuestionStat.count} + '、' + ${objectiveQuestion.subject} + '（' + ${objectiveQuestion.score} + '分）'"></span></p>
-                                            <textarea class="form-control" th:id="'objective_id_' + ${objectiveQuestion.id}" rows="3"></textarea>
+                                            <textarea class="form-control" th:id="'objective_id_' + ${objectiveQuestion.id}" rows="3" maxlength="5000" th:if="${objectiveQuestion.studentAnswer} != null" th:text="${objectiveQuestion.studentAnswer}"></textarea>
+                                            <textarea class="form-control" th:id="'objective_id_' + ${objectiveQuestion.id}" rows="3" maxlength="5000" th:if="${objectiveQuestion.studentAnswer} == null"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -229,11 +230,12 @@
             }
             if ($(".objective_question_class").length > 0) {
                 $(".objective_question_class").each(function(){
-                    console.log($(this).val());
+                    var objectiveQuestionId = $(this).val();
+                    console.log(objectiveQuestionId);
                     var ObjectiveQuestionName = "#objective_id_" + $(this).val();
                     var answer = $(ObjectiveQuestionName).val();
                     if (!stringIsEmpty(answer)) {
-                        console.log(answer);
+                        setObjectiveQuestionAnswer(objectiveQuestionId, answer);
                     }
                 });
             }
@@ -250,6 +252,30 @@
                 obj.answer = answer;
                 $.ajax({
                     url: "/exam/student/choice/answer",
+                    type: "POST",
+                    cache: false,//设置不缓存
+                    data: obj,
+                    success: function (data) {
+                        console.log(data);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        console.log(XMLHttpRequest + textStatus + errorThrown);
+                    }
+                });
+            }
+        }
+
+        function setObjectiveQuestionAnswer(objectiveQuestionId, answer) {
+            var studentExamId = $("#studentExamId").val();
+            if (stringIsEmpty(studentExamId)) {
+                console.log("系统获取学生考试信息失败！");
+            } else {
+                var obj = new Object();
+                obj.studentExamId = studentExamId;
+                obj.objectiveQuestionId = objectiveQuestionId;
+                obj.answer = answer;
+                $.ajax({
+                    url: "/exam/student/objective/answer",
                     type: "POST",
                     cache: false,//设置不缓存
                     data: obj,
