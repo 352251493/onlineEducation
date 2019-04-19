@@ -124,5 +124,24 @@
         </div>
     </div>
 </div>
+<div th:fragment="submitExamConfirm">
+    <div id="submitExamConfirmModel" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="submitExamConfirmModelLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="submitExamConfirmModelLabel">确认提交考试？</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="submitExamConfirmModelClose"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body" id="submitExamConfirmModelInfo">
+                    您确定提交试卷吗？一经提交无法修改
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal">取消</button>
+                    <button class="btn btn-primary" data-dismiss="modal" onclick="submitExam()">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

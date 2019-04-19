@@ -114,6 +114,8 @@
                                             <textarea class="form-control" th:id="'objective_id_' + ${objectiveQuestion.id}" rows="3" maxlength="5000" th:if="${objectiveQuestion.studentAnswer} == null"></textarea>
                                         </div>
                                     </div>
+                                    <br/>
+                                    <button type="button" class="btn btn-default" onclick="openSubmitExamConfirmModel();" th:if="${choiceQuestionList} != null or ${objectiveQuestionList} != null">提交</button>
                                 </div>
                             </div>
                         </div>
@@ -139,6 +141,8 @@
     <!-- ##### Footer Area Start ##### -->
     <footer class="footer-area" th:include="/html_templates/footer.html :: footer"></footer>
     <!-- ##### Footer Area Start ##### -->
+    <!-- 信息提示框 -->
+    <div th:include="/html_templates/confirm_modal.html :: submitExamConfirm"></div>
     <!-- 信息提示框 -->
     <div th:include="/html_templates/alert_info.html :: alert"></div>
     <!-- 等待框 -->
@@ -183,12 +187,16 @@
                     openAlertModel("考试时间仅剩最后5分钟，请留意！");
                 }
                 if (parseInt(sumSecond) == 0) {
-                    openAlertModel("考试结束，已经自动为您提交试卷");
                     if (timeInterval != null) {
                         clearInterval(timeInterval);
                     }
+                    setTimeout("submitExam()", 1000);
+//                    openAlertModel("考试结束，已经自动为您提交试卷");
+//                    if (timeInterval != null) {
+//                        clearInterval(timeInterval);
+//                    }
                 }
-//                updateExamTime(examDuration);
+                updateExamTime(examDuration);
                 getAnswerAndSubmit();
             }
         }
@@ -287,6 +295,47 @@
                     }
                 });
             }
+        }
+
+        function submitExam() {
+            openLoadingModel();
+            if (timeInterval != null) {
+                clearInterval(timeInterval);
+            }
+            var examId = $("#examId").val();
+            if (stringIsEmpty(examId)) {
+                closeLoadingModel();
+                openAlertModel("获取考试ID失败！");
+            } else {
+                var obj = new Object();
+                obj.examId = examId;
+                obj.examTime = "0:00";
+                $.ajax({
+                    url: "/exam/student/time",
+                    type: "POST",
+                    cache: false,//设置不缓存
+                    data: obj,
+                    success: function (data) {
+                        var result = JSON.parse(data);
+                        if (result.status == "true") {
+                            setTimeout("window.location.reload()", 2000);
+                        } else {
+                            closeLoadingModel();
+                            openAlertModel(result.content);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        closeLoadingModel();
+                        openAjaxErrorAlert(XMLHttpRequest, textStatus, errorThrown);
+                    }
+                });
+            }
+        }
+
+        function openSubmitExamConfirmModel() {
+            $("#submitExamConfirmModel").modal({
+                backdrop : 'static'
+            });
         }
         
         $(document).ready(function () {

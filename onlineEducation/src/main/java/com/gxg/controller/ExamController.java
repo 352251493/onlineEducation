@@ -310,6 +310,11 @@ public class ExamController {
                 model.addAttribute("promptMessage", "对不起，该页面不存在！");
                 return "/prompt/prompt.html";
             }
+            if ("0:00".equals(studentExam.getTime().trim())) {
+                model.addAttribute("promptTitle", "考试已结束");
+                model.addAttribute("promptMessage", "您好，该考试已经结束，系统已经保存您的试卷！");
+                return "/prompt/prompt.html";
+            }
             model.addAttribute("studentExam", studentExam);
             model.addAttribute("exam", exam);
             model.addAttribute("course", course);
@@ -317,6 +322,7 @@ public class ExamController {
             choiceQuestionList = studentChoiceQuestionService.setAnswerForChoiceQuestion(choiceQuestionList, studentExam);
             model.addAttribute("choiceQuestionList", choiceQuestionList);
             List<ObjectiveQuestion> objectiveQuestionList = objectiveQuestionService.getObjectQuestionByExamId(examId);
+            studentObjectiveQuestionService.setAnswerForObjectiveQuestion(objectiveQuestionList, studentExam);
             model.addAttribute("objectiveQuestionList", objectiveQuestionList);
             int unReadMessageCount = messageService.getUnreadMessageCount(user);
             model.addAttribute("unReadMessageCount", unReadMessageCount);
@@ -357,7 +363,7 @@ public class ExamController {
                 model.addAttribute("promptMessage", "对不起，该页面不存在！");
                 return "/prompt/prompt.html";
             }
-            if ("0.00".equals(studentExam.getTime().trim())) {
+            if ("0:00".equals(studentExam.getTime().trim())) {
                 model.addAttribute("promptTitle", "考试已结束");
                 model.addAttribute("promptMessage", "您好，该考试已经结束，系统已经保存您的试卷！");
                 return "/prompt/prompt.html";
