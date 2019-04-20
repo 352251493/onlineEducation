@@ -105,4 +105,34 @@ public class StudentExamDaoImpl implements StudentExamDao {
         StudentExam studentExam = jdbcTemplate.queryForObject(sql, new StudentExamRowMapper(), id);
         return studentExam;
     }
+
+    /**
+     * 根据考试ID获取学生考试信息个数
+     *
+     * @param examId 考试ID
+     * @return 学生考试信息个数
+     * @author 郭欣光
+     */
+    @Override
+    public int getCountByExamId(String examId) {
+        String sql = "select count(1) from student_exam where exam_id=?";
+        int rowCount = jdbcTemplate.queryForObject(sql, Integer.class, examId);
+        return rowCount;
+    }
+
+    /**
+     * 根据考试ID按照创建时间排序获取指定位置的学生考试信息
+     *
+     * @param examId     考试ID
+     * @param startLimit 第一个Limit
+     * @param endLimit   第二个Limit
+     * @return 学生考试信息
+     * @author 郭欣光
+     */
+    @Override
+    public List<StudentExam> getStudentExamByExamIdAndLimitOrderByCreateTime(String examId, int startLimit, int endLimit) {
+        String sql = "select * from student_exam where exam_id=? order by create_time limit ?, ?";
+        List<StudentExam> studentExamList = jdbcTemplate.query(sql, new StudentExamRowMapper(), examId, startLimit, endLimit);
+        return studentExamList;
+    }
 }

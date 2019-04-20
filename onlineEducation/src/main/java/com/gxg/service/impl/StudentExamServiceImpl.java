@@ -9,6 +9,7 @@ import com.gxg.entities.User;
 import com.gxg.service.StudentExamService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +35,9 @@ public class StudentExamServiceImpl implements StudentExamService {
 
     @Autowired
     private StudentExamDao studentExamDao;
+
+    @Value("${student.exam.count.each.page}")
+    private int studentExamCountEachPage;
 
     /**
      * 获得学生考试相关信息（如果没有则添加）
@@ -130,5 +134,73 @@ public class StudentExamServiceImpl implements StudentExamService {
         result.accumulate("status", status);
         result.accumulate("content", content);
         return result.toString();
+    }
+
+    /**
+     * 获取指定考试ID指定页数的学生考试信息
+     *
+     * @param examId 考试ID
+     * @param page   页数
+     * @return 学生考试信息
+     * @author 郭欣光
+     */
+    @Override
+    public JSONObject getStudentExamListByExamId(String examId, String page) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        int studentExamPageNumber = 1;
+        int studentExamPageInt = 0;
+        String hasStudentExam = "false";
+        try {
+            studentExamPageInt = Integer.parseInt(page);
+        } catch (Exception e) {
+            studentExamPageInt = 0;
+        }
+        List<StudentExam> studentExamList = null;
+        if (studentExamPageInt > 0) {
+            int studentExamCount = studentExamDao.getCountByExamId(examId);
+            if (studentExamCount != 0) {
+                studentExamPageNumber = ((studentExamCount % studentExamCountEachPage) == 0) ? (studentExamCount / studentExamCountEachPage) : (studentExamCount / studentExamCountEachPage + 1);
+                if (studentExamPageInt <= studentExamPageNumber) {
+                    status = "true";
+                    hasStudentExam = "true";
+                    studentExamList = studentExamDao.getStudentExamByExamIdAndLimitOrderByCreateTime(examId, studentExamPageInt - 1, studentExamCountEachPage);
+                    for (StudentExam studentExam : studentExamList) {
+                        if (userDao.getUserCountByEmail(studentExam.getUserEmail()) != 0) {
+                            User user = userDao.getUserByEmail(studentExam.getUserEmail());
+                            studentExam.setStudentName(user.getName());
+                        }
+                    }
+                }
+            } else if (studentExamPageInt == 1) {
+                status = "true";
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("studentExamPageNumber", studentExamPageNumber);
+        result.accumulate("studentExamPage", studentExamPageInt);
+        result.accumulate("studentExamList", studentExamList);
+        result.accumulate("hasStudentExam", hasStudentExam);
+        return result;
+    }
+
+    /**
+     * 根据学生考试ID获取学生考试信息
+     *
+     * @param studentExamId 学生考试ID
+     * @return 学生考试信息
+     */
+    @Override
+    public StudentExam getStudentExamById(String studentExamId) {
+        if (studentExamDao.getCountById(studentExamId) == 0) {
+            return null;
+        } else {
+            StudentExam studentExam = studentExamDao.getStudentExamById(studentExamId);
+            if (userDao.getUserCountByEmail(studentExam.getUserEmail()) != 0) {
+                User user = userDao.getUserByEmail(studentExam.getUserEmail());
+                studentExam.setStudentName(user.getName());
+            }
+            return studentExam;
+        }
     }
 }

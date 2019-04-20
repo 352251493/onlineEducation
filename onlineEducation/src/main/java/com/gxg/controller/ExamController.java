@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -402,5 +403,155 @@ public class ExamController {
     @ResponseBody
     public String setStudentObjectiveAnswer(@RequestParam String studentExamId, @RequestParam String objectiveQuestionId, @RequestParam String answer, HttpServletRequest request) {
         return studentObjectiveQuestionService.setStudentObjectiveQuestionAnswer(studentExamId, objectiveQuestionId, answer, request);
+    }
+
+    @GetMapping(value = "/my/student/list/{examId}/{page}")
+    public String getMyStudentExamListPage(@PathVariable String examId, @PathVariable String page, HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            return "redirect:/user/login?next=" + "/exam/my/student/list/" + examId + "/" + page;
+        } else {
+            User user = (User)session.getAttribute("user");
+            Exam exam = examService.getExamById(examId);
+            if (exam == null) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            Course course = courseService.getCourseById(exam.getCourseId());
+            if (course == null || !user.getEmail().equals(course.getUserEmail())) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            JSONObject studentExamListInfo = studentExamService.getStudentExamListByExamId(examId, page);
+            if ("false".equals(studentExamListInfo.getString("status"))) {
+                return "redirect:/exam/my/student/list/" + examId + "/1";
+            } else {
+                int studentExamPageInt = studentExamListInfo.getInt("studentExamPage");
+                int studentExamPageNumber = studentExamListInfo.getInt("studentExamPageNumber");
+                model.addAttribute("studentExamPage", studentExamPageInt);
+                model.addAttribute("studentExamPageNumber", studentExamPageNumber);
+                if (studentExamPageInt > 1) {
+                    int studentExamPrePage = studentExamPageInt - 1;
+                    model.addAttribute("studentExamPrePage", studentExamPrePage);
+                }
+                if (studentExamPageInt < studentExamPageNumber) {
+                    int studentExamNextPage = studentExamPageInt + 1;
+                    model.addAttribute("studentExamNextPage", studentExamNextPage);
+                }
+                if ("true".equals(studentExamListInfo.getString("hasStudentExam"))) {
+                    model.addAttribute("studentExamList", studentExamListInfo.get("studentExamList"));
+                }
+                model.addAttribute("exam", exam);
+                model.addAttribute("course", course);
+                int unReadMessageCount = messageService.getUnreadMessageCount(user);
+                model.addAttribute("unReadMessageCount", unReadMessageCount);
+                model.addAttribute("user", user);
+                List<Course> courseList = courseService.getUserCourseByTopNumber(user, 5);
+                model.addAttribute("myCourseList", courseList);
+                if (courseList != null && courseList.size() >= 5) {
+                    model.addAttribute("hasMoreCourse", "yes");
+                }
+                List<Exam> examList = examService.getExamListByCourseIdAndTopNumber(exam.getCourseId(), 5);
+                model.addAttribute("myExamList", examList);
+                if (examList != null && examList.size() >= 5) {
+                    model.addAttribute("hasMoreExam", "yes");
+                }
+            }
+            return "/my_student_exam_list.html";
+        }
+    }
+
+    @GetMapping(value = "/my/student/detail/{studentExamId}")
+    public String getMyStudentExamDetailPage(@PathVariable String studentExamId, HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            return "redirect:/user/login?next=" + "/exam/my/student/detail/" + studentExamId;
+        } else {
+            StudentExam studentExam = studentExamService.getStudentExamById(studentExamId);
+            if (studentExam == null) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            Exam exam = examService.getExamById(studentExam.getExamId());
+            if (exam == null) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            Course course = courseService.getCourseById(exam.getCourseId());
+            User user = (User)session.getAttribute("user");
+            if (course == null || !course.getUserEmail().equals(user.getEmail())) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            Timestamp time = new Timestamp(System.currentTimeMillis());
+            if (exam.getEndTime() == null) {
+                if (exam.getStartTime() == null) {
+                    if ("0:00".equals(studentExam.getTime())) {
+                        if (studentExam.getScore() != -1) {
+                            model.addAttribute("promptTitle", "无法批阅");
+                            model.addAttribute("promptMessage", "该试卷已批阅，成绩：" + studentExam.getScore());
+                            return "/prompt/prompt.html";
+                        }
+                    } else {
+                        model.addAttribute("promptTitle", "无法批阅");
+                        model.addAttribute("promptMessage", "对不起，学生还未交卷，无法批阅！");
+                        return "/prompt/prompt.html";
+                    }
+                } else {
+                    if (time.before(exam.getStartTime())) {
+                        model.addAttribute("promptTitle", "无法批阅");
+                        model.addAttribute("promptMessage", "对不起，考试尚未开始，无法批阅！");
+                        return "/prompt/prompt.html";
+                    } else {
+                        if (studentExam.getScore() != -1) {
+                            model.addAttribute("promptTitle", "无法批阅");
+                            model.addAttribute("promptMessage", "该试卷已批阅，成绩：" + studentExam.getScore());
+                            return "/prompt/prompt.html";
+                        }
+                    }
+                }
+            } else {
+                if (time.before(exam.getEndTime())) {
+                    model.addAttribute("promptTitle", "无法批阅");
+                    model.addAttribute("promptMessage", "考试还未结束，无法批阅！");
+                    return "/prompt/prompt.html";
+                } else {
+                    if (studentExam.getScore() != -1) {
+                        model.addAttribute("promptTitle", "无法批阅");
+                        model.addAttribute("promptMessage", "该试卷已批阅，成绩：" + studentExam.getScore());
+                        return "/prompt/prompt.html";
+                    }
+                }
+            }
+            int choiceQuestionScore = studentChoiceQuestionService.getChoiceQuestionScoreByStudentExamId(studentExamId);
+            model.addAttribute("choiceQuestionScore", choiceQuestionScore);
+            model.addAttribute("exam", exam);
+            model.addAttribute("course", course);
+            model.addAttribute("studentExam", studentExam);
+            List<ChoiceQuestion> choiceQuestionList = choiceQuestionService.getChoiceQuestionByExamId(studentExam.getExamId());
+            model.addAttribute("choiceQuestionList", choiceQuestionList);
+            List<ObjectiveQuestion> objectiveQuestionList = objectiveQuestionService.getObjectQuestionByExamId(studentExam.getExamId());
+            studentObjectiveQuestionService.setAnswerForObjectiveQuestion(objectiveQuestionList, studentExam);
+            model.addAttribute("objectiveQuestionList", objectiveQuestionList);
+            int unReadMessageCount = messageService.getUnreadMessageCount(user);
+            model.addAttribute("unReadMessageCount", unReadMessageCount);
+            model.addAttribute("user", user);
+            List<Course> courseList = courseService.getUserCourseByTopNumber(user, 5);
+            model.addAttribute("myCourseList", courseList);
+            if (courseList != null && courseList.size() >= 5) {
+                model.addAttribute("hasMoreCourse", "yes");
+            }
+            List<Exam> examList = examService.getExamListByCourseIdAndTopNumber(exam.getCourseId(), 5);
+            model.addAttribute("myExamList", examList);
+            if (examList != null && examList.size() >= 5) {
+                model.addAttribute("hasMoreExam", "yes");
+            }
+            return "/my_student_exam_detail.html";
+        }
     }
 }

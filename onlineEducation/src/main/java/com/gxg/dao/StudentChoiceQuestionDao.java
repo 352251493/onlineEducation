@@ -52,4 +52,28 @@ public interface StudentChoiceQuestionDao {
      * @author 郭欣光
      */
     int updateStudentChoiceQuestion(StudentChoiceQuestion studentChoiceQuestion);
+
+    /**
+     * 根据学生考试ID获取学生选择题信息数量
+     * @param studentExamId 学生考试ID
+     * @return 学生选择题数量
+     * @author 郭欣光
+     */
+    int getCountByStudentExamId(String studentExamId);
+
+    /**
+     * 根据学生考试ID获取学生选择题信息
+     * @param studentExamId 学生考试ID
+     * @return 学生选择题信息
+     * @author 郭欣光
+     */
+    List<StudentChoiceQuestion> getStudentChoiceQuestionByStudentExamId(String studentExamId);
+
+    /**
+     * 更新成绩
+     * @param studentChoiceQuestion 学生选择题信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    int updateScore(StudentChoiceQuestion studentChoiceQuestion);
 }

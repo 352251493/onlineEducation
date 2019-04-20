@@ -1,6 +1,7 @@
 package com.gxg.service;
 
 import com.gxg.entities.StudentExam;
+import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -29,4 +30,20 @@ public interface StudentExamService {
      * @author 郭欣光
      */
     String setStudentExamTime(String examId, String examTime, HttpServletRequest request);
+
+    /**
+     * 获取指定考试ID指定页数的学生考试信息
+     * @param examId 考试ID
+     * @param page 页数
+     * @return 学生考试信息
+     * @author 郭欣光
+     */
+    JSONObject getStudentExamListByExamId(String examId, String page);
+
+    /**
+     * 根据学生考试ID获取学生考试信息
+     * @param studentExamId 学生考试ID
+     * @return 学生考试信息
+     */
+    StudentExam getStudentExamById(String studentExamId);
 }

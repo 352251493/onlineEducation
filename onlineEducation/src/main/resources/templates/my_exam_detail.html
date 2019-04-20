@@ -67,6 +67,7 @@
                                     <button type="button" class="btn btn-success" th:onclick="openAddObjectiveQuestionModel([[${exam}]]);">添加客观题</button>
                                     <button type="button" class="btn btn-primary" th:onclick="openMyExamListPage([[${course.id}]]);">返回考试列表</button>
                                     <button type="button" class="btn btn-info" th:onclick="openMyCourseDetailPage([[${course.id}]]);">返回课程</button>
+                                    <button type="button" class="btn btn-success" th:onclick="openMyStudentExamPage([[${exam.id}]], '1');">批卷</button>
                                     <button type="button" class="btn btn-danger" th:onclick="openDeleteExamConfirmModel([[${exam}]]);">删除</button>
                                     <hr/>
                                     <h3>考试内容</h3>
@@ -172,6 +173,9 @@
 
         function openMyCourseDetailPage(courseId) {
             window.location.href = "/course/my/detail/" + courseId + "/1";
+        }
+        function openMyStudentExamPage(examId, pageNumber) {
+            window.location.href = "/exam/my/student/list/" + examId + "/" + pageNumber;
         }
     </script>
 

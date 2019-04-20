@@ -32,4 +32,11 @@ public interface StudentChoiceQuestionService {
      * @author 郭欣光
      */
     List<ChoiceQuestion> setAnswerForChoiceQuestion(List<ChoiceQuestion> choiceQuestionList, StudentExam studentExam);
+
+    /**
+     * 根据学生考试ID获取选择题成绩
+     * @param studentExamId 学生考试ID
+     * @return 选择题成绩
+     */
+    int getChoiceQuestionScoreByStudentExamId(String studentExamId);
 }

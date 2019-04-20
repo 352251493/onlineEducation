@@ -21,6 +21,8 @@ public class StudentExam {
 
     private Timestamp createTime;
 
+    private String studentName;
+
     public String getId() {
         return id;
     }
@@ -69,6 +71,14 @@ public class StudentExam {
         this.createTime = createTime;
     }
 
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
+    }
+
     @Override
     public String toString() {
         return "StudentExam{" +
@@ -78,6 +88,7 @@ public class StudentExam {
                 ", Score=" + Score +
                 ", time='" + time + '\'' +
                 ", createTime=" + createTime +
+                ", studentName='" + studentName + '\'' +
                 '}';
     }
 }

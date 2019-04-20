@@ -147,4 +147,40 @@ public class StudentChoiceQuestionServiceImpl implements StudentChoiceQuestionSe
         }
         return choiceQuestionList;
     }
+
+    /**
+     * 根据学生考试ID获取选择题成绩
+     *
+     * @param studentExamId 学生考试ID
+     * @return 选择题成绩
+     */
+    @Override
+    public int getChoiceQuestionScoreByStudentExamId(String studentExamId) {
+        int choiceQuestionScore = 0;
+        if (studentChoiceQuestionDao.getCountByStudentExamId(studentExamId) != 0) {
+            List<StudentChoiceQuestion> studentChoiceQuestionList = studentChoiceQuestionDao.getStudentChoiceQuestionByStudentExamId(studentExamId);
+            for (StudentChoiceQuestion studentChoiceQuestion : studentChoiceQuestionList) {
+                if (choiceQuestionDao.getCountById(studentChoiceQuestion.getChoiceQuestionId()) != 0) {
+                    ChoiceQuestion choiceQuestion = choiceQuestionDao.getChoiceQuestionById(studentChoiceQuestion.getChoiceQuestionId());
+                    int score = 0;
+                    if (choiceQuestion.getAnswer().toUpperCase().equals(studentChoiceQuestion.getAnswer())) {
+                        score = choiceQuestion.getScore();
+                        choiceQuestionScore += score;
+                    }
+
+                    if (studentChoiceQuestion.getScore() != score) {
+                        studentChoiceQuestion.setScore(score);
+                        try {
+                            if (studentChoiceQuestionDao.updateScore(studentChoiceQuestion) == 0) {
+                                System.out.println("ERROR:更新学生选择题成绩" + studentChoiceQuestion + "操作数据库出错");
+                            }
+                        } catch (Exception e) {
+                            System.out.println("ERROR:更新学生选择题成绩" + studentChoiceQuestion + "操作数据库出错，错误原因：" + e);
+                        }
+                    }
+                }
+            }
+        }
+        return choiceQuestionScore;
+    }
 }

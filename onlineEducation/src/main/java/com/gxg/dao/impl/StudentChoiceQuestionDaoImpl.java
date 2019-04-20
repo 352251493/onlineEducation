@@ -92,4 +92,46 @@ public class StudentChoiceQuestionDaoImpl implements StudentChoiceQuestionDao {
         int changeCount = jdbcTemplate.update(sql, studentChoiceQuestion.getStudentExamId(), studentChoiceQuestion.getChoiceQuestionId(), studentChoiceQuestion.getAnswer(), studentChoiceQuestion.getScore(), studentChoiceQuestion.getId());
         return changeCount;
     }
+
+    /**
+     * 根据学生考试ID获取学生选择题信息数量
+     *
+     * @param studentExamId 学生考试ID
+     * @return 学生选择题数量
+     * @author 郭欣光
+     */
+    @Override
+    public int getCountByStudentExamId(String studentExamId) {
+        String sql = "select count(1) from student_choice_question where student_exam_id=?";
+        int rowCount = jdbcTemplate.queryForObject(sql, Integer.class, studentExamId);
+        return rowCount;
+    }
+
+    /**
+     * 根据学生考试ID获取学生选择题信息
+     *
+     * @param studentExamId 学生考试ID
+     * @return 学生选择题信息
+     * @author 郭欣光
+     */
+    @Override
+    public List<StudentChoiceQuestion> getStudentChoiceQuestionByStudentExamId(String studentExamId) {
+        String sql = "select * from student_choice_question where student_exam_id=?";
+        List<StudentChoiceQuestion> studentChoiceQuestionList = jdbcTemplate.query(sql, new StudentChoiceQuestionRowMapper(), studentExamId);
+        return studentChoiceQuestionList;
+    }
+
+    /**
+     * 更新成绩
+     *
+     * @param studentChoiceQuestion 学生选择题信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    @Override
+    public int updateScore(StudentChoiceQuestion studentChoiceQuestion) {
+        String sql = "update student_choice_question set score=? where id=?";
+        int changeCount = jdbcTemplate.update(sql, studentChoiceQuestion.getScore(), studentChoiceQuestion.getId());
+        return changeCount;
+    }
 }

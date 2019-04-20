@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <!-- Title -->
+    <title>智学新知 - 让教育更智能，让学习更有趣</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="/img/core-img/logo_ico.png">
+
+    <!-- Core Stylesheet -->
+    <link rel="stylesheet" href="/style.css">
+
+	<link rel="stylesheet" href="/my/css/course.css">
+
+    <link rel="stylesheet" href="/my/css/datetimepicker/bootstrap-datetimepicker.min.css">
+</head>
+
+<body>
+    <!-- ##### Preloader ##### -->
+    <div id="preloader">
+        <i class="circle-preloader"></i>
+    </div>
+
+    <!-- ##### Header Area Start ##### -->
+    <header class="header-area" th:include="/html_templates/header.html :: header"></header>
+    <!-- ##### Header Area End ##### -->
+
+    <!-- ##### Breadcumb Area Start ##### -->
+    <div class="breadcumb-area bg-img" style="background-image: url(/img/bg-img/breadcumb.jpg);">
+        <div class="bradcumbContent">
+            <h2>学生考试试卷</h2>
+        </div>
+    </div>
+    <!-- ##### Breadcumb Area End ##### -->
+
+    <!-- ##### Blog Area Start ##### -->
+    <div class="blog-area mt-50 section-padding-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-md-8">
+                    <div class="academy-blog-posts">
+                        <div class="row">
+                            <!-- Single Blog Start -->
+                            <div class="col-12">
+                                <div class="single-blog-post mb-50 wow fadeInUp" data-wow-delay="300ms">
+                                    <!-- Post Title -->
+                                    <a href="" th:text="${exam.name}" class="post-title"></a>
+                                    <!-- Post Meta -->
+                                    <div class="post-meta">
+                                        <p><a href="" th:text="'创建时间：' + ${#strings.substringBefore(exam.createTime, '.')}"></a> | <a href="" th:text="'最近修改时间：' + ${#strings.substringBefore(exam.modifyTime, '.')}"></a></p>
+                                        <p th:if="${exam.requirement} == null"><a href="">考试要求：无</a></p>
+                                        <p th:if="${exam.requirement} != null"><a href="" th:text="'考试要求：' + ${exam.requirement}"></a></p>
+                                        <p th:if="${exam.startTime} == null"><a href="">考试开始时间：无</a></p>
+                                        <p th:if="${exam.startTime} != null"><a href="" th:text="'考试开始时间：' + ${exam.startTime}"></a> </p>
+                                        <p th:if="${exam.endTime} == null"><a href="">考试结束时间：无</a></p>
+                                        <p th:if="${exam.endTime} != null"><a href="" th:text="'考试结束时间：' + ${exam.endTime}"></a> </p>
+                                        <p th:if="${exam.duration} eq '0'"><a href="">考试时长：无</a></p>
+                                        <p th:if="${exam.duration} ne '0'"><a href="" th:text="'考试时长：' + ${exam.duration}"></a> </p>
+                                    </div>
+                                    <!-- Read More btn -->
+                                    <button type="button" class="btn btn-success" th:onclick="openMyExamDetailPage([[${exam.id}]]);">查看考试详情</button>
+                                    <button type="button" class="btn btn-primary" th:onclick="openMyExamListPage([[${course.id}]]);">返回考试列表</button>
+                                    <button type="button" class="btn btn-info" th:onclick="openMyCourseDetailPage([[${course.id}]]);">返回课程</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="academy-blog-posts">
+                        <div class="row">
+                            <!-- Single Blog Start -->
+                            <div class="col-12">
+                                <div class="single-blog-post mb-50 wow fadeInUp" data-wow-delay="300ms">
+                                    <!-- Post Title -->
+                                    <h5>学生考试列表</h5>
+                                    <br/>
+                                     <p th:if="${studentExamList} == null">这里空空如也~</p>
+                                    <div th:if="${studentExamList} != null" th:each="studentExam : ${studentExamList}">
+                                        <h6 th:text="${studentExam.studentName} + '-' + ${exam.name}" th:if="${studentExam.studentName} != null"></h6>
+                                        <h6 th:text="${studentExam.userEmail} + '-' + ${exam.name}" th:if="${studentExam.studentName} == null"></h6>
+                                        <div class="post-meta">
+                                            <p th:if="${studentExam.score} eq '-1'">未批改</p>
+                                            <p th:if="${studentExam.score} ne '-1'" th:text="'已批阅，成绩：' + ${studentExam.score}"></p>
+                                            <!--<p>最后修改于：<span th:text="${#strings.substringBefore(exam.modifyTime, '.')}"></span> | 考试开始时间：<span th:if="${exam.startTime} != null" th:text="${#strings.substringBefore(exam.startTime, '.')}"></span><span th:if="${exam.startTime} == null">无</span> | 考试结束时间：<span th:if="${exam.endTime} != null" th:text="${#strings.substringBefore(exam.endTime, '.')}"></span><span th:if="${exam.endTime} == null">无</span> | 考试时长：<span th:if="${exam.duration} ne '0'" th:text="${exam.duration}"></span><span th:if="${exam.duration} eq '0'">无</span></p>-->
+                                            <div class="pull-right">
+                                                <button type="button" class="btn btn-success" th:onclick="openMyStudentExamDetailPage([[${exam}]], [[${studentExam}]]);">批阅</button>
+                                            </div>
+                                        </div>
+                                        <br/>
+                                    </div>
+                                    <div class="btn-group pull-right" role="group">
+                                        <button type="button" class="btn btn-default" disabled="disabled" th:if="${studentExamPrePage} == null"><span aria-hidden="true">&laquo;</span>上一页</button>
+                                        <button type="button" class="btn btn-default" th:if="${studentExamPrePage} != null" th:onclick="openMyStudentExamPage([[${exam.id}]], [[${studentExamPrePage}]]);"><span aria-hidden="true">&laquo;</span>上一页</button>
+                                        <button type="button" class="btn btn-default" disabled="disabled" th:text="${studentExamPage} + '/' + ${studentExamPageNumber}">1/1</button>
+                                        <button type="button" class="btn btn-default" disabled="disabled" th:if="${studentExamNextPage} == null">下一页<span aria-hidden="true">&raquo;</span></button>
+                                        <button type="button" class="btn btn-default" th:if="${studentExamNextPage} != null" th:onclick="openMyStudentExamPage([[${exam.id}]], [[${studentExamPrePage}]]);">下一页<span aria-hidden="true">&raquo;</span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <div class="academy-blog-sidebar">
+                        <div class="blog-post-categories mb-30" th:include="/html_templates/my_last_exam.html :: myLastExam">
+                        </div>
+                        <div class="latest-blog-posts mb-30" th:include="/html_templates/my_last_course.html :: myLastCourse">
+                        </div>
+
+                        <!-- Add Widget -->
+                        <!-- <div class="add-widget">
+                            <a href="#"><img src="img/blog-img/add.png" alt=""></a>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ##### Blog Area End ##### -->
+
+    <!-- ##### Footer Area Start ##### -->
+    <footer class="footer-area" th:include="/html_templates/footer.html :: footer"></footer>
+    <!-- 信息提示框 -->
+    <div th:include="/html_templates/alert_info.html :: alert"></div>
+    <!-- 等待框 -->
+    <div th:include="/html_templates/loading.html :: loading"></div>
+    <!-- ##### All Javascript Script ##### -->
+    <!-- jQuery-2.2.4 js -->
+    <script src="/js/jquery/jquery-2.2.4.min.js"></script>
+    <!-- Popper js -->
+    <script src="/js/bootstrap/popper.min.js"></script>
+    <!-- Bootstrap js -->
+    <script src="/js/bootstrap/bootstrap.min.js"></script>
+    <!-- All Plugins js -->
+    <script src="/js/plugins/plugins.js"></script>
+    <!-- Active js -->
+    <script src="/js/active.js"></script>
+
+    <script src="/my/js/utils.js"></script>
+    <!--<script src="/my/js/my_course_detail.js"></script>-->
+    <!--<script src="/my/js/datetimepicker/bootstrap-datetimepicker.min.js"></script>-->
+    <!--<script src="/my/js/datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js"></script>-->
+    <!--<script src="/my/js/add_exam.js"></script>-->
+    <!--<script src="/my/js/delete_exam.js"></script>-->
+    <script>
+        function openMyExamDetailPage(examId) {
+            window.location.href = "/exam/my/detail/" + examId;
+        }
+        function openMyStudentExamPage(examId) {
+            window.location.href = "/exam/my/student/list/" + examId;
+        }
+        function openMyExamListPage(courseId) {
+            window.location.href = "/exam/my/list/" + courseId + "/1";
+        }
+        function openMyExamDetailPage(examId) {
+            window.location.href = "/exam/my/detail/" + examId;
+        }
+        function openMyStudentExamDetailPage(exam, studentExam) {
+            var isStart = false;
+            if (exam.endTime == null) {
+                if (exam.startTime == null) {
+                    if (studentExam.time == "0:00") {
+                        if (studentExam.score == -1) {
+                            isStart = true;
+                        } else {
+                            openAlertModel("该试卷已批阅，成绩：" + studentExam.score);
+                        }
+                    } else {
+                        openAlertModel("学生还未交卷，无法批阅！");
+                    }
+                } else {
+                    var startTime = exam.startTime.split(".")[0].split("T")[0] + " " + exam.startTime.split(".")[0].split("T")[1];
+                    var startTimeDate = new Date(startTime.replace("-","/"));
+                    var curDate = new Date();
+                    var curDateString = curDate.getFullYear() + "-" + (curDate.getMonth() + 1) + "-" + curDate.getDate() + " " + curDate.getHours() + ":" + curDate.getMinutes() + ":" + curDate.getSeconds();
+                    var curDateStringDate = new Date(curDateString.replace("-","/"));
+                    if (curDateStringDate < startTimeDate) {
+                        openAlertModel("考试尚未开始，无法批阅！");
+                    } else {
+                        if (studentExam.score == -1) {
+                            isStart = true;
+                        } else {
+                            openAlertModel("该试卷已批阅，成绩：" + studentExam.score);
+                        }
+                    }
+                }
+            } else {
+                var endTime = exam.endTime.split(".")[0].split("T")[0] + " " + exam.endTime.split(".")[0].split("T")[1];
+                var endTimeDate = new Date(endTime.replace("-","/"));
+                var curDate = new Date();
+                var curDateString = curDate.getFullYear() + "-" + (curDate.getMonth() + 1) + "-" + curDate.getDate() + " " + curDate.getHours() + ":" + curDate.getMinutes() + ":" + curDate.getSeconds();
+                var curDateStringDate = new Date(curDateString.replace("-","/"));
+                if (curDateStringDate > endTimeDate) {
+                    if (studentExam.score == -1) {
+                        isStart = true;
+                    } else {
+                        openAlertModel("该试卷已批阅，成绩：" + studentExam.score);
+                    }
+                } else {
+                    openAlertModel("考试还未结束，无法批阅！");
+                }
+            }
+            if (isStart) {
+                window.location.href = "/exam/my/student/detail/" + studentExam.id;
+            }
+        }
+    </script>
+</body>
+
+</html>

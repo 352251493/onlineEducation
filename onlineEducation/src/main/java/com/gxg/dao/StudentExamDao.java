@@ -61,4 +61,22 @@ public interface StudentExamDao {
      * @author 郭欣光
      */
     StudentExam getStudentExamById(String id);
+
+    /**
+     * 根据考试ID获取学生考试信息个数
+     * @param examId 考试ID
+     * @return 学生考试信息个数
+     * @author 郭欣光
+     */
+    int getCountByExamId(String examId);
+
+    /**
+     * 根据考试ID按照创建时间排序获取指定位置的学生考试信息
+     * @param examId 考试ID
+     * @param startLimit 第一个Limit
+     * @param endLimit 第二个Limit
+     * @return 学生考试信息
+     * @author 郭欣光
+     */
+    List<StudentExam> getStudentExamByExamIdAndLimitOrderByCreateTime(String examId, int startLimit, int endLimit);
 }
