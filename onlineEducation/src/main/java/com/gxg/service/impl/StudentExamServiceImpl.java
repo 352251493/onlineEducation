@@ -1,11 +1,9 @@
 package com.gxg.service.impl;
 
-import com.gxg.dao.ExamDao;
-import com.gxg.dao.StudentExamDao;
-import com.gxg.dao.UserDao;
-import com.gxg.entities.Exam;
-import com.gxg.entities.StudentExam;
-import com.gxg.entities.User;
+import com.gxg.dao.*;
+import com.gxg.entities.*;
+import com.gxg.service.MessageService;
+import com.gxg.service.StudentChoiceQuestionService;
 import com.gxg.service.StudentExamService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +36,18 @@ public class StudentExamServiceImpl implements StudentExamService {
 
     @Value("${student.exam.count.each.page}")
     private int studentExamCountEachPage;
+
+    @Autowired
+    private CourseDao courseDao;
+
+    @Autowired
+    private StudentChoiceQuestionService choiceQuestionService;
+
+    @Autowired
+    private StudentObjectiveQuestionDao studentObjectiveQuestionDao;
+
+    @Autowired
+    private MessageService messageService;
 
     /**
      * 获得学生考试相关信息（如果没有则添加）
@@ -202,5 +212,86 @@ public class StudentExamServiceImpl implements StudentExamService {
             }
             return studentExam;
         }
+    }
+
+    /**
+     * 计算学生考试成绩
+     *
+     * @param studentExamId 学生考试ID
+     * @param request       用户请求相关信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public String setStudentExamScore(String studentExamId, HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "设置失败！";
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            content = "系统未检测到用户登录信息！";
+        } else if (studentExamDao.getCountById(studentExamId) == 0) {
+            content = "系统未检测到学生考试信息！";
+        } else {
+            StudentExam studentExam = studentExamDao.getStudentExamById(studentExamId);
+            if (studentExam.getScore() >= 0) {
+                content = "您已经批阅过该试卷";
+            } else if (examDao.getCountById(studentExam.getExamId()) == 0) {
+                content = "系统未检测到考试信息！";
+            } else {
+                Exam exam = examDao.getExamById(studentExam.getExamId());
+                if (courseDao.getCountById(exam.getCourseId()) == 0) {
+                    content = "系统未检测到课程信息！";
+                } else {
+                    Course course = courseDao.getCourseById(exam.getCourseId());
+                    User user = (User)session.getAttribute("user");
+                    if (user.getEmail().equals(course.getUserEmail())) {
+                        int choiceQuestionScore = choiceQuestionService.getChoiceQuestionScoreByStudentExamId(studentExamId);
+                        int objectiveQuetsionScore = 0;
+                        if (studentObjectiveQuestionDao.getCountByStudentExamId(studentExamId) != 0) {
+                            List<StudentObjectiveQuestion> studentObjectiveQuestionList = studentObjectiveQuestionDao.getStudentObjectiveQuestionByStudentExamId(studentExamId);
+                            for (StudentObjectiveQuestion studentObjectiveQuestion : studentObjectiveQuestionList) {
+                                if (studentObjectiveQuestion.getScore() >= 0) {
+                                    objectiveQuetsionScore += studentObjectiveQuestion.getScore();
+                                }
+                            }
+                        }
+                        int sumSore = choiceQuestionScore + objectiveQuetsionScore;
+                        studentExam.setScore(sumSore);
+                        try {
+                            if (studentExamDao.updateScore(studentExam) == 0) {
+                                content = "操作数据库出错！";
+                                System.out.println("ERROR:设置学生考试信息" + studentExam.toString() + "成绩操作数据库失败");
+                            } else {
+                                status = "true";
+                                content = "批阅成功！";
+                            }
+                        } catch (Exception e) {
+                            content = "操作数据库出错！";
+                            System.out.println("ERROR:设置学生考试信息" + studentExam.toString() + "成绩操作数据库失败，失败原因：" + e);
+                        }
+                        if ("true".equals(status)) {
+                            if (userDao.getUserCountByEmail(studentExam.getUserEmail()) != 0) {
+                                User studentUser = userDao.getUserByEmail(studentExam.getUserEmail());
+                                String messageTitle = "您有一门新考试成绩";
+                                String messageContent = createSetStudentExamScoreSuccessEmailMessage(exam, studentExam);
+                                JSONObject createMessageResult = messageService.createMessage(studentUser.getEmail(), messageTitle, messageContent);
+                                System.out.println("INFO:设置学生考试" + studentExam.toString() + "成功时创建消息通知结果：" + createMessageResult.toString());
+                            }
+                        }
+                    } else {
+                        content = "不能为他人的考试设置成绩！";
+                    }
+                }
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
+    }
+
+    private String createSetStudentExamScoreSuccessEmailMessage(Exam exam, StudentExam studentExam) {
+        String message = "<p>您的考试" + exam.getName() + "&nbsp;&nbsp;已被批阅，成绩为："+ studentExam.getScore() + "</p>";
+        return message;
     }
 }

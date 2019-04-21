@@ -135,4 +135,18 @@ public class StudentExamDaoImpl implements StudentExamDao {
         List<StudentExam> studentExamList = jdbcTemplate.query(sql, new StudentExamRowMapper(), examId, startLimit, endLimit);
         return studentExamList;
     }
+
+    /**
+     * 设置成绩
+     *
+     * @param studentExam 学生考试信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    @Override
+    public int updateScore(StudentExam studentExam) {
+        String sql = "update student_exam set score=? where id=?";
+        int changeCount = jdbcTemplate.update(sql, studentExam.getScore(), studentExam.getId());
+        return changeCount;
+    }
 }

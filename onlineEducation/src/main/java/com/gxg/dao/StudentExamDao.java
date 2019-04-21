@@ -79,4 +79,13 @@ public interface StudentExamDao {
      * @author 郭欣光
      */
     List<StudentExam> getStudentExamByExamIdAndLimitOrderByCreateTime(String examId, int startLimit, int endLimit);
+
+    /**
+     * 设置成绩
+     * @param studentExam 学生考试信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    int updateScore(StudentExam studentExam);
+
 }

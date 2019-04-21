@@ -12,8 +12,8 @@
     </div>
     <!-- Sidebar Navidation Menus--><!-- <span class="heading">Main</span> -->
     <ul class="list-unstyled">
-        <li th:if="${pageName} eq '个人中心'" class="active"><a href="index.html"> <i class="icon-home"></i>个人中心 </a></li>
-        <li th:if="${pageName} ne '个人中心'"><a href="index.html"> <i class="icon-home"></i>个人中心 </a></li>
+        <li th:if="${pageName} eq '个人中心'" class="active"><a href="/user"> <i class="icon-home"></i>个人中心 </a></li>
+        <li th:if="${pageName} ne '个人中心'"><a href="/user"> <i class="icon-home"></i>个人中心 </a></li>
         <li class="active" th:if="${pageName} eq '消息通知'"><a href="/user/message/all/1"> <i class="fa fa-bell-o"></i>消息通知 &nbsp;<span class="badge bg-red badge-corner" th:if="${unReadMessageCount} == null">0</span><span class="badge bg-red badge-corner" th:if="${unReadMessageCount} != null" th:text="${unReadMessageCount}">0</span> </a></li>
         <li th:if="${pageName} ne '消息通知'"><a href="/user/message/all/1"> <i class="fa fa-bell-o"></i>消息通知 &nbsp;<span class="badge bg-red badge-corner" th:if="${unReadMessageCount} == null">0</span><span class="badge bg-red badge-corner" th:if="${unReadMessageCount} != null" th:text="${unReadMessageCount}">0</span> </a></li>
         <li><a href="charts.html"> <i class="fa fa-bar-chart"></i>Charts </a></li>

@@ -554,4 +554,16 @@ public class ExamController {
             return "/my_student_exam_detail.html";
         }
     }
+
+    @PostMapping(value = "/student/objective/score")
+    @ResponseBody
+    public String setStudentObjectiveScore(@RequestParam String studentExamId, @RequestParam String objectiveQuestionId, @RequestParam String score, HttpServletRequest request) {
+        return studentObjectiveQuestionService.setStudentObjectiveStudentScore(studentExamId, objectiveQuestionId, score, request);
+    }
+
+    @PostMapping(value = "/student/exam/score")
+    @ResponseBody
+    public String setStudentExamScore(@RequestParam String studentExamId, HttpServletRequest request) {
+        return studentExamService.setStudentExamScore(studentExamId, request);
+    }
 }

@@ -239,4 +239,18 @@ public class UserController {
             return user.toString();
         }
     }
+
+    @GetMapping(value = "")
+    public String getUserHomePage(HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            return "redirect:/user/login?next=" + "/user";
+        } else {
+            User user = (User)session.getAttribute("user");
+            model = messageCommonModel(model, user);
+            model.addAttribute("pageName", "个人中心");
+            return "/user/index.html";
+
+        }
+    }
 }

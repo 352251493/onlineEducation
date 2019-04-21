@@ -1,8 +1,6 @@
 package com.gxg.service.impl;
 
-import com.gxg.dao.ObjectiveQuestionDao;
-import com.gxg.dao.StudentExamDao;
-import com.gxg.dao.StudentObjectiveQuestionDao;
+import com.gxg.dao.*;
 import com.gxg.entities.*;
 import com.gxg.service.StudentObjectiveQuestionService;
 import org.json.JSONObject;
@@ -32,6 +30,12 @@ public class StudentObjectiveQuestionServiceImpl implements StudentObjectiveQues
 
     @Autowired
     private StudentObjectiveQuestionDao studentObjectiveQuestionDao;
+
+    @Autowired
+    private ExamDao examDao;
+
+    @Autowired
+    private CourseDao courseDao;
 
     /**
      * 设置学生客观题信息答案
@@ -144,5 +148,84 @@ public class StudentObjectiveQuestionServiceImpl implements StudentObjectiveQues
                 }
             }
         }
+    }
+
+    /**
+     * 设置学生客观题成绩
+     *
+     * @param studentExamId       学生考试ID
+     * @param objectiveQuestionId 客观题ID
+     * @param score               成绩
+     * @param request             用户请求相关信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public String setStudentObjectiveStudentScore(String studentExamId, String objectiveQuestionId, String score, HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "设置成绩失败！";
+        HttpSession session = request.getSession();
+        boolean isNumber = false;
+        int scoreInt = -1;
+        try {
+            scoreInt = Integer.parseInt(score);
+        } catch (Exception e) {
+            content = "成绩必须为非负整数";
+        }
+        if (scoreInt >= 0) {
+            if (session.getAttribute("user") == null) {
+                content = "系统未检测到登录用户！";
+            } else if (studentExamDao.getCountById(studentExamId) == 0) {
+                content = "没有找到该考试信息";
+            } else {
+                StudentExam studentExam = studentExamDao.getStudentExamById(studentExamId);
+                if (examDao.getCountById(studentExam.getExamId()) == 0) {
+                    content = "系统未找到该考试！";
+                } else {
+                    Exam exam = examDao.getExamById(studentExam.getExamId());
+                    if (courseDao.getCountById(exam.getCourseId()) == 0) {
+                        content = "系统未找到该课程！";
+                    } else {
+                        Course course = courseDao.getCourseById(exam.getCourseId());
+                        User user = (User)session.getAttribute("user");
+                        if (user.getEmail().equals(course.getUserEmail())) {
+                            if (objectiveQuestionDao.getCountById(objectiveQuestionId) == 0) {
+                                content = "没有该客观题题";
+                            } else if (studentObjectiveQuestionDao.getCountByStudentExamIdAndObjectiveQuestionId(studentExamId, objectiveQuestionId) == 0) {
+                                content = "学生没有做该客观题";
+                            } else {
+                                StudentObjectiveQuestion studentObjectiveQuestion = studentObjectiveQuestionDao.getStudentObjectiveQuestionByStudentExamIdAndObjectiveQuestionId(studentExamId, objectiveQuestionId).get(0);
+                                if (scoreInt == studentObjectiveQuestion.getScore()) {
+                                    status = "true";
+                                    content = "设置成功！";
+                                } else {
+                                    studentObjectiveQuestion.setScore(scoreInt);
+                                    try {
+                                        if (studentObjectiveQuestionDao.updateScore(studentObjectiveQuestion) == 0) {
+                                            content = "操作数据库失败！";
+                                            System.out.println("ERROR:修改用户客观题题信息" + studentObjectiveQuestion.toString() + "成绩操作数据库失败");
+                                        } else {
+                                            status = "true";
+                                            content = "设置成功！";
+                                        }
+                                    } catch (Exception e) {
+                                        content = "操作数据库失败！";
+                                        System.out.println("ERROR:修改用户客观题信息" + studentObjectiveQuestion.toString() + "成绩操作数据库失败，失败原因：" + e);
+                                    }
+                                }
+                            }
+                        } else {
+                            content = "不可以为他人创建的考试设置成绩！";
+                        }
+                    }
+                }
+            }
+        } else {
+            content = "成绩必须为非负整数";
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
     }
 }

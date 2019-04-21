@@ -52,4 +52,28 @@ public interface StudentObjectiveQuestionDao {
      * @author 郭欣光
      */
     int updateStudentObjectiveQuestion(StudentObjectiveQuestion studentObjectiveQuestion);
+
+    /**
+     * 更新成绩
+     * @param studentObjectiveQuestion 学生客观题信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    int updateScore(StudentObjectiveQuestion studentObjectiveQuestion);
+
+    /**
+     * 根据学生考试ID获取学生客观题信息数量
+     * @param studentExamId 学生考试ID
+     * @return 学生客观题信息数量
+     * @author 郭欣光
+     */
+    int getCountByStudentExamId(String studentExamId);
+
+    /**
+     * 根据学生考试ID获取学生客观题信息
+     * @param studentExamId 学生考试ID
+     * @return 学生客观题信息
+     * @author 郭欣光
+     */
+    List<StudentObjectiveQuestion> getStudentObjectiveQuestionByStudentExamId(String studentExamId);
 }

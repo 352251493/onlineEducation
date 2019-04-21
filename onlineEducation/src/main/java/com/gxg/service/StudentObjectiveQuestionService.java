@@ -30,4 +30,15 @@ public interface StudentObjectiveQuestionService {
      * @author 郭欣光
      */
     void setAnswerForObjectiveQuestion(List<ObjectiveQuestion> objectiveQuestionList, StudentExam studentExam);
+
+    /**
+     * 设置学生客观题成绩
+     * @param studentExamId 学生考试ID
+     * @param objectiveQuestionId 客观题ID
+     * @param score 成绩
+     * @param request 用户请求相关信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    String setStudentObjectiveStudentScore(String studentExamId, String objectiveQuestionId, String score, HttpServletRequest request);
 }

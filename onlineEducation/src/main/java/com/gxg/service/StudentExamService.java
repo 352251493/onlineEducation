@@ -46,4 +46,13 @@ public interface StudentExamService {
      * @return 学生考试信息
      */
     StudentExam getStudentExamById(String studentExamId);
+
+    /**
+     * 计算学生考试成绩
+     * @param studentExamId 学生考试ID
+     * @param request 用户请求相关信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    String setStudentExamScore(String studentExamId, HttpServletRequest request);
 }

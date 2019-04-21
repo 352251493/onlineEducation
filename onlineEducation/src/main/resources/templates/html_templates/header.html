@@ -13,7 +13,7 @@
                         </div>
                         <div class="login-content">
                             <a href="javascript: window.open('/user/login?next=' + window.location.href);" target="_blank" th:if="${user} == null">注册 / 登录</a>
-                            <a href="" th:if="${user} != null" th:text="'欢迎您，' + ${user.name}"></a>
+                            <a href="/user" th:if="${user} != null" th:text="'欢迎您，' + ${user.name}"></a>
                             <a href="/user/message/all/1" th:if="${user} != null">消息(<span th:if="${unReadMessageCount} == null">0</span><span th:if="${unReadMessageCount} != null" th:text="${unReadMessageCount}">0</span>)</a>
                             <!-- <a href="">欢迎您，guoxinguang123@qq.com</a> -->
                         </div>

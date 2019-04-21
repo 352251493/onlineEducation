@@ -34,10 +34,10 @@ $(document).ready(function () {
             }
         },
         data: {
-            labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17"],
+            labels: ["60分以下", "60--70分", "70--80分", "80--90分", "90分以上"],
             datasets: [
                 {
-                    label: "Page Visitors",
+                    label: "考试数目",
                     fill: true,
                     lineTension: 0,
                     backgroundColor: "transparent",
@@ -56,30 +56,7 @@ $(document).ready(function () {
                     pointHoverBorderWidth: 2,
                     pointRadius: 1,
                     pointHitRadius: 0,
-                    data: [50, 20, 60, 31, 52, 22, 40, 25, 30, 68, 56, 40, 60, 43, 55, 39, 47],
-                    spanGaps: false
-                },
-                {
-                    label: "Page Views",
-                    fill: true,
-                    lineTension: 0,
-                    backgroundColor: "transparent",
-                    borderColor: "#54e69d",
-                    pointHoverBackgroundColor: "#44c384",
-                    borderCapStyle: 'butt',
-                    borderDash: [],
-                    borderDashOffset: 0.0,
-                    borderJoinStyle: 'miter',
-                    borderWidth: 1,
-                    pointBorderColor: "#44c384",
-                    pointBackgroundColor: "#fff",
-                    pointBorderWidth: 1,
-                    pointHoverRadius: 5,
-                    pointHoverBorderColor: "#fff",
-                    pointHoverBorderWidth: 2,
-                    pointRadius: 1,
-                    pointHitRadius: 10,
-                    data: [20, 7, 35, 17, 26, 8, 18, 10, 14, 46, 30, 30, 14, 28, 17, 25, 17, 40],
+                    data: [50, 20, 60, 31, 52],
                     spanGaps: false
                 }
             ]

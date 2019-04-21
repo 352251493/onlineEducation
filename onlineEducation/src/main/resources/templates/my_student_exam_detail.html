@@ -91,7 +91,7 @@
                                         该试卷没有客观题，您可以直接点击下方提交按钮提交选择题成绩！
                                     </div>
                                     <br/>
-                                    <button type="button" class="btn btn-default" onclick="openSubmitExamConfirmModel();">提交</button>
+                                    <button type="button" class="btn btn-default" onclick="openSubmitStudentExamScoreConfirmModel();">提交</button>
                                 </div>
                             </div>
                         </div>
@@ -110,11 +110,15 @@
             </div>
         </div>
     </div>
+    <input type="hidden" id="studentExamId" th:value="${studentExam.id}">
+    <input type="hidden" id="examId" th:value="${exam.id}">
     <!-- ##### Blog Area End ##### -->
 
     <!-- ##### Footer Area Start ##### -->
     <footer class="footer-area" th:include="/html_templates/footer.html :: footer"></footer>
     <!-- ##### Footer Area Start ##### -->
+    <!-- 提交成绩提示框 -->
+    <div th:include="/html_templates/confirm_modal.html :: submitStudentExamScoreConfirm"></div>
     <!-- 信息提示框 -->
     <div th:include="/html_templates/alert_info.html :: alert"></div>
     <!-- 等待框 -->
@@ -133,6 +137,7 @@
 
     <script src="/my/js/utils.js"></script>
     <script>
+        var timeInterval = null;
         function openMyExamListPage(courseId) {
             window.location.href = "/exam/my/list/" + courseId + "/1";
         }
@@ -143,6 +148,93 @@
         function openMyStudentExamPage(examId, pageNumber) {
             window.location.href = "/exam/my/student/list/" + examId + "/" + pageNumber;
         }
+
+        function getScoreAndSubmit() {
+            if ($(".objective_question_class").length > 0) {
+                $(".objective_question_class").each(function(){
+                    var objectiveQuestionId = $(this).val();
+                    console.log(objectiveQuestionId);
+                    var ObjectiveQuestionName = "#objective_id_" + objectiveQuestionId;
+                    var score = $(ObjectiveQuestionName).val();
+                    if (!stringIsEmpty(score)) {
+                        setScore(objectiveQuestionId, score);
+                    }
+                });
+            }
+        }
+
+        function setScore(objectiveQuestionId, score) {
+            var studentExamId = $("#studentExamId").val();
+            if (stringIsEmpty(studentExamId)) {
+                console.log("系统获取学生考试信息失败！");
+            } else {
+                var obj = new Object();
+                obj.studentExamId = studentExamId;
+                obj.objectiveQuestionId = objectiveQuestionId;
+                obj.score = score;
+                $.ajax({
+                    url: "/exam/student/objective/score",
+                    type: "POST",
+                    cache: false,//设置不缓存
+                    data: obj,
+                    success: function (data) {
+                        console.log(data);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        console.log(XMLHttpRequest + textStatus + errorThrown);
+                    }
+                });
+            }
+        }
+
+        function openSubmitStudentExamScoreConfirmModel() {
+            $("#submitStudentExamScoreConfirmModel").modal({
+                backdrop : 'static'
+            });
+        }
+
+        function submitStudentExamScore() {
+            openLoadingModel();
+            if (timeInterval != null) {
+                clearInterval(timeInterval);
+            }
+            setTimeout(setStudentExamScore, 1000);
+        }
+
+        function setStudentExamScore() {
+            var studentExamId = $("#studentExamId").val();
+            if (stringIsEmpty(examId)) {
+                closeLoadingModel();
+                openAlertModel("获取学生考试ID失败！");
+            } else {
+                var obj = new Object();
+                obj.studentExamId = studentExamId;
+                $.ajax({
+                    url: "/exam/student/exam/score",
+                    type: "POST",
+                    cache: false,//设置不缓存
+                    data: obj,
+                    success: function (data) {
+                        var result = JSON.parse(data);
+                        if (result.status == "true") {
+                            var examId = $("#examId").val();
+                            window.location.href = '/exam/my/student/list/' + examId + '/1';
+                        } else {
+                            closeLoadingModel();
+                            openAlertModel(result.content);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        closeLoadingModel();
+                        openAjaxErrorAlert(XMLHttpRequest, textStatus, errorThrown);
+                    }
+                });
+            }
+        }
+
+        $(document).ready(function () {
+            timeInterval = setInterval(getScoreAndSubmit, 1000);
+        });
     </script>
 
     <!--<script src="/my/js/my_lesson_detail.js"></script>-->
