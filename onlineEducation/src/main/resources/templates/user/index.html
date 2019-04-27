@@ -52,7 +52,7 @@
                                         <!--<div role="progressbar" style="width: 25%; height: 4px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" class="progress-bar bg-violet"></div>-->
                                     <!--</div>-->
                                 </div>
-                                <div class="number"><strong>25</strong></div>
+                                <div class="number"><strong th:text="${studyCourseCount}"></strong></div>
                             </div>
                         </div>
                         <!-- Item -->
@@ -64,7 +64,7 @@
                                         <!--<div role="progressbar" style="width: 70%; height: 4px;" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" class="progress-bar bg-red"></div>-->
                                     <!--</div>-->
                                 </div>
-                                <div class="number"><strong>70</strong></div>
+                                <div class="number"><strong th:text="${myCourseCount}"></strong></div>
                             </div>
                         </div>
                         <!-- Item -->
@@ -76,7 +76,7 @@
                                         <!--<div role="progressbar" style="width: 40%; height: 4px;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" class="progress-bar bg-green"></div>-->
                                     <!--</div>-->
                                 </div>
-                                <div class="number"><strong>40</strong></div>
+                                <div class="number"><strong th:text="${myExamCount}"></strong></div>
                             </div>
                         </div>
                         <!-- Item -->
@@ -88,7 +88,7 @@
                                         <!--<div role="progressbar" style="width: 50%; height: 4px;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" class="progress-bar bg-orange"></div>-->
                                     <!--</div>-->
                                 </div>
-                                <div class="number"><strong>50</strong></div>
+                                <div class="number"><strong th:text="${averageScore}"></strong></div>
                             </div>
                         </div>
                     </div>
@@ -102,23 +102,23 @@
                         <div class="statistics col-lg-3 col-12">
                             <div class="statistic d-flex align-items-center bg-white has-shadow">
                                 <div class="icon bg-green"><i class="fa fa-tasks"></i></div>
-                                <div class="text"><strong>234</strong><br><small>90分以上</small></div>
+                                <div class="text"><strong th:text="${excellentCount}" id="excellentCount"></strong><br><small>90分以上</small></div>
                             </div>
                             <div class="statistic d-flex align-items-center bg-white has-shadow">
                                 <div class="icon bg-blue"><i class="fa fa-tasks"></i></div>
-                                <div class="text"><strong>152</strong><br><small>80--90分</small></div>
+                                <div class="text"><strong th:text="${goodCount}" id="goodCount"></strong><br><small>80--90分</small></div>
                             </div>
                             <div class="statistic d-flex align-items-center bg-white has-shadow">
                                 <div class="icon bg-yellow"><i class="fa fa-tasks"></i></div>
-                                <div class="text"><strong>147</strong><br><small>70--80分</small></div>
+                                <div class="text"><strong th:text="${secondaryCount}" id="secondaryCount"></strong><br><small>70--80分</small></div>
                             </div>
                             <div class="statistic d-flex align-items-center bg-white has-shadow">
                                 <div class="icon bg-orange"><i class="fa fa-tasks"></i></div>
-                                <div class="text"><strong>147</strong><br><small>60--70分</small></div>
+                                <div class="text"><strong th:text="${passCount}" id="passCount"></strong><br><small>60--70分</small></div>
                             </div>
                             <div class="statistic d-flex align-items-center bg-white has-shadow">
                                 <div class="icon bg-red"><i class="fa fa-tasks"></i></div>
-                                <div class="text"><strong>147</strong><br><small>60分以下</small></div>
+                                <div class="text"><strong th:text="${failCount}" id="failCount"></strong><br><small>60分以下</small></div>
                             </div>
                         </div>
                         <!-- Line Chart            -->
@@ -136,125 +136,125 @@
                             <!-- Numbers-->
                             <div class="statistic d-flex align-items-center bg-white has-shadow">
                                 <div class="icon bg-green"><i class="fa fa-line-chart"></i></div>
-                                <div class="text"><strong>99.9%</strong><br><small>优秀率</small></div>
+                                <div class="text"><strong th:text="${excellentProportion} + '%'"></strong><br><small>优秀率</small></div>
                             </div>
                             <div class="statistic d-flex align-items-center bg-white has-shadow">
                                 <div class="icon bg-blue"><i class="fa fa-line-chart"></i></div>
-                                <div class="text"><strong>99.9%</strong><br><small>良好率</small></div>
+                                <div class="text"><strong th:text="${goodProportion} + '%'"></strong><br><small>良好率</small></div>
                             </div>
                             <div class="statistic d-flex align-items-center bg-white has-shadow">
                                 <div class="icon bg-yellow"><i class="fa fa-line-chart"></i></div>
-                                <div class="text"><strong>99.9%</strong><br><small>中等率</small></div>
+                                <div class="text"><strong th:text="${secondaryProportion} + '%'"></strong><br><small>中等率</small></div>
                             </div>
                             <div class="statistic d-flex align-items-center bg-white has-shadow">
                                 <div class="icon bg-orange"><i class="fa fa-line-chart"></i></div>
-                                <div class="text"><strong>99.9%</strong><br><small>及格率</small></div>
+                                <div class="text"><strong th:text="${passProportion} + '%'"></strong><br><small>及格率</small></div>
                             </div>
                             <div class="statistic d-flex align-items-center bg-white has-shadow">
                                 <div class="icon bg-red"><i class="fa fa-line-chart"></i></div>
-                                <div class="text"><strong>99.9%</strong><br><small>不及格</small></div>
+                                <div class="text"><strong th:text="${failProportion} + '%'"></strong><br><small>不及格</small></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
             <!-- Projects Section-->
-            <section class="projects no-padding-top">
-                <div class="container-fluid">
-                    <!-- Project-->
-                    <div class="project">
-                        <div class="row bg-white has-shadow">
-                            <div class="left-col col-lg-6 d-flex align-items-center justify-content-between">
-                                <div class="project-title d-flex align-items-center">
-                                    <div class="image has-shadow"><img src="img/project-1.jpg" alt="..." class="img-fluid"></div>
-                                    <div class="text">
-                                        <h3 class="h4">Project Title</h3><small>Lorem Ipsum Dolor</small>
-                                    </div>
-                                </div>
-                                <div class="project-date"><span class="hidden-sm-down">Today at 4:24 AM</span></div>
-                            </div>
-                            <div class="right-col col-lg-6 d-flex align-items-center">
-                                <div class="time"><i class="fa fa-clock-o"></i>12:00 PM </div>
-                                <div class="comments"><i class="fa fa-comment-o"></i>20</div>
-                                <div class="project-progress">
-                                    <div class="progress">
-                                        <div role="progressbar" style="width: 45%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" class="progress-bar bg-red"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Project-->
-                    <div class="project">
-                        <div class="row bg-white has-shadow">
-                            <div class="left-col col-lg-6 d-flex align-items-center justify-content-between">
-                                <div class="project-title d-flex align-items-center">
-                                    <div class="image has-shadow"><img src="img/project-2.jpg" alt="..." class="img-fluid"></div>
-                                    <div class="text">
-                                        <h3 class="h4">Project Title</h3><small>Lorem Ipsum Dolor</small>
-                                    </div>
-                                </div>
-                                <div class="project-date"><span class="hidden-sm-down">Today at 4:24 AM</span></div>
-                            </div>
-                            <div class="right-col col-lg-6 d-flex align-items-center">
-                                <div class="time"><i class="fa fa-clock-o"></i>12:00 PM </div>
-                                <div class="comments"><i class="fa fa-comment-o"></i>20</div>
-                                <div class="project-progress">
-                                    <div class="progress">
-                                        <div role="progressbar" style="width: 60%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" class="progress-bar bg-green"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Project-->
-                    <div class="project">
-                        <div class="row bg-white has-shadow">
-                            <div class="left-col col-lg-6 d-flex align-items-center justify-content-between">
-                                <div class="project-title d-flex align-items-center">
-                                    <div class="image has-shadow"><img src="img/project-3.jpg" alt="..." class="img-fluid"></div>
-                                    <div class="text">
-                                        <h3 class="h4">Project Title</h3><small>Lorem Ipsum Dolor</small>
-                                    </div>
-                                </div>
-                                <div class="project-date"><span class="hidden-sm-down">Today at 4:24 AM</span></div>
-                            </div>
-                            <div class="right-col col-lg-6 d-flex align-items-center">
-                                <div class="time"><i class="fa fa-clock-o"></i>12:00 PM </div>
-                                <div class="comments"><i class="fa fa-comment-o"></i>20</div>
-                                <div class="project-progress">
-                                    <div class="progress">
-                                        <div role="progressbar" style="width: 50%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" class="progress-bar bg-violet"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Project-->
-                    <div class="project">
-                        <div class="row bg-white has-shadow">
-                            <div class="left-col col-lg-6 d-flex align-items-center justify-content-between">
-                                <div class="project-title d-flex align-items-center">
-                                    <div class="image has-shadow"><img src="img/project-4.jpg" alt="..." class="img-fluid"></div>
-                                    <div class="text">
-                                        <h3 class="h4">Project Title</h3><small>Lorem Ipsum Dolor</small>
-                                    </div>
-                                </div>
-                                <div class="project-date"><span class="hidden-sm-down">Today at 4:24 AM</span></div>
-                            </div>
-                            <div class="right-col col-lg-6 d-flex align-items-center">
-                                <div class="time"><i class="fa fa-clock-o"></i>12:00 PM </div>
-                                <div class="comments"><i class="fa fa-comment-o"></i>20</div>
-                                <div class="project-progress">
-                                    <div class="progress">
-                                        <div role="progressbar" style="width: 50%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" class="progress-bar bg-orange"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            <!--<section class="projects no-padding-top">-->
+                <!--<div class="container-fluid">-->
+                    <!--&lt;!&ndash; Project&ndash;&gt;-->
+                    <!--<div class="project">-->
+                        <!--<div class="row bg-white has-shadow">-->
+                            <!--<div class="left-col col-lg-6 d-flex align-items-center justify-content-between">-->
+                                <!--<div class="project-title d-flex align-items-center">-->
+                                    <!--<div class="image has-shadow"><img src="img/project-1.jpg" alt="..." class="img-fluid"></div>-->
+                                    <!--<div class="text">-->
+                                        <!--<h3 class="h4">Project Title</h3><small>Lorem Ipsum Dolor</small>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--<div class="project-date"><span class="hidden-sm-down">Today at 4:24 AM</span></div>-->
+                            <!--</div>-->
+                            <!--<div class="right-col col-lg-6 d-flex align-items-center">-->
+                                <!--<div class="time"><i class="fa fa-clock-o"></i>12:00 PM </div>-->
+                                <!--<div class="comments"><i class="fa fa-comment-o"></i>20</div>-->
+                                <!--<div class="project-progress">-->
+                                    <!--<div class="progress">-->
+                                        <!--<div role="progressbar" style="width: 45%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" class="progress-bar bg-red"></div>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--&lt;!&ndash; Project&ndash;&gt;-->
+                    <!--<div class="project">-->
+                        <!--<div class="row bg-white has-shadow">-->
+                            <!--<div class="left-col col-lg-6 d-flex align-items-center justify-content-between">-->
+                                <!--<div class="project-title d-flex align-items-center">-->
+                                    <!--<div class="image has-shadow"><img src="img/project-2.jpg" alt="..." class="img-fluid"></div>-->
+                                    <!--<div class="text">-->
+                                        <!--<h3 class="h4">Project Title</h3><small>Lorem Ipsum Dolor</small>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--<div class="project-date"><span class="hidden-sm-down">Today at 4:24 AM</span></div>-->
+                            <!--</div>-->
+                            <!--<div class="right-col col-lg-6 d-flex align-items-center">-->
+                                <!--<div class="time"><i class="fa fa-clock-o"></i>12:00 PM </div>-->
+                                <!--<div class="comments"><i class="fa fa-comment-o"></i>20</div>-->
+                                <!--<div class="project-progress">-->
+                                    <!--<div class="progress">-->
+                                        <!--<div role="progressbar" style="width: 60%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" class="progress-bar bg-green"></div>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--&lt;!&ndash; Project&ndash;&gt;-->
+                    <!--<div class="project">-->
+                        <!--<div class="row bg-white has-shadow">-->
+                            <!--<div class="left-col col-lg-6 d-flex align-items-center justify-content-between">-->
+                                <!--<div class="project-title d-flex align-items-center">-->
+                                    <!--<div class="image has-shadow"><img src="img/project-3.jpg" alt="..." class="img-fluid"></div>-->
+                                    <!--<div class="text">-->
+                                        <!--<h3 class="h4">Project Title</h3><small>Lorem Ipsum Dolor</small>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--<div class="project-date"><span class="hidden-sm-down">Today at 4:24 AM</span></div>-->
+                            <!--</div>-->
+                            <!--<div class="right-col col-lg-6 d-flex align-items-center">-->
+                                <!--<div class="time"><i class="fa fa-clock-o"></i>12:00 PM </div>-->
+                                <!--<div class="comments"><i class="fa fa-comment-o"></i>20</div>-->
+                                <!--<div class="project-progress">-->
+                                    <!--<div class="progress">-->
+                                        <!--<div role="progressbar" style="width: 50%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" class="progress-bar bg-violet"></div>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--&lt;!&ndash; Project&ndash;&gt;-->
+                    <!--<div class="project">-->
+                        <!--<div class="row bg-white has-shadow">-->
+                            <!--<div class="left-col col-lg-6 d-flex align-items-center justify-content-between">-->
+                                <!--<div class="project-title d-flex align-items-center">-->
+                                    <!--<div class="image has-shadow"><img src="img/project-4.jpg" alt="..." class="img-fluid"></div>-->
+                                    <!--<div class="text">-->
+                                        <!--<h3 class="h4">Project Title</h3><small>Lorem Ipsum Dolor</small>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--<div class="project-date"><span class="hidden-sm-down">Today at 4:24 AM</span></div>-->
+                            <!--</div>-->
+                            <!--<div class="right-col col-lg-6 d-flex align-items-center">-->
+                                <!--<div class="time"><i class="fa fa-clock-o"></i>12:00 PM </div>-->
+                                <!--<div class="comments"><i class="fa fa-comment-o"></i>20</div>-->
+                                <!--<div class="project-progress">-->
+                                    <!--<div class="progress">-->
+                                        <!--<div role="progressbar" style="width: 50%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" class="progress-bar bg-orange"></div>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</section>-->
             <!-- Client Section-->
             <!--<section class="client no-padding-top">-->
                 <!--<div class="container-fluid">-->

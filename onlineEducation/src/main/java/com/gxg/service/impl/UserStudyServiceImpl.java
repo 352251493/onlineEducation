@@ -437,4 +437,34 @@ public class UserStudyServiceImpl implements UserStudyService {
             return userStudyList;
         }
     }
+
+    /**
+     * 根据用户邮箱获取用户学习信息
+     *
+     * @param userEmail 用户邮箱
+     * @param number N
+     * @return 用户学习信息
+     * @author 郭欣光
+     */
+    @Override
+    public List<UserStudy> getUserStudyByUserEmailAndTopN(String userEmail, int number) {
+        if (userStudyDao.getCountByUserEmail(userEmail) == 0) {
+            return null;
+        } else {
+            List<UserStudy> userStudyList = userStudyDao.getUserStudyByUserEmailAndLimitOrderByLastStudyTime(userEmail, 0, number);
+            return userStudyList;
+        }
+    }
+
+    /**
+     * 根据用户邮箱获取用户学习个数
+     *
+     * @param userEmail 用户邮箱
+     * @return 用户学习个数
+     * @author 郭欣光
+     */
+    @Override
+    public int getUserStudyCountByUserEmail(String userEmail) {
+        return userStudyDao.getCountByUserEmail(userEmail);
+    }
 }

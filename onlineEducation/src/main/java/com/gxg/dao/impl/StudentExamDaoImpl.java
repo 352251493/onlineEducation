@@ -149,4 +149,61 @@ public class StudentExamDaoImpl implements StudentExamDao {
         int changeCount = jdbcTemplate.update(sql, studentExam.getScore(), studentExam.getId());
         return changeCount;
     }
+
+    /**
+     * 根据用户邮箱获取学生考试个数
+     *
+     * @param userEmail 用户邮箱
+     * @return 学生考试信息个数
+     * @author 郭欣光
+     */
+    @Override
+    public int getCountByUserEmail(String userEmail) {
+        String sql = "select count(1) from student_exam where user_email=?";
+        int rowCount = jdbcTemplate.queryForObject(sql, Integer.class, userEmail);
+        return rowCount;
+    }
+
+    /**
+     * 根据用户邮箱获取用户考试信息
+     *
+     * @param userEmail 用户邮箱
+     * @return 用户考试信息
+     * @author 郭欣光
+     */
+    @Override
+    public List<StudentExam> getStudentExamByUserEmail(String userEmail) {
+        String sql = "select * from student_exam where user_email=?";
+        List<StudentExam> studentExamList = jdbcTemplate.query(sql, new StudentExamRowMapper(), userEmail);
+        return studentExamList;
+    }
+
+    /**
+     * 获取大于等于指定成绩的用户考试信息个数
+     *
+     * @param score 成绩
+     * @return 用户考试信息个数
+     * @author 郭欣光
+     */
+    @Override
+    public int getCountGreaterAndEqualsScore(int score) {
+        String sql = "select count(1) from student_exam where score >= ?";
+        int rowCount = jdbcTemplate.queryForObject(sql, Integer.class, score);
+        return rowCount;
+    }
+
+    /**
+     * 获取指定用户邮箱且大于等于指定成绩的用户考试信息个数
+     *
+     * @param userEmail 用户邮箱
+     * @param score     成绩
+     * @return 用户考试信息个数
+     * @author 郭欣光
+     */
+    @Override
+    public int getCountByUserEmailGreaterAndEqualsScore(String userEmail, int score) {
+        String sql = "select count(1) from student_exam where score >= ? and user_email=?";
+        int rowCount = jdbcTemplate.queryForObject(sql, Integer.class, score, userEmail);
+        return rowCount;
+    }
 }

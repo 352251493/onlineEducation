@@ -2,10 +2,7 @@ package com.gxg.controller;
 
 import com.gxg.entities.Message;
 import com.gxg.entities.User;
-import com.gxg.service.CourseService;
-import com.gxg.service.MessageService;
-import com.gxg.service.UserService;
-import com.gxg.service.UserStudyService;
+import com.gxg.service.*;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,6 +34,9 @@ public class UserController {
 
     @Autowired
     private UserStudyService userStudyService;
+
+    @Autowired
+    private StudentExamService studentExamService;
 
     @GetMapping(value = "/login")
     public String getLoginPage(@RequestParam(required = false) String next, Model model, HttpServletRequest request) {
@@ -249,8 +249,35 @@ public class UserController {
             User user = (User)session.getAttribute("user");
             model = messageCommonModel(model, user);
             model.addAttribute("pageName", "个人中心");
+            int studyCourseCount = userStudyService.getUserStudyCountByUserEmail(user.getEmail());
+            model.addAttribute("studyCourseCount", studyCourseCount);
+            int myCourseCount = courseService.getCourseCountByUserEmail(user.getEmail());
+            model.addAttribute("myCourseCount", myCourseCount);
+            int myExamCount = studentExamService.getStudentExamCountByUserEmail(user.getEmail());
+            model.addAttribute("myExamCount", myExamCount);
+            String averageScore = studentExamService.getAverageScoreByUserEmail(user.getEmail());
+            model.addAttribute("averageScore", averageScore);
+            int excellentCount = studentExamService.getStudentExamCountByUserEmailAndGreaterAndEqualsScore(user.getEmail(), 90);
+            int goodCount = studentExamService.getStudentExamCountByUserEmailAndGreaterAndEqualsScore(user.getEmail(), 80) - excellentCount;
+            int secondaryCount = studentExamService.getStudentExamCountByUserEmailAndGreaterAndEqualsScore(user.getEmail(), 70) - goodCount - excellentCount;
+            int passCount = studentExamService.getStudentExamCountByUserEmailAndGreaterAndEqualsScore(user.getEmail(), 60) - secondaryCount - goodCount - excellentCount;
+            int failCount = studentExamService.getStudentExamCountByUserEmailAndGreaterAndEqualsScore(user.getEmail(), 0) - passCount - secondaryCount - goodCount - excellentCount;
+            model.addAttribute("excellentCount", excellentCount);
+            model.addAttribute("goodCount", goodCount);
+            model.addAttribute("secondaryCount", secondaryCount);
+            model.addAttribute("passCount", passCount);
+            model.addAttribute("failCount", failCount);
+            String excellentProportion = studentExamService.getStudentExamCountProportionByUserEmailAndGreaterAndEqualsScore(user.getEmail(), 90);
+            String goodProportion = studentExamService.getStudentExamCountProportionByUserEmailAndGreaterAndEqualsScore(user.getEmail(), 80);
+            String secondaryProportion = studentExamService.getStudentExamCountProportionByUserEmailAndGreaterAndEqualsScore(user.getEmail(), 70);
+            String passProportion = studentExamService.getStudentExamCountProportionByUserEmailAndGreaterAndEqualsScore(user.getEmail(), 60);
+            String failProportion = studentExamService.getFailStudentExamCount(user.getEmail());
+            model.addAttribute("excellentProportion", excellentProportion);
+            model.addAttribute("goodProportion", goodProportion);
+            model.addAttribute("secondaryProportion", secondaryProportion);
+            model.addAttribute("passProportion", passProportion);
+            model.addAttribute("failProportion", failProportion);
             return "/user/index.html";
-
         }
     }
 }

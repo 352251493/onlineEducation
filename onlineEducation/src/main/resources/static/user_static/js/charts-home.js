@@ -7,6 +7,11 @@ $(document).ready(function () {
     // Line Chart
     // ------------------------------------------------------ //
     var legendState = true;
+    var excellentCount = $("#excellentCount").html();
+    var goodCount = $("#goodCount").html();
+    var secondaryCount = $("#secondaryCount").html();
+    var passCount = $("#passCount").html();
+    var failCount = $("#failCount").html();
     if ($(window).outerWidth() < 576) {
         legendState = false;
     }
@@ -56,7 +61,7 @@ $(document).ready(function () {
                     pointHoverBorderWidth: 2,
                     pointRadius: 1,
                     pointHitRadius: 0,
-                    data: [50, 20, 60, 31, 52],
+                    data: [excellentCount, goodCount, secondaryCount, passCount, failCount],
                     spanGaps: false
                 }
             ]

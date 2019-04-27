@@ -87,16 +87,17 @@
                                     </div>
                                 </li>
                                 <li><a href="about-us.html">关于我们</a></li>
-                                <li th:if="${user} != null"><a href="#">个人中心</a>
-                                    <ul class="dropdown">
-                                        <li><a href="index.html">Home</a></li>
-                                        <li><a href="about-us.html">About Us</a></li>
-                                        <li><a href="course.html">Course</a></li>
-                                        <li><a href="blog.html">Blog</a></li>
-                                        <li><a href="contact.html">Contact</a></li>
-                                        <li><a href="elements.html">Elements</a></li>
-                                    </ul>
-                                </li>
+                                <!--<li th:if="${user} != null"><a href="#">个人中心</a>-->
+                                    <!--<ul class="dropdown">-->
+                                        <!--<li><a href="index.html">Home</a></li>-->
+                                        <!--<li><a href="about-us.html">About Us</a></li>-->
+                                        <!--<li><a href="course.html">Course</a></li>-->
+                                        <!--<li><a href="blog.html">Blog</a></li>-->
+                                        <!--<li><a href="contact.html">Contact</a></li>-->
+                                        <!--<li><a href="elements.html">Elements</a></li>-->
+                                    <!--</ul>-->
+                                <!--</li>-->
+                                <li th:if="${user} != null"><a href="/user">个人中心</a></li>
                                 <!-- <li><a href="course.html">Course</a></li>
                                 <li><a href="contact.html">Contact</a></li> -->
                             </ul>

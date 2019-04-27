@@ -67,4 +67,21 @@ public interface UserStudyService {
      * @author 郭欣光
      */
     List<UserStudy> getUserStudyByCourseIdAndUserEmail(String courseId, String userEmail);
+
+    /**
+     * 根据用户邮箱获取用户学习信息
+     * @param userEmail 用户邮箱
+     * @param number N
+     * @return 用户学习信息
+     * @author 郭欣光
+     */
+    List<UserStudy> getUserStudyByUserEmailAndTopN(String userEmail, int number);
+
+    /**
+     * 根据用户邮箱获取用户学习个数
+     * @param userEmail 用户邮箱
+     * @return 用户学习个数
+     * @author 郭欣光
+     */
+    int getUserStudyCountByUserEmail(String userEmail);
 }

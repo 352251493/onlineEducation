@@ -630,4 +630,15 @@ public class CourseServiceImpl implements CourseService {
         result.accumulate("hasCourse", hasCourse);
         return result;
     }
+
+    /**
+     * 根据用户邮箱获取课程个数
+     *
+     * @param userEmail 用户邮箱
+     * @return 课程个数
+     */
+    @Override
+    public int getCourseCountByUserEmail(String userEmail) {
+        return courseDao.getCourseCountByUserEmail(userEmail);
+    }
 }

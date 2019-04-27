@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Random;
 
@@ -293,5 +294,90 @@ public class StudentExamServiceImpl implements StudentExamService {
     private String createSetStudentExamScoreSuccessEmailMessage(Exam exam, StudentExam studentExam) {
         String message = "<p>您的考试" + exam.getName() + "&nbsp;&nbsp;已被批阅，成绩为："+ studentExam.getScore() + "</p>";
         return message;
+    }
+
+    /**
+     * 根据用户邮箱获取学生考试数量
+     * @param userEmail 用户邮箱
+     * @return 学生考试个数
+     * @author 郭欣光
+     */
+    @Override
+    public int getStudentExamCountByUserEmail(String userEmail) {
+        return studentExamDao.getCountByUserEmail(userEmail);
+    }
+
+    /**
+     * 根据用户邮箱获取平均成绩
+     *
+     * @param userEmail 用户邮箱
+     * @return 平均成绩
+     * @author 郭欣光
+     */
+    @Override
+    public String getAverageScoreByUserEmail(String userEmail) {
+        double averageScore = (double)0;
+        if (studentExamDao.getCountByUserEmail(userEmail) != 0) {
+            int sum = 0;
+            int count = 0;
+            List<StudentExam> studentExamList = studentExamDao.getStudentExamByUserEmail(userEmail);
+            for (StudentExam studentExam : studentExamList) {
+                if (studentExam.getScore() >= 0) {
+                    ++count;
+                    sum += studentExam.getScore();
+                }
+            }
+            averageScore = (double)sum / (double)count;
+        }
+        DecimalFormat df = new DecimalFormat("0.00");
+        return df.format(averageScore);
+    }
+
+    /**
+     * 获取指定用户邮箱且大于等于指定成绩的学生考试信息个数
+     * @param userEmail 用户邮箱
+     * @param score 成绩
+     * @return 学生考试信息个数
+     * @author 郭欣光
+     */
+    @Override
+    public int getStudentExamCountByUserEmailAndGreaterAndEqualsScore(String userEmail, int score) {
+        return studentExamDao.getCountByUserEmailGreaterAndEqualsScore(userEmail, score);
+    }
+
+    /**
+     * 获取指定用户邮箱且大于等于指定成绩的学生信息个数比例
+     * @param userEmail 用户邮箱
+     * @param score 成绩
+     * @return 学生信息个数比例
+     * @author 郭欣光
+     */
+    @Override
+    public String getStudentExamCountProportionByUserEmailAndGreaterAndEqualsScore(String userEmail, int score) {
+        int allExam = getStudentExamCountByUserEmailAndGreaterAndEqualsScore(userEmail, 0);
+        double proportion = (double)0;
+        if (allExam != 0) {
+            proportion = (double)getStudentExamCountByUserEmailAndGreaterAndEqualsScore(userEmail, score) / (double)allExam;
+            proportion = proportion * 100;
+        }
+        DecimalFormat df = new DecimalFormat("0.00");
+        return df.format(proportion);
+    }
+
+    /**
+     * 获取不及格率
+     *
+     * @return 不及格率
+     */
+    @Override
+    public String getFailStudentExamCount(String userEmail) {
+        int allExam = getStudentExamCountByUserEmailAndGreaterAndEqualsScore(userEmail, 0);
+        double proportion = (double)0;
+        if (allExam != 0) {
+            proportion = (double)(allExam - getStudentExamCountByUserEmailAndGreaterAndEqualsScore(userEmail, 60)) / (double)allExam;
+            proportion = proportion * 100;
+        }
+        DecimalFormat df = new DecimalFormat("0.00");
+        return df.format(proportion);
     }
 }

@@ -88,4 +88,36 @@ public interface StudentExamDao {
      */
     int updateScore(StudentExam studentExam);
 
+    /**
+     * 根据用户邮箱获取学生考试个数
+     * @param userEmail 用户邮箱
+     * @return 学生考试信息个数
+     * @author 郭欣光
+     */
+    int getCountByUserEmail(String userEmail);
+
+    /**
+     * 根据用户邮箱获取用户考试信息
+     * @param userEmail 用户邮箱
+     * @return 用户考试信息
+     * @author 郭欣光
+     */
+    List<StudentExam> getStudentExamByUserEmail(String userEmail);
+
+    /**
+     * 获取大于等于指定成绩的用户考试信息个数
+     * @param score 成绩
+     * @return 用户考试信息个数
+     * @author 郭欣光
+     */
+    int getCountGreaterAndEqualsScore(int score);
+
+    /**
+     * 获取指定用户邮箱且大于等于指定成绩的用户考试信息个数
+     * @param userEmail 用户邮箱
+     * @param score 成绩
+     * @return 用户考试信息个数
+     * @author 郭欣光
+     */
+    int getCountByUserEmailGreaterAndEqualsScore(String userEmail, int score);
 }

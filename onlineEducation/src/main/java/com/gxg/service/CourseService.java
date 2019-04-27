@@ -117,4 +117,11 @@ public interface CourseService {
      * @author 郭欣光
      */
     JSONObject getCourseByUser(User user, String coursePage);
+
+    /**
+     * 根据用户邮箱获取课程个数
+     * @param userEmail 用户邮箱
+     * @return 课程个数
+     */
+    int getCourseCountByUserEmail(String userEmail);
 }
