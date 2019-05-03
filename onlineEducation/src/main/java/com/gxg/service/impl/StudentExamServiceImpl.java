@@ -380,4 +380,74 @@ public class StudentExamServiceImpl implements StudentExamService {
         DecimalFormat df = new DecimalFormat("0.00");
         return df.format(proportion);
     }
+
+    /**
+     * 根据用户获取学生考试信息
+     *
+     * @param user      用户
+     * @param scorePage 页数
+     * @return 学生考试信息
+     * @author 郭欣光
+     */
+    @Override
+    public JSONObject getMyStudentExamList(User user, String scorePage) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        int scorePageNumber = 1;
+        int scorePageInt = 0;
+        String hasStudentExam = "false";
+        try {
+            scorePageInt = Integer.parseInt(scorePage);
+        } catch (Exception e) {
+            scorePageInt = 0;
+        }
+        List<StudentExam> studentExamList = null;
+        if (scorePageInt > 0) {
+            int studentExamCount = studentExamDao.getCountByUserEmailGreaterAndEqualsScore(user.getEmail(), 0);
+            if (studentExamCount != 0) {
+                scorePageNumber = ((studentExamCount % studentExamCountEachPage) == 0) ? (studentExamCount / studentExamCountEachPage) : (studentExamCount / studentExamCountEachPage + 1);
+                if (scorePageInt <= scorePageNumber) {
+                    status = "true";
+                    hasStudentExam = "true";
+                    studentExamList = studentExamDao.getStudentExamByUserEmailGreaterAndEqualsScoreAndLimitOrderByCreateTime(user.getEmail(), 0, (scorePageInt - 1) * studentExamCountEachPage, studentExamCountEachPage);
+                    for (StudentExam studentExam : studentExamList) {
+                        if (examDao.getCountById(studentExam.getExamId()) != 0) {
+                            Exam exam = examDao.getExamById(studentExam.getExamId());
+                            studentExam.setExamName(exam.getName());
+                            if (courseDao.getCountById(exam.getCourseId()) != 0) {
+                                Course course = courseDao.getCourseById(exam.getCourseId());
+                                studentExam.setCourseName(course.getName());
+                                if (userDao.getUserCountByEmail(course.getUserEmail()) != 0) {
+                                    User teacher = userDao.getUserByEmail(course.getUserEmail());
+                                    studentExam.setTeacherName(teacher.getName());
+                                }
+                            }
+                        }
+                        studentExam.setChoiceQuestionScore(choiceQuestionService.getChoiceQuestionScoreByStudentExamId(studentExam.getId()) + "");
+                        if (studentObjectiveQuestionDao.getCountByStudentExamId(studentExam.getId()) != 0) {
+                            int sum = 0;
+                            List<StudentObjectiveQuestion> studentObjectiveQuestionList = studentObjectiveQuestionDao.getStudentObjectiveQuestionByStudentExamId(studentExam.getId());
+                            for (StudentObjectiveQuestion studentObjectiveQuestion : studentObjectiveQuestionList) {
+                                if (studentObjectiveQuestion.getScore() >= 0) {
+                                    sum += studentObjectiveQuestion.getScore();
+                                }
+                            }
+                            studentExam.setObjectiveQuestionScore(sum + "");
+                        }
+                        int studentCount = studentExamDao.getCountByExamId(studentExam.getExamId());
+                        int rank = studentExamDao.getCountByExamIdGreaterScore(studentExam.getExamId(), studentExam.getScore()) + 1;
+                        studentExam.setRank(rank + "/" + studentCount);
+                    }
+                }
+            } else if (scorePageInt == 1) {
+                status = "true";
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("scorePageNumber", scorePageNumber);
+        result.accumulate("scorePage", scorePageInt);
+        result.accumulate("studentExamList", studentExamList);
+        result.accumulate("hasStudentExam", hasStudentExam);
+        return result;
+    }
 }

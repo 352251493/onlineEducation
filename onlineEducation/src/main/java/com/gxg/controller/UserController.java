@@ -280,4 +280,37 @@ public class UserController {
             return "/user/index.html";
         }
     }
+
+    @GetMapping(value = "/score/list/{scorePage}")
+    public String myScoreListPage(@PathVariable String scorePage, HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            return "redirect:/user/login?next=" + "/user/score/list/" + scorePage;
+        } else {
+            User user = (User)session.getAttribute("user");
+            JSONObject studentExamListInfo = studentExamService.getMyStudentExamList(user, scorePage);
+            if ("false".equals(studentExamListInfo.getString("status"))) {
+                return "redirect:/user/score/list/1";
+            } else {
+                int scorePageInt = studentExamListInfo.getInt("scorePage");
+                int scorePageNumber = studentExamListInfo.getInt("scorePageNumber");
+                model.addAttribute("scorePage", scorePageInt);
+                model.addAttribute("scorePageNumber", scorePageNumber);
+                if (scorePageInt > 1) {
+                    int scorePrePage = scorePageInt - 1;
+                    model.addAttribute("scorePrePage", scorePrePage);
+                }
+                if (scorePageInt < scorePageNumber) {
+                    int scoreNextPage = scorePageInt + 1;
+                    model.addAttribute("scoreNextPage", scoreNextPage);
+                }
+                if ("true".equals(studentExamListInfo.getString("hasStudentExam"))) {
+                    model.addAttribute("studentExamList", studentExamListInfo.get("studentExamList"));
+                }
+                model = messageCommonModel(model, user);
+                model.addAttribute("pageName", "考试列表");
+                return "/user/score.html";
+            }
+        }
+    }
 }

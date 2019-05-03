@@ -120,4 +120,24 @@ public interface StudentExamDao {
      * @author 郭欣光
      */
     int getCountByUserEmailGreaterAndEqualsScore(String userEmail, int score);
+
+    /**
+     * 获取指定用户且大于等于指定成绩按照创建时间排序获取指定范围的用户考试信息
+     * @param userEmail 用户邮箱
+     * @param score 成绩
+     * @param limitStart 第一个limit
+     * @param limitEnd 第二个limit
+     * @return 学生考试信息
+     * @author 郭欣光
+     */
+    List<StudentExam> getStudentExamByUserEmailGreaterAndEqualsScoreAndLimitOrderByCreateTime(String userEmail, int score, int limitStart, int limitEnd);
+
+    /**
+     * 获取指定考试ID且大于指定成绩的学生考试信息个数
+     * @param examId 考试ID
+     * @param score 成绩
+     * @return 学生考试信息个数
+     * @author 郭欣光
+     */
+    int getCountByExamIdGreaterScore(String examId, int score);
 }

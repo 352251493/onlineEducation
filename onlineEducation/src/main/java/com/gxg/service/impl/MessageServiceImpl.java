@@ -77,7 +77,7 @@ public class MessageServiceImpl implements MessageService {
         String status = "false";
         int messagePageNumber = 1;
         int messagePageInt = 0;
-        String hasMessage = "fasle";
+        String hasMessage = "false";
         try {
             messagePageInt = Integer.parseInt(messagePage);
         } catch (Exception e) {

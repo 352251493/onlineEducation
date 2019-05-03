@@ -1,6 +1,7 @@
 package com.gxg.service;
 
 import com.gxg.entities.StudentExam;
+import com.gxg.entities.User;
 import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
@@ -95,4 +96,13 @@ public interface StudentExamService {
      * @return 不及格率
      */
     String getFailStudentExamCount(String userEmail);
+
+    /**
+     * 根据用户获取学生考试信息
+     * @param user 用户
+     * @param scorePage 页数
+     * @return 学生考试信息
+     * @author 郭欣光
+     */
+    JSONObject getMyStudentExamList(User user, String scorePage);
 }
