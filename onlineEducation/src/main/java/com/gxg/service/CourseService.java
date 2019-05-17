@@ -124,4 +124,13 @@ public interface CourseService {
      * @return 课程个数
      */
     int getCourseCountByUserEmail(String userEmail);
+
+    /**
+     * 删除课程
+     * @param courseId 考试ID
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    String deleteCourse(String courseId, HttpServletRequest request);
 }

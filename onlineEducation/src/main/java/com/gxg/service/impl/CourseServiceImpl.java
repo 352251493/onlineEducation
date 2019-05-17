@@ -1,10 +1,7 @@
 package com.gxg.service.impl;
 
-import com.gxg.dao.CourseDao;
-import com.gxg.dao.UserDao;
-import com.gxg.entities.Course;
-import com.gxg.entities.Message;
-import com.gxg.entities.User;
+import com.gxg.dao.*;
+import com.gxg.entities.*;
 import com.gxg.service.CourseService;
 import com.gxg.service.MessageService;
 import com.gxg.utils.FileUtils;
@@ -19,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -51,6 +49,15 @@ public class CourseServiceImpl implements CourseService {
 
     @Autowired
     private MessageService messageService;
+
+    @Autowired
+    private LessonDao lessonDao;
+
+    @Autowired
+    private VideoDao videoDao;
+
+    @Autowired
+    private LessonDataDao lessonDataDao;
 
     /**
      * 根据指定页数按照修改时间顺序获取课程列表
@@ -640,5 +647,93 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public int getCourseCountByUserEmail(String userEmail) {
         return courseDao.getCourseCountByUserEmail(userEmail);
+    }
+
+    /**
+     * 删除课程
+     *
+     * @param courseId 考试ID
+     * @param request  用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public String deleteCourse(String courseId, HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "删除失败！";
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            content = "系统未检测到登录用户信息，请刷新页面后重试！";
+        } else if (courseDao.getCountById(courseId) == 0) {
+            content = "系统未检测到该课程信息！";
+        } else {
+            User user = (User)session.getAttribute("user");
+            Course course = courseDao.getCourseById(courseId);
+            if (user.getEmail().equals(course.getUserEmail())) {
+                List<String> resourcePath = null;
+                int lessonCount = lessonDao.getCountByCourseId(courseId);
+                if (lessonCount != 0) {
+                    List<Lesson> lessonList = lessonDao.getLessonByCourseIdAndLimitOrderByModifyTime(courseId, 0, lessonCount);
+                    resourcePath = new ArrayList<String>();
+                    for (Lesson lesson : lessonList) {
+                        resourcePath.add(lesson.getContent());
+                        int videoCount = videoDao.getCountByLessonId(lesson.getId());
+                        if (videoCount != 0) {
+                            List<Video> videoList = videoDao.getVideoByLessonId(lesson.getId());
+                            for (Video video : videoList) {
+                                resourcePath.add(video.getPath());
+                            }
+                        }
+                        int lessonDataCount = lessonDataDao.getCountByLessonId(lesson.getId());
+                        if (lessonDataCount != 0) {
+                            List<LessonData> lessonDataList = lessonDataDao.getLessonDataByLessonId(lesson.getId());
+                            for (LessonData lessonData : lessonDataList) {
+                                resourcePath.add(lessonData.getPath());
+                            }
+                        }
+                    }
+                }
+                try {
+                    if (courseDao.deleteCourse(course) == 0) {
+                        content = "操作数据库失败！";
+                        System.out.println("ERROR:删除课程" + course.toString() + "时操作数据库失败");
+                    } else {
+                        status = "true";
+                        content = "删除成功！";
+                    }
+                } catch (Exception e) {
+                    content = "操作数据库失败！";
+                    System.out.println("ERROR:删除课程" + course.toString() + "时操作数据库失败，失败原因：" + e);
+                }
+                if ("true".equals(status)) {
+                    JSONObject deleteCourseImageResult = FileUtils.deleteFile(courseResourceDir + course.getImage());
+                    System.out.println("INFO:删除课程" + course.toString() + "成功后删除封面图片结果" + deleteCourseImageResult);
+                    if (resourcePath != null && resourcePath.size() > 0) {
+                        for (String resource : resourcePath) {
+                            JSONObject deleteResourceResult = FileUtils.deleteFile(courseResourceDir + resource);
+                            System.out.println("INFO:删除课程" + course.toString() + "成功后删除资源：" + resource + "结果：" + deleteResourceResult.toString());
+                        }
+                    }
+                    String messageTitle = "删除课时成功";
+                    String messageContent = createDeleteCourseSuccessEmailMessage(course);
+                    JSONObject createMessageResult = messageService.createMessage(user.getEmail(), messageTitle, messageContent);
+                    System.out.println("INFO:课程" + course.toString() + "删除成功时创建消息通知结果：" + createMessageResult.toString());
+                }
+            } else {
+                content = "不可以删除不是自己创建的课程！";
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
+    }
+
+    private String createDeleteCourseSuccessEmailMessage(Course course) {
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        String timeString = time.toString().split("\\.")[0];
+        String message = "<p>恭喜您，您于" + timeString + "删除课程：" + course.getName() + "&nbsp;&nbsp;成功！</p>";
+        message += "<p style='color: red;'>如果不是您本人操作，可能密码已经泄露，请尽快修改密码！</p>";
+        return message;
     }
 }

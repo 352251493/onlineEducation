@@ -274,4 +274,18 @@ public class CourseDaoImpl implements CourseDao {
         int changeCount = jdbcTemplate.update(sql, studyNumber, id);
         return changeCount;
     }
+
+    /**
+     * 删除课程信息
+     *
+     * @param course 课程信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    @Override
+    public int deleteCourse(Course course) {
+        String sql = "delete from course where id=?";
+        int changeCount = jdbcTemplate.update(sql, course.getId());
+        return changeCount;
+    }
 }

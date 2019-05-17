@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <!-- Title -->
+    <title>智学新知 - 让教育更智能，让学习更有趣</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="/img/core-img/logo_ico.png">
+
+    <!-- Core Stylesheet -->
+    <link rel="stylesheet" href="/style.css">
+
+	<link rel="stylesheet" href="/my/css/course.css">
+</head>
+
+<body>
+    <!-- ##### Preloader ##### -->
+    <div id="preloader">
+        <i class="circle-preloader"></i>
+    </div>
+
+    <!-- ##### Header Area Start ##### -->
+    <header class="header-area" th:include="/html_templates/header.html :: header"></header>
+    <!-- ##### Header Area End ##### -->
+
+    <!-- ##### Breadcumb Area Start ##### -->
+    <div class="breadcumb-area bg-img" style="background-image: url(/img/bg-img/breadcumb.jpg);">
+        <div class="bradcumbContent">
+            <h2>讨论区</h2>
+        </div>
+    </div>
+    <!-- ##### Breadcumb Area End ##### -->
+
+    <!-- ##### Blog Area Start ##### -->
+    <div class="blog-area mt-50 section-padding-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-md-12">
+                    <div class="academy-blog-posts">
+                        <div class="row">
+                            <!-- Single Blog Start -->
+                            <div class="col-12">
+                                <div class="single-blog-post mb-50 wow fadeInUp" data-wow-delay="300ms">
+                                    <!-- Post Thumb -->
+                                    <div class="blog-post-thumb mb-50">
+                                        <img src="/my/img/discuss.jpg" alt="" width="100%">
+                                    </div>
+                                    <!-- Post Meta -->
+                                    <div class="post-meta">
+                                        <p><a href="">读书使人充实，讨论使人机智，笔记使人准确,读史使人明智，读诗使人灵秀，数学使人周密，科学使人深刻，伦理使人庄重，逻辑修辞使人善辩。凡有所学，皆成性格。在这里留下你的看法吧~</a></p>
+                                    </div>
+                                    <!-- Read More btn -->
+                                    <button type="button" class="btn btn-primary">发表帖子</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="academy-blog-posts">
+                        <div class="row">
+                            <!-- Single Blog Start -->
+                            <div class="col-12">
+                                <div class="single-blog-post mb-50 wow fadeInUp" data-wow-delay="300ms">
+                                    <!-- Post Title -->
+                                    <h5>讨论列表</h5>
+                                    <br/>
+                                     <p th:if="${discussList} == null">这里空空如也，快来发表自己的想法吧~</p>
+                                    <div th:if="${discussList} != null" th:each="discuss : ${discussList}">
+                                        <h6 th:text="${discuss.name}"></h6>
+                                        <div class="post-meta">
+                                            <p>由<span th:text="${discuss.userName}"></span>创建于于：<span th:text="${#strings.substringBefore(discuss.createTime, '.')}"></span></p>
+                                            <div class="pull-right">
+                                                <button type="button" class="btn btn-primary">查看</button>
+                                                <button type="button" class="btn btn-danger" th:if="${user} != null and ${user.email} eq ${discuss.userEmail}">删除</button>
+                                            </div>
+                                        </div>
+                                        <br/>
+                                    </div>
+                                    <!--<div>-->
+                                        <!--<h6>Top ten courses we love for you to try</h6>-->
+                                        <!--<div class="post-meta">-->
+                                            <!--<p>最后修改于：<span>2019-01-01 11:22:32</span></p>-->
+                                            <!--<div class="pull-right">-->
+                                                <!--<button type="button" class="btn btn-primary">查看</button>-->
+                                                <!--<button type="button" class="btn btn-info">修改</button>-->
+                                                <!--<button type="button" class="btn btn-primary">资料列表</button>-->
+                                                <!--<button type="button" class="btn btn-success">上传资料</button>-->
+                                                <!--<button type="button" class="btn btn-danger">删除</button>-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+                                        <!--<br/>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<h6>Top ten courses we love for you to try</h6>-->
+                                        <!--<div class="post-meta">-->
+                                            <!--<p>最后修改于：<span>2019-01-01 11:22:32</span></p>-->
+                                            <!--<div class="pull-right">-->
+                                                <!--<button type="button" class="btn btn-primary">查看</button>-->
+                                                <!--<button type="button" class="btn btn-info">修改</button>-->
+                                                <!--<button type="button" class="btn btn-primary">资料列表</button>-->
+                                                <!--<button type="button" class="btn btn-success">上传资料</button>-->
+                                                <!--<button type="button" class="btn btn-danger">删除</button>-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+                                        <!--<br/>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<h6>Top ten courses we love for you to try</h6>-->
+                                        <!--<div class="post-meta">-->
+                                            <!--<p>最后修改于：<span>2019-01-01 11:22:32</span></p>-->
+                                            <!--<div class="pull-right">-->
+                                                <!--<button type="button" class="btn btn-primary">查看</button>-->
+                                                <!--<button type="button" class="btn btn-info">修改</button>-->
+                                                <!--<button type="button" class="btn btn-primary">资料列表</button>-->
+                                                <!--<button type="button" class="btn btn-success">上传资料</button>-->
+                                                <!--<button type="button" class="btn btn-danger">删除</button>-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+                                        <!--<br/>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<h6>Top ten courses we love for you to try</h6>-->
+                                        <!--<div class="post-meta">-->
+                                            <!--<p>最后修改于：<span>2019-01-01 11:22:32</span></p>-->
+                                            <!--<div class="pull-right">-->
+                                                <!--<button type="button" class="btn btn-primary">查看</button>-->
+                                                <!--<button type="button" class="btn btn-info">修改</button>-->
+                                                <!--<button type="button" class="btn btn-primary">资料列表</button>-->
+                                                <!--<button type="button" class="btn btn-success">上传资料</button>-->
+                                                <!--<button type="button" class="btn btn-danger">删除</button>-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+                                        <!--<br/>-->
+                                    <!--</div>-->
+                                    <div class="btn-group pull-right" role="group">
+                                        <button type="button" class="btn btn-default" disabled="disabled" th:if="${discussPrePage} == null"><span aria-hidden="true">&laquo;</span>上一页</button>
+                                        <button type="button" class="btn btn-default" th:if="${discussPrePage} != null"><span aria-hidden="true">&laquo;</span>上一页</button>
+                                        <button type="button" class="btn btn-default" disabled="disabled" th:text="${discussPage} + '/' + ${discussPageNumber}">1/1</button>
+                                        <button type="button" class="btn btn-default" disabled="disabled" th:if="${discussNextPage} == null">下一页<span aria-hidden="true">&raquo;</span></button>
+                                        <button type="button" class="btn btn-default" th:if="${discussNextPage} != null">下一页<span aria-hidden="true">&raquo;</span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ##### Blog Area End ##### -->
+
+    <!-- ##### Footer Area Start ##### -->
+    <footer class="footer-area" th:include="/html_templates/footer.html :: footer"></footer>
+    <!-- ##### Footer Area Start ##### -->
+
+    <!-- 信息提示框 -->
+    <div th:include="/html_templates/alert_info.html :: alert"></div>
+    <!-- 等待框 -->
+    <div th:include="/html_templates/loading.html :: loading"></div>
+    <!-- ##### All Javascript Script ##### -->
+    <!-- jQuery-2.2.4 js -->
+    <script src="/js/jquery/jquery-2.2.4.min.js"></script>
+    <!-- Popper js -->
+    <script src="/js/bootstrap/popper.min.js"></script>
+    <!-- Bootstrap js -->
+    <script src="/js/bootstrap/bootstrap.min.js"></script>
+    <!-- All Plugins js -->
+    <script src="/js/plugins/plugins.js"></script>
+    <!-- Active js -->
+    <script src="/js/active.js"></script>
+
+    <script src="/my/js/utils.js"></script>
+<script>
+
+</script>
+</body>
+
+</html>

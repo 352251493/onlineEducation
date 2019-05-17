@@ -69,7 +69,7 @@
                                     <button type="button" class="btn btn-success" onclick="openEditCourseModel();">修改资料</button>
                                     <button type="button" class="btn btn-primary" onclick="openEditCourseImageModel();">修改封面</button>
                                     <button type="button" class="btn btn-info" th:if="${course.isPrivate} eq '1'" th:onclick="openUserStudyManagePage([[${course.id}]]);">学习人员管理</button>
-                                    <button type="button" class="btn btn-danger">删除</button>
+                                    <button type="button" class="btn btn-danger" onclick="openDeleteCourseConfirmModel();">删除</button>
                                 </div>
                             </div>
                         </div>
@@ -255,6 +255,8 @@
     <div th:include="/html_templates/loading.html :: loading"></div>
     <!-- 添加考试提示框 -->
     <div th:include="/html_templates/add_exam.html :: addExam"></div>
+    <!-- 删除课程提示框 -->
+    <div th:include="/html_templates/confirm_modal.html :: deleteCourseConfirm"></div>
     <!-- ##### All Javascript Script ##### -->
     <!-- jQuery-2.2.4 js -->
     <script src="/js/jquery/jquery-2.2.4.min.js"></script>
@@ -277,6 +279,7 @@
     <script src="/my/js/datetimepicker/bootstrap-datetimepicker.min.js"></script>
     <script src="/my/js/datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js"></script>
     <script src="/my/js/add_exam.js"></script>
+    <script src="/my/js/delete_course.js"></script>
 </body>
 
 </html>

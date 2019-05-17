@@ -348,4 +348,10 @@ public class CourseController {
             return "/course_detail.html";
         }
     }
+
+    @PostMapping(value = "/delete")
+    @ResponseBody
+    public String deleteCourse(@RequestParam String courseId, HttpServletRequest request) {
+        return courseService.deleteCourse(courseId, request);
+    }
 }

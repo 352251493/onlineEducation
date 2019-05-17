@@ -160,4 +160,12 @@ public interface CourseDao {
      * @author 郭欣光
      */
     int updateStudyNumberById(int studyNumber, String id);
+
+    /**
+     * 删除课程信息
+     * @param course 课程信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    int deleteCourse(Course course);
 }
