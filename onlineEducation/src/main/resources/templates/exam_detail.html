@@ -161,186 +161,186 @@
 
     <script src="/my/js/utils.js"></script>
     <script>
-var timeInterval = null;
-function openCourseDetailPage(courseType, courseId, pageNumber) {
-    window.location.href = "/course/" + courseType + "/detail/" + courseId + "/" + pageNumber;
-}
-
-function openExamLisPage(courseType, courseId, pageNumber) {
-    window.location.href = "/exam/" + courseType + "/list/" + courseId + "/" + pageNumber;
-}
-
-function recordTime () {
-    var examDuration = $("#examDuration").html();
-    if (examDuration != "不限时") {
-        var minute = examDuration.split(":")[0];
-        var second = examDuration.split(":")[1];
-        var sumSecond = parseInt(minute) * 60 + parseInt(second) - 1;
-        minute = parseInt(sumSecond / 60);
-        second = parseInt(sumSecond % 60);
-        if (second < 10) {
-            $("#examDuration").html(minute + ":0" + second);
-        } else {
-            $("#examDuration").html(minute + ":" + second);
+        var timeInterval = null;
+        function openCourseDetailPage(courseType, courseId, pageNumber) {
+            window.location.href = "/course/" + courseType + "/detail/" + courseId + "/" + pageNumber;
         }
-        if (parseInt(sumSecond) == 300) {
-            openAlertModel("考试时间仅剩最后5分钟，请留意！");
+
+        function openExamLisPage(courseType, courseId, pageNumber) {
+            window.location.href = "/exam/" + courseType + "/list/" + courseId + "/" + pageNumber;
         }
-        if (parseInt(sumSecond) == 0) {
+
+        function recordTime () {
+            var examDuration = $("#examDuration").html();
+            if (examDuration != "不限时") {
+                var minute = examDuration.split(":")[0];
+                var second = examDuration.split(":")[1];
+                var sumSecond = parseInt(minute) * 60 + parseInt(second) - 1;
+                minute = parseInt(sumSecond / 60);
+                second = parseInt(sumSecond % 60);
+                if (second < 10) {
+                    $("#examDuration").html(minute + ":0" + second);
+                } else {
+                    $("#examDuration").html(minute + ":" + second);
+                }
+                if (parseInt(sumSecond) == 300) {
+                    openAlertModel("考试时间仅剩最后5分钟，请留意！");
+                }
+                if (parseInt(sumSecond) == 0) {
+                    if (timeInterval != null) {
+                        clearInterval(timeInterval);
+                    }
+                    setTimeout("submitExam()", 1000);
+        //                    openAlertModel("考试结束，已经自动为您提交试卷");
+        //                    if (timeInterval != null) {
+        //                        clearInterval(timeInterval);
+        //                    }
+                }
+                updateExamTime(examDuration);
+                getAnswerAndSubmit();
+            }
+        }
+
+        function updateExamTime(examTime) {
+            var examId = $("#examId").val();
+            if (stringIsEmpty(examId)) {
+                console.log("获取考试ID失败！");
+            } else {
+                var obj = new Object();
+                obj.examId = examId;
+                obj.examTime = examTime;
+                $.ajax({
+                    url: "/exam/student/time",
+                    type: "POST",
+                    cache: false,//设置不缓存
+                    data: obj,
+                    success: function (data) {
+                        console.log(data);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        console.log(XMLHttpRequest + textStatus + errorThrown);
+                    }
+                });
+            }
+        }
+
+        function getAnswerAndSubmit() {
+            if ($(".choice_question_class").length > 0) {
+                $(".choice_question_class").each(function(){
+                    var choiceQuestionId = $(this).val();
+                    console.log(choiceQuestionId);
+                    var choiceQuestionName = "choice_name_" + choiceQuestionId;
+                    var answer = $("input[name='" + choiceQuestionName + "']:checked").val();
+                    if (answer != undefined) {
+                        setChoiceQuestionAnswer(choiceQuestionId, answer);
+                    }
+                });
+            }
+            if ($(".objective_question_class").length > 0) {
+                $(".objective_question_class").each(function(){
+                    var objectiveQuestionId = $(this).val();
+                    console.log(objectiveQuestionId);
+                    var ObjectiveQuestionName = "#objective_id_" + $(this).val();
+                    var answer = $(ObjectiveQuestionName).val();
+                    if (!stringIsEmpty(answer)) {
+                        setObjectiveQuestionAnswer(objectiveQuestionId, answer);
+                    }
+                });
+            }
+        }
+
+        function setChoiceQuestionAnswer(choiceQuestionId, answer) {
+            var studentExamId = $("#studentExamId").val();
+            if (stringIsEmpty(studentExamId)) {
+                console.log("系统获取学生考试信息失败！");
+            } else {
+                var obj = new Object();
+                obj.studentExamId = studentExamId;
+                obj.choiceQuestionId = choiceQuestionId;
+                obj.answer = answer;
+                $.ajax({
+                    url: "/exam/student/choice/answer",
+                    type: "POST",
+                    cache: false,//设置不缓存
+                    data: obj,
+                    success: function (data) {
+                        console.log(data);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        console.log(XMLHttpRequest + textStatus + errorThrown);
+                    }
+                });
+            }
+        }
+
+        function setObjectiveQuestionAnswer(objectiveQuestionId, answer) {
+            var studentExamId = $("#studentExamId").val();
+            if (stringIsEmpty(studentExamId)) {
+                console.log("系统获取学生考试信息失败！");
+            } else {
+                var obj = new Object();
+                obj.studentExamId = studentExamId;
+                obj.objectiveQuestionId = objectiveQuestionId;
+                obj.answer = answer;
+                $.ajax({
+                    url: "/exam/student/objective/answer",
+                    type: "POST",
+                    cache: false,//设置不缓存
+                    data: obj,
+                    success: function (data) {
+                        console.log(data);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        console.log(XMLHttpRequest + textStatus + errorThrown);
+                    }
+                });
+            }
+        }
+
+        function submitExam() {
+            openLoadingModel();
             if (timeInterval != null) {
                 clearInterval(timeInterval);
             }
-            setTimeout("submitExam()", 1000);
-//                    openAlertModel("考试结束，已经自动为您提交试卷");
-//                    if (timeInterval != null) {
-//                        clearInterval(timeInterval);
-//                    }
-        }
-        updateExamTime(examDuration);
-        getAnswerAndSubmit();
-    }
-}
-
-function updateExamTime(examTime) {
-    var examId = $("#examId").val();
-    if (stringIsEmpty(examId)) {
-        console.log("获取考试ID失败！");
-    } else {
-        var obj = new Object();
-        obj.examId = examId;
-        obj.examTime = examTime;
-        $.ajax({
-            url: "/exam/student/time",
-            type: "POST",
-            cache: false,//设置不缓存
-            data: obj,
-            success: function (data) {
-                console.log(data);
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                console.log(XMLHttpRequest + textStatus + errorThrown);
-            }
-        });
-    }
-}
-
-function getAnswerAndSubmit() {
-    if ($(".choice_question_class").length > 0) {
-        $(".choice_question_class").each(function(){
-            var choiceQuestionId = $(this).val();
-            console.log(choiceQuestionId);
-            var choiceQuestionName = "choice_name_" + choiceQuestionId;
-            var answer = $("input[name='" + choiceQuestionName + "']:checked").val();
-            if (answer != undefined) {
-                setChoiceQuestionAnswer(choiceQuestionId, answer);
-            }
-        });
-    }
-    if ($(".objective_question_class").length > 0) {
-        $(".objective_question_class").each(function(){
-            var objectiveQuestionId = $(this).val();
-            console.log(objectiveQuestionId);
-            var ObjectiveQuestionName = "#objective_id_" + $(this).val();
-            var answer = $(ObjectiveQuestionName).val();
-            if (!stringIsEmpty(answer)) {
-                setObjectiveQuestionAnswer(objectiveQuestionId, answer);
-            }
-        });
-    }
-}
-
-function setChoiceQuestionAnswer(choiceQuestionId, answer) {
-    var studentExamId = $("#studentExamId").val();
-    if (stringIsEmpty(studentExamId)) {
-        console.log("系统获取学生考试信息失败！");
-    } else {
-        var obj = new Object();
-        obj.studentExamId = studentExamId;
-        obj.choiceQuestionId = choiceQuestionId;
-        obj.answer = answer;
-        $.ajax({
-            url: "/exam/student/choice/answer",
-            type: "POST",
-            cache: false,//设置不缓存
-            data: obj,
-            success: function (data) {
-                console.log(data);
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                console.log(XMLHttpRequest + textStatus + errorThrown);
-            }
-        });
-    }
-}
-
-function setObjectiveQuestionAnswer(objectiveQuestionId, answer) {
-    var studentExamId = $("#studentExamId").val();
-    if (stringIsEmpty(studentExamId)) {
-        console.log("系统获取学生考试信息失败！");
-    } else {
-        var obj = new Object();
-        obj.studentExamId = studentExamId;
-        obj.objectiveQuestionId = objectiveQuestionId;
-        obj.answer = answer;
-        $.ajax({
-            url: "/exam/student/objective/answer",
-            type: "POST",
-            cache: false,//设置不缓存
-            data: obj,
-            success: function (data) {
-                console.log(data);
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                console.log(XMLHttpRequest + textStatus + errorThrown);
-            }
-        });
-    }
-}
-
-function submitExam() {
-    openLoadingModel();
-    if (timeInterval != null) {
-        clearInterval(timeInterval);
-    }
-    var examId = $("#examId").val();
-    if (stringIsEmpty(examId)) {
-        closeLoadingModel();
-        openAlertModel("获取考试ID失败！");
-    } else {
-        var obj = new Object();
-        obj.examId = examId;
-        obj.examTime = "0:00";
-        $.ajax({
-            url: "/exam/student/time",
-            type: "POST",
-            cache: false,//设置不缓存
-            data: obj,
-            success: function (data) {
-                var result = JSON.parse(data);
-                if (result.status == "true") {
-                    setTimeout("window.location.reload()", 2000);
-                } else {
-                    closeLoadingModel();
-                    openAlertModel(result.content);
-                }
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            var examId = $("#examId").val();
+            if (stringIsEmpty(examId)) {
                 closeLoadingModel();
-                openAjaxErrorAlert(XMLHttpRequest, textStatus, errorThrown);
+                openAlertModel("获取考试ID失败！");
+            } else {
+                var obj = new Object();
+                obj.examId = examId;
+                obj.examTime = "0:00";
+                $.ajax({
+                    url: "/exam/student/time",
+                    type: "POST",
+                    cache: false,//设置不缓存
+                    data: obj,
+                    success: function (data) {
+                        var result = JSON.parse(data);
+                        if (result.status == "true") {
+                            setTimeout("window.location.reload()", 2000);
+                        } else {
+                            closeLoadingModel();
+                            openAlertModel(result.content);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        closeLoadingModel();
+                        openAjaxErrorAlert(XMLHttpRequest, textStatus, errorThrown);
+                    }
+                });
             }
+        }
+
+        function openSubmitExamConfirmModel() {
+            $("#submitExamConfirmModel").modal({
+                backdrop : 'static'
+            });
+        }
+
+        $(document).ready(function () {
+            timeInterval = setInterval(recordTime, 1000);
         });
-    }
-}
-
-function openSubmitExamConfirmModel() {
-    $("#submitExamConfirmModel").modal({
-        backdrop : 'static'
-    });
-}
-
-$(document).ready(function () {
-    timeInterval = setInterval(recordTime, 1000);
-});
     </script>
 </body>
 
