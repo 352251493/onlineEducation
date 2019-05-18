@@ -25,4 +25,28 @@ public interface DiscussDao {
      * @author 郭欣光
      */
     List<Discuss> getDiscussByLimitOrderByCreateTime(int limitStart, int limitEnd);
+
+    /**
+     * 根据ID获取讨论帖子个数
+     * @param id ID
+     * @return 讨论帖子个数
+     * @author 郭欣光
+     */
+    int getCountById(String id);
+
+    /**
+     * 创建讨论帖子
+     * @param discuss 讨论帖子
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    int createDiscuss(Discuss discuss);
+
+    /**
+     * 根据ID获取讨论帖子信息
+     * @param id ID
+     * @return 讨论帖子信息
+     * @author 郭欣光
+     */
+    Discuss getDiscussById(String id);
 }

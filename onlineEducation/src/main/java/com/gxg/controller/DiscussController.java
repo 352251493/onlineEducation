@@ -1,21 +1,25 @@
 package com.gxg.controller;
 
 import com.gxg.entities.Course;
+import com.gxg.entities.Discuss;
+import com.gxg.entities.Lesson;
 import com.gxg.entities.User;
 import com.gxg.service.DiscussService;
 import com.gxg.service.MessageService;
+import com.gxg.utils.FileUtils;
+import com.gxg.utils.Md5;
+import com.gxg.utils.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import javax.jws.soap.SOAPBinding;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.Random;
 
 /**
  * 讨论帖子相关请求与相应控制
@@ -61,6 +65,47 @@ public class DiscussController {
                 model.addAttribute("discussList", discussListInfo.get("discussList"));
             }
             return "/discuss.html";
+        }
+    }
+
+    @GetMapping(value = "/create")
+    public String getCreateDiscussPage(HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            return "redirect:/user/login?next=" + "/discuss/create";
+        } else {
+            User user = (User)session.getAttribute("user");
+            int unReadMessageCount = messageService.getUnreadMessageCount(user);
+            model.addAttribute("unReadMessageCount", unReadMessageCount);
+            model.addAttribute("user", user);
+            return "/create_discuss.html";
+        }
+    }
+
+    @PostMapping(value = "/create")
+    @ResponseBody
+    public String createDiscuss(@RequestParam String discussName, @RequestParam String discussContent, HttpServletRequest request) {
+        return discussService.createDiscuss(discussName, discussContent, request);
+    }
+
+    @GetMapping(value = "/detail/{discussId}")
+    public String getDiscussDetailPage(@PathVariable String discussId, HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            return "redirect:/user/login?next=" + "/discuss/detail/" + discussId;
+        } else {
+            Discuss discuss = discussService.getDiscussById(discussId);
+            if (discuss == null) {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "对不起，该页面不存在！");
+                return "/prompt/prompt.html";
+            }
+            model.addAttribute("discuss", discuss);
+            User user = (User)session.getAttribute("user");
+            int unReadMessageCount = messageService.getUnreadMessageCount(user);
+            model.addAttribute("unReadMessageCount", unReadMessageCount);
+            model.addAttribute("user", user);
+            return "/discuss_detail.html";
         }
     }
 }

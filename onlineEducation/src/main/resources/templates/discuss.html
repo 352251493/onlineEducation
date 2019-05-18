@@ -57,7 +57,7 @@
                                         <p><a href="">读书使人充实，讨论使人机智，笔记使人准确,读史使人明智，读诗使人灵秀，数学使人周密，科学使人深刻，伦理使人庄重，逻辑修辞使人善辩。凡有所学，皆成性格。在这里留下你的看法吧~</a></p>
                                     </div>
                                     <!-- Read More btn -->
-                                    <button type="button" class="btn btn-primary">发表帖子</button>
+                                    <button type="button" class="btn btn-primary" onclick="openCreateDiscussPage();">发表帖子</button>
                                 </div>
                             </div>
                         </div>
@@ -75,9 +75,9 @@
                                     <div th:if="${discussList} != null" th:each="discuss : ${discussList}">
                                         <h6 th:text="${discuss.name}"></h6>
                                         <div class="post-meta">
-                                            <p>由<span th:text="${discuss.userName}"></span>创建于于：<span th:text="${#strings.substringBefore(discuss.createTime, '.')}"></span></p>
+                                            <p>由<span th:text="${discuss.userName}"></span>创建于：<span th:text="${#strings.substringBefore(discuss.createTime, '.')}"></span></p>
                                             <div class="pull-right">
-                                                <button type="button" class="btn btn-primary">查看</button>
+                                                <button type="button" class="btn btn-primary" th:onclick="openDiscussDetailPage([[${discuss.id}]]);">查看</button>
                                                 <button type="button" class="btn btn-danger" th:if="${user} != null and ${user.email} eq ${discuss.userEmail}">删除</button>
                                             </div>
                                         </div>
@@ -141,10 +141,10 @@
                                     <!--</div>-->
                                     <div class="btn-group pull-right" role="group">
                                         <button type="button" class="btn btn-default" disabled="disabled" th:if="${discussPrePage} == null"><span aria-hidden="true">&laquo;</span>上一页</button>
-                                        <button type="button" class="btn btn-default" th:if="${discussPrePage} != null"><span aria-hidden="true">&laquo;</span>上一页</button>
+                                        <button type="button" class="btn btn-default" th:if="${discussPrePage} != null" th:onclick="openDiscussPage([[${discussPrePage}]]);"><span aria-hidden="true">&laquo;</span>上一页</button>
                                         <button type="button" class="btn btn-default" disabled="disabled" th:text="${discussPage} + '/' + ${discussPageNumber}">1/1</button>
                                         <button type="button" class="btn btn-default" disabled="disabled" th:if="${discussNextPage} == null">下一页<span aria-hidden="true">&raquo;</span></button>
-                                        <button type="button" class="btn btn-default" th:if="${discussNextPage} != null">下一页<span aria-hidden="true">&raquo;</span></button>
+                                        <button type="button" class="btn btn-default" th:if="${discussNextPage} != null" th:onclick="openDiscussPage([[${discussNextPage}]]);">下一页<span aria-hidden="true">&raquo;</span></button>
                                     </div>
                                 </div>
                             </div>
@@ -178,7 +178,17 @@
 
     <script src="/my/js/utils.js"></script>
 <script>
+    function openCreateDiscussPage() {
+        window.location.href = "/discuss/create";
+    }
 
+    function openDiscussPage(page) {
+        window.location.href = "/discuss/" + page;
+    }
+
+    function openDiscussDetailPage(discussId) {
+        window.location.href = "/discuss/detail/" + discussId;
+    }
 </script>
 </body>
 
