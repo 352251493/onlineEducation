@@ -2,9 +2,7 @@ package com.gxg.service.impl;
 
 import com.gxg.dao.DiscussDao;
 import com.gxg.dao.UserDao;
-import com.gxg.entities.Discuss;
-import com.gxg.entities.Lesson;
-import com.gxg.entities.User;
+import com.gxg.entities.*;
 import com.gxg.service.DiscussService;
 import com.gxg.service.MessageService;
 import com.gxg.utils.FileUtils;
@@ -201,5 +199,106 @@ public class DiscussServiceImpl implements DiscussService {
             discuss.setContent(fileContent.getString("content"));
             return discuss;
         }
+    }
+
+    /**
+     * 根据用户邮箱获取指定页数的讨论帖子信息
+     *
+     * @param userEmail   用户邮箱
+     * @param discussPage 讨论帖子页数
+     * @return 讨论帖子相关信息
+     * @author 郭欣光
+     */
+    @Override
+    public JSONObject getDiscussListByUserEmail(String userEmail, String discussPage) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        int discussPageNumber = 1;
+        int discussPageInt = 0;
+        String hasDiscuss = "false";
+        try {
+            discussPageInt = Integer.parseInt(discussPage);
+        } catch (Exception e) {
+            discussPageInt = 0;
+        }
+        List<Discuss> discussList = null;
+        if (discussPageInt > 0) {
+            int discussCount = discussDao.getCountByUserEmail(userEmail);
+            if (discussCount != 0) {
+                discussPageNumber = ((discussCount % discussCountEachPage) == 0) ? (discussCount / discussCountEachPage) : (discussCount / discussCountEachPage + 1);
+                if (discussPageInt <= discussPageNumber) {
+                    status = "true";
+                    hasDiscuss = "true";
+                    discussList = discussDao.getDiscussByUserEmailAndLimitOrderByCreateTime(userEmail, discussPageInt - 1, discussCountEachPage);
+                }
+            } else if (discussPageInt == 1) {
+                status = "true";
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("discussPageNumber", discussPageNumber);
+        result.accumulate("discussPage", discussPageInt);
+        result.accumulate("discussList", discussList);
+        result.accumulate("hasDiscuss", hasDiscuss);
+        return result;
+    }
+
+    /**
+     * 删除讨论帖子
+     *
+     * @param discussId 讨论帖子
+     * @param request 用户请求相关信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public String deleteDiscuss(String discussId, HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "删除失败！";
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            content = "系统未检测到登录用户信息，请刷新页面后重试！";
+        } else if (discussDao.getCountById(discussId) == 0) {
+            content = "系统未检测到该讨论帖子信息！";
+        } else {
+            User user = (User)session.getAttribute("user");
+            Discuss discuss = discussDao.getDiscussById(discussId);
+            if (user.getEmail().equals(discuss.getUserEmail())) {
+                try {
+                    if (discussDao.deleteDiscuss(discuss) == 0) {
+                        System.out.println("ERROR:删除讨论帖子信息" + discuss.toString() + "操作数据库失败");
+                        content = "操作数据库失败！";
+                    } else {
+                        status = "true";
+                        content = "删除成功！";
+                    }
+                } catch (Exception e) {
+                    System.out.println("ERROR:删除讨论帖子信息" + discuss.toString() + "操作数据库失败，失败原因：" + e);
+                    content = "操作数据库失败！";
+                }
+                if ("true".equals(status)) {
+                    JSONObject deleteFileResult = FileUtils.deleteFile(discussResourceDir + discuss.getContent());
+                    System.out.println("INFO:删除讨论帖子" + discuss.toString() + "成功后，删除文件结果：" + deleteFileResult.toString());
+                    String messageTitle = "删除讨论帖子成功";
+                    String messageContent = createDeleteDiscussSuccessEmailMessage(discuss);
+                    JSONObject createMessageResult = messageService.createMessage(user.getEmail(), messageTitle, messageContent);
+                    System.out.println("INFO:讨论帖子" + discuss.toString() + "删除成功时创建消息通知结果：" + createMessageResult.toString());
+                }
+            } else {
+                content = "您没有删除他人讨论帖子的权限！";
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
+    }
+
+    private String createDeleteDiscussSuccessEmailMessage(Discuss discuss) {
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        String timeString = time.toString().split("\\.")[0];
+        String message = "<p>恭喜您，您于" + timeString + "删除讨论帖子：" + discuss.getName() + "&nbsp;&nbsp;成功！</p>";
+        message += "<p style='color: red;'>如果不是您本人操作，可能密码已经泄露，请尽快修改密码！</p>";
+        return message;
     }
 }

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="createComment">
+    <div id="createCommentModel" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="createCommentModelLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="createCommentModelLabel">发表评论</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="createCommentModelClose"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body" id="createCommentModelInfo">
+                    <form id="createCommentForm">
+                        <input type="hidden" name="discussId" id="createCommentDiscussId" th:value="${discuss.id}">
+                        <div class="form-group">
+                            <label for="commentContent" style="font-weight:bold;">评论内容</label>
+                            <textarea class="form-control" rows="3" id="commentContent" name="commentContent" maxlength="1000" placeholder="不能超过1000字符..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                    <button class="btn btn-primary" onclick="publishComment();return false;">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

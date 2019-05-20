@@ -89,4 +89,48 @@ public class DiscussDaoImpl implements DiscussDao {
         Discuss discuss = jdbcTemplate.queryForObject(sql, new DiscussRowMapper(), id);
         return discuss;
     }
+
+    /**
+     * 根据用户邮箱获取讨论帖子个数
+     *
+     * @param userEmail 用户邮箱
+     * @return 讨论帖子个数
+     * @author 郭欣光
+     */
+    @Override
+    public int getCountByUserEmail(String userEmail) {
+        String sql = "select count(1) from discuss where user_email=?";
+        int rowCount = jdbcTemplate.queryForObject(sql, Integer.class, userEmail);
+        return rowCount;
+    }
+
+    /**
+     * 根据用户邮箱按照创建时间排序获取指定数据库范围的讨论帖子信息
+     *
+     * @param userEmail  用户邮箱
+     * @param limitStart 第一个limit
+     * @param limitEnd   第二个limit
+     * @return 讨论帖子
+     * @author 郭欣光
+     */
+    @Override
+    public List<Discuss> getDiscussByUserEmailAndLimitOrderByCreateTime(String userEmail, int limitStart, int limitEnd) {
+        String sql = "select * from discuss where user_email=? order by create_time desc limit ?, ?";
+        List<Discuss> discussList = jdbcTemplate.query(sql, new DiscussRowMapper(), userEmail, limitStart, limitEnd);
+        return discussList;
+    }
+
+    /**
+     * 删除讨论帖子信息
+     *
+     * @param discuss 讨论帖子信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    @Override
+    public int deleteDiscuss(Discuss discuss) {
+        String sql = "delete from discuss where id=?";
+        int changeCount = jdbcTemplate.update(sql, discuss.getId());
+        return changeCount;
+    }
 }

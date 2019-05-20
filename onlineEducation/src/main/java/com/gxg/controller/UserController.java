@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 /**
  * 该类为用户相关的请求响应控制类
@@ -37,6 +36,9 @@ public class UserController {
 
     @Autowired
     private StudentExamService studentExamService;
+
+    @Autowired
+    private DiscussService discussService;
 
     @GetMapping(value = "/login")
     public String getLoginPage(@RequestParam(required = false) String next, Model model, HttpServletRequest request) {
@@ -311,6 +313,39 @@ public class UserController {
                 model.addAttribute("pageName", "考试列表");
                 return "/user/score.html";
             }
+        }
+    }
+
+    @GetMapping(value = "/discuss/list/{discussPage}")
+    public String getDiscussListPage(@PathVariable String discussPage, HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            return "redirect:/user/login?next=" + "/user/discuss/list/" + discussPage;
+        } else {
+            User user = (User)session.getAttribute("user");
+            JSONObject discussListInfo = discussService.getDiscussListByUserEmail(user.getEmail(), discussPage);
+            if ("false".equals(discussListInfo.getString("status"))) {
+                return "redirect:/user/discuss/list/1";
+            } else {
+                int discussPageInt = discussListInfo.getInt("discussPage");
+                int discussPageNumber = discussListInfo.getInt("discussPageNumber");
+                model.addAttribute("discussPage", discussPageInt);
+                model.addAttribute("discussPageNumber", discussPageNumber);
+                if (discussPageInt > 1) {
+                    int discussPrePage = discussPageInt - 1;
+                    model.addAttribute("discussPrePage", discussPrePage);
+                }
+                if (discussPageInt < discussPageNumber) {
+                    int discussNextPage = discussPageInt + 1;
+                    model.addAttribute("discussNextPage", discussNextPage);
+                }
+                if ("true".equals(discussListInfo.getString("hasDiscuss"))) {
+                    model.addAttribute("discussList", discussListInfo.get("discussList"));
+                }
+                model = messageCommonModel(model, user);
+                model.addAttribute("pageName", "我的讨论");
+            }
+            return "/user/my_discuss.html";
         }
     }
 }

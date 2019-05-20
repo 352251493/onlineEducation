@@ -18,6 +18,8 @@
     <link rel="stylesheet" href="/style.css">
 
 	<link rel="stylesheet" href="/my/css/course.css">
+
+    <link rel="stylesheet" href="/my/css/comment.css">
 </head>
 
 <body>
@@ -55,11 +57,52 @@
                                         <p><a href="" th:text="'由' + ${discuss.userName} + '创建于' + ${#strings.substringBefore(discuss.createTime, '.')}"></a></p>
                                     </div>
                                     <!-- Read More btn -->
-                                    <button type="button" class="btn btn-primary">返回</button>
+                                    <button type="button" class="btn btn-primary" onclick="gotoPrePage();">返回</button>
+                                    <button type="button" class="btn btn-danger" th:if="${discuss.userEmail} eq ${user.email}" th:onclick="openDeleteDiscussConfirmModel([[${discuss.id}]]);">删除</button>
                                     <hr/>
                                     <div th:utext="${discuss.content}">
                                     </div>
+                                    <button type="button" class="btn btn-primary" onclick="openCreateCommentModel();">发表评论</button>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-12">
+                    <div class="academy-blog-posts">
+                        <div class="latest-blog-posts mb-30">
+                            <h5>评论</h5>
+                            <p th:if="${commentList} == null">还没有评论哦~快来发表下自己的看法是吧~</p>
+                            <!--<div class="single-course-area d-flex align-items-center mb-100 wow fadeInUp" data-wow-delay="300ms" th:if="${commentList} != null" th:each="comment : ${commentList}">-->
+                                <!--<div class="user-head">-->
+                                    <!--&lt;!&ndash; <i class="icon-id-card"></i> &ndash;&gt;-->
+                                    <!--<img th:src="'/user_resource/' + ${comment.userHeadImage}" alt="">-->
+                                <!--</div>-->
+                                <!--<div class="course-content">-->
+                                    <!--<h6 th:text="${comment.userName}"></h6>-->
+                                    <!--<p th:text="${comment.content}"></p>-->
+                                    <!--<p>发表于<span th:text="${#strings.substringBefore(comment.createTime, '.')}"></span></p>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <div class="col-12 col-md-12">
+                                <div class="single-testimonial-area mb-15 d-flex wow fadeInUp" data-wow-delay="400ms" th:if="${commentList} != null" th:each="comment : ${commentList}">
+                                    <div class="testimonial-thumb">
+                                        <img th:src="'/user_resource/' + ${comment.userHeadImage}" alt="">
+                                    </div>
+                                    <div class="comment-content">
+                                        <h5 th:text="${comment.userName}"></h5>
+                                        <p th:text="${comment.content}"></p>
+                                        <p>发表于<span th:text="${#strings.substringBefore(comment.createTime, '.')}"></span>&nbsp;&nbsp;&nbsp;&nbsp;<a th:if="${discuss.userEmail} eq ${user.email}" href="javascript:void(0);" th:onclick="openDeleteCommentModel([[${comment.id}]]);return false;" style="color: red;">删除</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="btn-group pull-right" role="group">
+                                <button type="button" class="btn btn-default" disabled="disabled" th:if="${commentPrePage} == null"><span aria-hidden="true">&laquo;</span>上一页</button>
+                                <button type="button" class="btn btn-default" th:if="${commentPrePage} != null" th:onclick="openDiscussDetailPage([[${discuss.id}]], [[${commentPrePage}]]);"><span aria-hidden="true">&laquo;</span>上一页</button>
+                                <button type="button" class="btn btn-default" disabled="disabled" th:text="${commentPage} + '/' + ${commentPageNumber}">1/1</button>
+                                <button type="button" class="btn btn-default" disabled="disabled" th:if="${commentNextPage} == null">下一页<span aria-hidden="true">&raquo;</span></button>
+                                <button type="button" class="btn btn-default" th:if="${commentNextPage} != null" th:onclick="openDiscussDetailPage([[${discuss.id}]], [[${commentNextPage}]]);">下一页<span aria-hidden="true">&raquo;</span></button>
                             </div>
                         </div>
                     </div>
@@ -73,6 +116,12 @@
     <footer class="footer-area" th:include="/html_templates/footer.html :: footer"></footer>
     <!-- ##### Footer Area Start ##### -->
 
+    <!-- 发表评论提示框 -->
+    <div th:include="/html_templates/create_comment.html :: createComment"></div>
+    <!-- 删除评论确认框 -->
+    <div th:include="/html_templates/confirm_modal.html :: deleteCommentConfirm"></div>
+    <!-- 删除讨论帖子确认框 -->
+    <div th:include="/html_templates/confirm_modal.html :: deleteDiscussConfirm"></div>
     <!-- 信息提示框 -->
     <div th:include="/html_templates/alert_info.html :: alert"></div>
     <!-- 等待框 -->
@@ -91,8 +140,28 @@
 
     <script src="/my/js/utils.js"></script>
 
-<script>
+    <script src="/my/js/create_comment.js"></script>
+    <script src="/my/js/delete_comment.js"></script>
+    <script src="/my/js/delete_discuss.js"></script>
 
+
+<script>
+    function gotoPrePage() {
+        var prePageUrl = document.referrer;
+        if (prePageUrl == "") {
+            window.location.href = "/discuss/1";
+        } else if (prePageUrl.indexOf("login") != -1) {
+            window.location.href = "/discuss/1";
+        } else if (prePageUrl.indexOf("discuss") == -1) {
+            window.location.href = "/discuss/1";
+        } else {
+            window.location.href = prePageUrl;
+        }
+    }
+
+    function openDiscussDetailPage(discussId, page) {
+        window.location.href = "/discuss/detail/" + discussId + "/" + page;
+    }
 </script>
 </body>
 

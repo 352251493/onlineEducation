@@ -49,4 +49,30 @@ public interface DiscussDao {
      * @author 郭欣光
      */
     Discuss getDiscussById(String id);
+
+    /**
+     * 根据用户邮箱获取讨论帖子个数
+     * @param userEmail 用户邮箱
+     * @return 讨论帖子个数
+     * @author 郭欣光
+     */
+    int getCountByUserEmail(String userEmail);
+
+    /**
+     * 根据用户邮箱按照创建时间排序获取指定数据库范围的讨论帖子信息
+     * @param userEmail 用户邮箱
+     * @param limitStart 第一个limit
+     * @param limitEnd 第二个limit
+     * @return 讨论帖子
+     * @author 郭欣光
+     */
+    List<Discuss> getDiscussByUserEmailAndLimitOrderByCreateTime(String userEmail, int limitStart, int limitEnd);
+
+    /**
+     * 删除讨论帖子信息
+     * @param discuss 讨论帖子信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    int deleteDiscuss(Discuss discuss);
 }

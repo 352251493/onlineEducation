@@ -37,4 +37,22 @@ public interface DiscussService {
      * @author 郭欣光
      */
     Discuss getDiscussById(String discussId);
+
+    /**
+     * 根据用户邮箱获取指定页数的讨论帖子信息
+     * @param userEmail 用户邮箱
+     * @param discussPage 讨论帖子页数
+     * @return 讨论帖子相关信息
+     * @author 郭欣光
+     */
+    JSONObject getDiscussListByUserEmail(String userEmail, String discussPage);
+
+    /**
+     * 删除讨论帖子
+     * @param discussId 讨论帖子
+     * @param request 用户请求相关信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    String deleteDiscuss(String discussId, HttpServletRequest request);
 }

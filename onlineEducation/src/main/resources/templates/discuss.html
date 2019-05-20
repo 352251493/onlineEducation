@@ -78,67 +78,11 @@
                                             <p>由<span th:text="${discuss.userName}"></span>创建于：<span th:text="${#strings.substringBefore(discuss.createTime, '.')}"></span></p>
                                             <div class="pull-right">
                                                 <button type="button" class="btn btn-primary" th:onclick="openDiscussDetailPage([[${discuss.id}]]);">查看</button>
-                                                <button type="button" class="btn btn-danger" th:if="${user} != null and ${user.email} eq ${discuss.userEmail}">删除</button>
+                                                <button type="button" class="btn btn-danger" th:if="${user} != null and ${user.email} eq ${discuss.userEmail}" th:onclick="openDeleteDiscussConfirmModel([[${discuss.id}]]);">删除</button>
                                             </div>
                                         </div>
                                         <br/>
                                     </div>
-                                    <!--<div>-->
-                                        <!--<h6>Top ten courses we love for you to try</h6>-->
-                                        <!--<div class="post-meta">-->
-                                            <!--<p>最后修改于：<span>2019-01-01 11:22:32</span></p>-->
-                                            <!--<div class="pull-right">-->
-                                                <!--<button type="button" class="btn btn-primary">查看</button>-->
-                                                <!--<button type="button" class="btn btn-info">修改</button>-->
-                                                <!--<button type="button" class="btn btn-primary">资料列表</button>-->
-                                                <!--<button type="button" class="btn btn-success">上传资料</button>-->
-                                                <!--<button type="button" class="btn btn-danger">删除</button>-->
-                                            <!--</div>-->
-                                        <!--</div>-->
-                                        <!--<br/>-->
-                                    <!--</div>-->
-                                    <!--<div>-->
-                                        <!--<h6>Top ten courses we love for you to try</h6>-->
-                                        <!--<div class="post-meta">-->
-                                            <!--<p>最后修改于：<span>2019-01-01 11:22:32</span></p>-->
-                                            <!--<div class="pull-right">-->
-                                                <!--<button type="button" class="btn btn-primary">查看</button>-->
-                                                <!--<button type="button" class="btn btn-info">修改</button>-->
-                                                <!--<button type="button" class="btn btn-primary">资料列表</button>-->
-                                                <!--<button type="button" class="btn btn-success">上传资料</button>-->
-                                                <!--<button type="button" class="btn btn-danger">删除</button>-->
-                                            <!--</div>-->
-                                        <!--</div>-->
-                                        <!--<br/>-->
-                                    <!--</div>-->
-                                    <!--<div>-->
-                                        <!--<h6>Top ten courses we love for you to try</h6>-->
-                                        <!--<div class="post-meta">-->
-                                            <!--<p>最后修改于：<span>2019-01-01 11:22:32</span></p>-->
-                                            <!--<div class="pull-right">-->
-                                                <!--<button type="button" class="btn btn-primary">查看</button>-->
-                                                <!--<button type="button" class="btn btn-info">修改</button>-->
-                                                <!--<button type="button" class="btn btn-primary">资料列表</button>-->
-                                                <!--<button type="button" class="btn btn-success">上传资料</button>-->
-                                                <!--<button type="button" class="btn btn-danger">删除</button>-->
-                                            <!--</div>-->
-                                        <!--</div>-->
-                                        <!--<br/>-->
-                                    <!--</div>-->
-                                    <!--<div>-->
-                                        <!--<h6>Top ten courses we love for you to try</h6>-->
-                                        <!--<div class="post-meta">-->
-                                            <!--<p>最后修改于：<span>2019-01-01 11:22:32</span></p>-->
-                                            <!--<div class="pull-right">-->
-                                                <!--<button type="button" class="btn btn-primary">查看</button>-->
-                                                <!--<button type="button" class="btn btn-info">修改</button>-->
-                                                <!--<button type="button" class="btn btn-primary">资料列表</button>-->
-                                                <!--<button type="button" class="btn btn-success">上传资料</button>-->
-                                                <!--<button type="button" class="btn btn-danger">删除</button>-->
-                                            <!--</div>-->
-                                        <!--</div>-->
-                                        <!--<br/>-->
-                                    <!--</div>-->
                                     <div class="btn-group pull-right" role="group">
                                         <button type="button" class="btn btn-default" disabled="disabled" th:if="${discussPrePage} == null"><span aria-hidden="true">&laquo;</span>上一页</button>
                                         <button type="button" class="btn btn-default" th:if="${discussPrePage} != null" th:onclick="openDiscussPage([[${discussPrePage}]]);"><span aria-hidden="true">&laquo;</span>上一页</button>
@@ -160,6 +104,8 @@
     <footer class="footer-area" th:include="/html_templates/footer.html :: footer"></footer>
     <!-- ##### Footer Area Start ##### -->
 
+    <!-- 删除讨论帖子确认框 -->
+    <div th:include="/html_templates/confirm_modal.html :: deleteDiscussConfirm"></div>
     <!-- 信息提示框 -->
     <div th:include="/html_templates/alert_info.html :: alert"></div>
     <!-- 等待框 -->
@@ -177,6 +123,7 @@
     <script src="/js/active.js"></script>
 
     <script src="/my/js/utils.js"></script>
+    <script src="/my/js/delete_discuss.js"></script>
 <script>
     function openCreateDiscussPage() {
         window.location.href = "/discuss/create";
@@ -187,7 +134,7 @@
     }
 
     function openDiscussDetailPage(discussId) {
-        window.location.href = "/discuss/detail/" + discussId;
+        window.location.href = "/discuss/detail/" + discussId + "/1";
     }
 </script>
 </body>
