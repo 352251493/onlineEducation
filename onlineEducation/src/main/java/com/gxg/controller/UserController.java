@@ -40,6 +40,9 @@ public class UserController {
     @Autowired
     private DiscussService discussService;
 
+    @Autowired
+    private ExamService examService;
+
     @GetMapping(value = "/login")
     public String getLoginPage(@RequestParam(required = false) String next, Model model, HttpServletRequest request) {
         if (next == null) {
@@ -346,6 +349,45 @@ public class UserController {
                 model.addAttribute("pageName", "我的讨论");
             }
             return "/user/my_discuss.html";
+        }
+    }
+
+    @GetMapping(value = "/score/analysis/{scoreAnalysisPage}")
+    public String getScoreAnalysisPage(@PathVariable String scoreAnalysisPage, HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            return "redirect:/user/login?next=" + "/user/score/analysis/" + scoreAnalysisPage;
+        } else {
+            User user = (User)session.getAttribute("user");
+            if ("教师".equals(user.getRole())) {
+                JSONObject examListInfo = examService.getMyExamList(user, scoreAnalysisPage);
+                if ("false".equals(examListInfo.getString("status"))) {
+                    return "redirect:/user/score/analysis/1";
+                } else {
+                    int scoreAnalysisPageInt = examListInfo.getInt("scoreAnalysisPage");
+                    int scoreAnalysisPageNumber = examListInfo.getInt("scoreAnalysisPageNumber");
+                    model.addAttribute("scoreAnalysisPage", scoreAnalysisPageInt);
+                    model.addAttribute("scoreAnalysisPageNumber", scoreAnalysisPageNumber);
+                    if (scoreAnalysisPageInt > 1) {
+                        int scoreAnalysisPrePage = scoreAnalysisPageInt - 1;
+                        model.addAttribute("scoreAnalysisPrePage", scoreAnalysisPrePage);
+                    }
+                    if (scoreAnalysisPageInt < scoreAnalysisPageNumber) {
+                        int scoreAnalysisNextPage = scoreAnalysisPageInt + 1;
+                        model.addAttribute("scoreAnalysisNextPage", scoreAnalysisNextPage);
+                    }
+                    if ("true".equals(examListInfo.getString("hasExam"))) {
+                        model.addAttribute("examList", examListInfo.get("examList"));
+                    }
+                    model = messageCommonModel(model, user);
+                    model.addAttribute("pageName", "考试分析");
+                    return "/user/score_analysis.html";
+                }
+            } else {
+                model.addAttribute("promptTitle", "404");
+                model.addAttribute("promptMessage", "糟糕，该页面好像不存在！");
+                return "/prompt/prompt.html";
+            }
         }
     }
 }

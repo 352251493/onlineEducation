@@ -238,4 +238,62 @@ public class StudentExamDaoImpl implements StudentExamDao {
         int rowCount = jdbcTemplate.queryForObject(sql, Integer.class, examId, score);
         return rowCount;
     }
+
+    /**
+     * 根据考试ID获取最高成绩
+     *
+     * @param examId 考试ID
+     * @return 最高成绩
+     * @author 郭欣光
+     */
+    @Override
+    public int getMaxScoreByExamId(String examId) {
+        String sql = "select max(score) from student_exam where exam_id=?";
+        int maxScore = jdbcTemplate.queryForObject(sql, Integer.class, examId);
+        return maxScore;
+    }
+
+    /**
+     * 根据考试ID获取最低成绩
+     *
+     * @param examId 考试ID
+     * @return 最低成绩
+     * @author 郭欣光
+     */
+    @Override
+    public int getMinScoreByExamId(String examId) {
+        String sql = "select min(score) from student_exam where exam_id=?";
+        int minScore = jdbcTemplate.queryForObject(sql, Integer.class, examId);
+        return minScore;
+    }
+
+    /**
+     * 根据考试ID获取大于等于指定分数的学生考试个数
+     *
+     * @param examId 考试ID
+     * @param score  成绩
+     * @return 学生考试个数
+     * @author 郭欣光
+     */
+    @Override
+    public int getCountByExamIdAndGreaterAndEqualsScore(String examId, int score) {
+        String sql = "select count(1) from student_exam where exam_id=? and score >= ?";
+        int rowCount = jdbcTemplate.queryForObject(sql, Integer.class, examId, score);
+        return rowCount;
+    }
+
+    /**
+     * 根据考试ID获取大于等于指定分数的平均成绩
+     *
+     * @param examId 考试ID
+     * @param score  成绩
+     * @return 评论成绩
+     * @author 郭欣光
+     */
+    @Override
+    public double getAvgScoreByExamIdAndGreaterAndEqualsScore(String examId, int score) {
+        String sql = "select avg(score) from student_exam where exam_id=? and score >= ?";
+        double avgScore = jdbcTemplate.queryForObject(sql, Double.class, examId, score);
+        return avgScore;
+    }
 }

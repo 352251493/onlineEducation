@@ -27,6 +27,14 @@ public class Exam {
 
     private String courseId;
 
+    private int maxScore;
+
+    private int minScore;
+
+    private String avgScore;
+
+    private String courseName;
+
     public String getId() {
         return id;
     }
@@ -99,6 +107,38 @@ public class Exam {
         this.courseId = courseId;
     }
 
+    public int getMaxScore() {
+        return maxScore;
+    }
+
+    public void setMaxScore(int maxScore) {
+        this.maxScore = maxScore;
+    }
+
+    public int getMinScore() {
+        return minScore;
+    }
+
+    public void setMinScore(int minScore) {
+        this.minScore = minScore;
+    }
+
+    public String getAvgScore() {
+        return avgScore;
+    }
+
+    public void setAvgScore(String avgScore) {
+        this.avgScore = avgScore;
+    }
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
     @Override
     public String toString() {
         return "Exam{" +
@@ -111,6 +151,10 @@ public class Exam {
                 ", createTime=" + createTime +
                 ", modifyTime=" + modifyTime +
                 ", courseId='" + courseId + '\'' +
+                ", maxScore=" + maxScore +
+                ", minScore=" + minScore +
+                ", avgScore='" + avgScore + '\'' +
+                ", courseName='" + courseName + '\'' +
                 '}';
     }
 }

@@ -119,4 +119,36 @@ public class ExamDaoImpl implements ExamDao {
         int changeCount = jdbcTemplate.update(sql, exam.getId());
         return changeCount;
     }
+
+    /**
+     * 根据考试所属课程用户邮箱获取考试个数
+     *
+     * @param userEmail 用户邮箱
+     * @return 考试个数
+     * @author 郭欣光
+     */
+    @Override
+    public int getCountByCourseUserEmail(String userEmail) {
+        String sql = "select count(1) from exam where course_id in (select course.id from course where user_email=?)";
+        int rowCount = jdbcTemplate.queryForObject(sql, Integer.class, userEmail);
+        return rowCount;
+    }
+
+    /**
+     * 根据考试所属课程用户邮箱按照修改时间排序获取指定范围的考试信息
+     *
+     * @param userEmail  用户邮箱
+     * @param limitStart 第一个limit
+     * @param limitEnd   第二个limit
+     * @return 考试信息
+     * @author 郭欣光
+     */
+    @Override
+    public List<Exam> getExamByCourseUserEmailAndLimitOrderByModifyTiime(String userEmail, int limitStart, int limitEnd) {
+        String sql = "select * from exam where course_id in (select course.id from course where user_email=?) order by modify_time desc limit ?, ?";
+        List<Exam> examList = jdbcTemplate.query(sql, new ExamRowMapper(), userEmail, limitStart, limitEnd);
+        return examList;
+    }
+
+
 }

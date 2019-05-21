@@ -40,4 +40,16 @@ public class HomeController {
         model.addAttribute("courseListOrderByStudyNumber", courseListOrderByStudyNumber);
         return "/index.html";
     }
+
+    @GetMapping(value = "/about")
+    public String aboutUs(HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") != null) {
+            User user = (User)session.getAttribute("user");
+            int unReadMessageCount = messageService.getUnreadMessageCount(user);
+            model.addAttribute("unReadMessageCount", unReadMessageCount);
+            model.addAttribute("user", user);
+        }
+        return "/about_us.html";
+    }
 }

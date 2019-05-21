@@ -2,6 +2,7 @@ package com.gxg.service;
 
 import com.gxg.entities.Exam;
 import com.gxg.entities.Lesson;
+import com.gxg.entities.User;
 import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
@@ -64,4 +65,13 @@ public interface ExamService {
      * @author 郭欣光
      */
     String deleteExam(String examId, HttpServletRequest request);
+
+    /**
+     * 获取该用户发布的考试相关信息
+     * @param user 用户信息
+     * @param examAnalysisPage 页数
+     * @return 考试相关信息
+     * @author 郭欣光
+     */
+    JSONObject getMyExamList(User user, String examAnalysisPage);
 }

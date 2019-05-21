@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Random;
 
@@ -50,6 +51,9 @@ public class ExamServiceImpl implements ExamService {
 
     @Value("${sys.root.url}")
     private String sysRootUrl;
+
+    @Autowired
+    private StudentExamDao studentExamDao;
 
     /**
      * 创建考试
@@ -445,5 +449,78 @@ public class ExamServiceImpl implements ExamService {
         String message = "<p>您学习的课程" + course.getName() + "&nbsp;&nbsp;由" + user.getName() + "于" + timeString + "删除考试" + exam.getName() + "&nbsp;&nbsp;！</p>";
         message += "<p>愿考试连接已经作废，如有疑问请自行联系该门课程的教师！</p>";
         return message;
+    }
+
+    /**
+     * 获取该用户发布的考试相关信息
+     *
+     * @param user             用户信息
+     * @param examAnalysisPage 页数
+     * @return 考试相关信息
+     * @author 郭欣光
+     */
+    @Override
+    public JSONObject getMyExamList(User user, String examAnalysisPage) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        int scoreAnalysisPageNumber = 1;
+        int scoreAnalysisPageInt = 0;
+        String hasExam = "false";
+        try {
+            scoreAnalysisPageInt = Integer.parseInt(examAnalysisPage);
+        } catch (Exception e) {
+            scoreAnalysisPageInt = 0;
+        }
+        List<Exam> examList = null;
+        if (scoreAnalysisPageInt > 0) {
+            int examCount = examDao.getCountByCourseUserEmail(user.getEmail());
+            if (examCount != 0) {
+                scoreAnalysisPageNumber = ((examCount % examCountEachPage) == 0) ? (examCount / examCountEachPage) : (examCount / examCountEachPage + 1);
+                if (scoreAnalysisPageInt <= scoreAnalysisPageNumber) {
+                    status = "true";
+                    hasExam = "true";
+                    examList = examDao.getExamByCourseUserEmailAndLimitOrderByModifyTiime(user.getEmail(), (scoreAnalysisPageInt - 1) * examCountEachPage, examCountEachPage);
+                    for (Exam exam : examList) {
+                        if (studentExamDao.getCountByExamId(exam.getId()) == 0) {
+                            exam.setMaxScore(0);
+                            exam.setMinScore(0);
+                        } else {
+                            int maxScore = studentExamDao.getMaxScoreByExamId(exam.getId());
+                            if (maxScore < 0) {
+                                maxScore = 0;
+                            }
+                            int minScore = studentExamDao.getMinScoreByExamId(exam.getId());
+                            if (minScore < 0) {
+                                minScore = 0;
+                            }
+                            exam.setMinScore(minScore);
+                            exam.setMaxScore(maxScore);
+                            if (studentExamDao.getCountByExamIdAndGreaterAndEqualsScore(exam.getId(), 0) == 0) {
+                                exam.setAvgScore("0.00");
+                            } else {
+                                double avgScore = studentExamDao.getAvgScoreByExamIdAndGreaterAndEqualsScore(exam.getId(), 0);
+                                DecimalFormat df = new DecimalFormat("0.00");
+                                if (avgScore < 0) {
+                                    avgScore = 0.00;
+                                }
+                                exam.setAvgScore(df.format(avgScore));
+                            }
+                        }
+                        if (courseDao.getCountById(exam.getCourseId()) != 0) {
+                            Course course = courseDao.getCourseById(exam.getCourseId());
+                            exam.setCourseName(course.getName());
+                        }
+                    }
+                }
+            } else if (scoreAnalysisPageInt == 1) {
+                status = "true";
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("scoreAnalysisPageNumber", scoreAnalysisPageNumber);
+        result.accumulate("scoreAnalysisPage", scoreAnalysisPageInt);
+        result.accumulate("examList", examList);
+        result.accumulate("hasExam", hasExam);
+        return result;
     }
 }

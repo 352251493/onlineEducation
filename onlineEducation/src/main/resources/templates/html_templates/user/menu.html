@@ -19,8 +19,8 @@
         <!--<li><a href="charts.html"> <i class="fa fa-bar-chart"></i>Charts </a></li>-->
         <li><a href="/user/score/list/1" th:if="${pageName} ne '考试列表'"> <i class="icon-grid"></i>成绩列表</a></li>
         <li class="active"><a href="/user/score/list/1" th:if="${pageName} eq '考试列表'"> <i class="icon-grid"></i>成绩列表</a></li>
-        <li><a href="/user/score/list/1" th:if="${user.role} eq '教师' and ${pageName} ne '考试分析'"> <i class="icon-grid"></i>考试分析</a></li>
-        <li class="active"><a href="/user/score/list/1" th:if="${user.role} eq '教师' and ${pageName} eq '考试分析'"> <i class="icon-grid"></i>考试分析</a></li>
+        <li><a href="/user/score/analysis/1" th:if="${user.role} eq '教师' and ${pageName} ne '考试分析'"> <i class="icon-grid"></i>考试分析</a></li>
+        <li class="active"><a href="/user/score/analysis/1" th:if="${user.role} eq '教师' and ${pageName} eq '考试分析'"> <i class="icon-grid"></i>考试分析</a></li>
         <li><a href="/user/discuss/list/1" th:if="${pageName} ne '我的讨论'"> <i class="icon-padnote"></i>我的讨论</a></li>
         <li class="active"><a href="/user/discuss/list/1" th:if="${pageName} eq '我的讨论'"> <i class="icon-padnote"></i>我的讨论</a></li>
         <li ><a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse" th:if="${pageName} ne '公共课程' and ${pageName} ne '私有课程' and ${pageName} ne '我创建的'"> <i class="icon-interface-windows"></i>我的课程 </a>

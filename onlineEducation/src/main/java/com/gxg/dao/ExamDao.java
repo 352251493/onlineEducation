@@ -68,4 +68,22 @@ public interface ExamDao {
      * @author 郭欣光
      */
     int deleteExam(Exam exam);
+
+    /**
+     * 根据考试所属课程用户邮箱获取考试个数
+     * @param userEmail 用户邮箱
+     * @return 考试个数
+     * @author 郭欣光
+     */
+    int getCountByCourseUserEmail(String userEmail);
+
+    /**
+     * 根据考试所属课程用户邮箱按照修改时间排序获取指定范围的考试信息
+     * @param userEmail 用户邮箱
+     * @param limitStart 第一个limit
+     * @param limitEnd 第二个limit
+     * @return 考试信息
+     * @author 郭欣光
+     */
+    List<Exam> getExamByCourseUserEmailAndLimitOrderByModifyTiime(String userEmail, int limitStart, int limitEnd);
 }

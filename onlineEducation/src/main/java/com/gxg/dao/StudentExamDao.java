@@ -140,4 +140,38 @@ public interface StudentExamDao {
      * @author 郭欣光
      */
     int getCountByExamIdGreaterScore(String examId, int score);
+
+    /**
+     * 根据考试ID获取最高成绩
+     * @param examId 考试ID
+     * @return 最高成绩
+     * @author 郭欣光
+     */
+    int getMaxScoreByExamId(String examId);
+
+    /**
+     * 根据考试ID获取最低成绩
+     * @param examId 考试ID
+     * @return 最低成绩
+     * @author 郭欣光
+     */
+    int getMinScoreByExamId(String examId);
+
+    /**
+     * 根据考试ID获取大于等于指定分数的学生考试个数
+     * @param examId 考试ID
+     * @param score 成绩
+     * @return 学生考试个数
+     * @author 郭欣光
+     */
+    int getCountByExamIdAndGreaterAndEqualsScore(String examId, int score);
+
+    /**
+     * 根据考试ID获取大于等于指定分数的平均成绩
+     * @param examId 考试ID
+     * @param score 成绩
+     * @return 评论成绩
+     * @author 郭欣光
+     */
+    double getAvgScoreByExamIdAndGreaterAndEqualsScore(String examId, int score);
 }
